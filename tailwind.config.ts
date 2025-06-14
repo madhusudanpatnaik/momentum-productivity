@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,12 +62,27 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Retro game color palette
+				'neon-green': '#00FF41',
+				'neon-blue': '#00D4FF',
+				'neon-pink': '#FF0080',
+				'neon-yellow': '#FFFF00',
+				'neon-purple': '#8000FF',
+				'pixel-dark': '#1a1a2e',
+				'pixel-darker': '#16213e',
+				'arcade-orange': '#FF6B35',
+				'retro-cyan': '#00FFFF'
+			},
+			fontFamily: {
+				'pixel': ['Monaco', 'Consolas', 'Courier New', 'monospace'],
+				'retro': ['Orbitron', 'monospace']
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				pixel: '0px'
 			},
 			keyframes: {
 				'accordion-down': {
@@ -84,11 +100,43 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pixel-glow': {
+					'0%, 100%': {
+						boxShadow: '0 0 5px #00FF41, 0 0 10px #00FF41, 0 0 15px #00FF41'
+					},
+					'50%': {
+						boxShadow: '0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41'
+					}
+				},
+				'progress-fill': {
+					'0%': { width: '0%' },
+					'100%': { width: '100%' }
+				},
+				'badge-bounce': {
+					'0%, 20%, 53%, 80%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'40%, 43%': {
+						transform: 'translateY(-15px)'
+					},
+					'70%': {
+						transform: 'translateY(-7px)'
+					},
+					'90%': {
+						transform: 'translateY(-3px)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pixel-glow': 'pixel-glow 2s ease-in-out infinite',
+				'progress-fill': 'progress-fill 1s ease-out',
+				'badge-bounce': 'badge-bounce 1s ease-in-out'
+			},
+			backgroundImage: {
+				'pixel-grid': 'repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(0,255,65,0.1) 1px, rgba(0,255,65,0.1) 2px), repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,255,65,0.1) 1px, rgba(0,255,65,0.1) 2px)'
 			}
 		}
 	},
