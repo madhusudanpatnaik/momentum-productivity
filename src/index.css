@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -62,22 +61,41 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
-  /* Landing page specific background */
+  /* Enhanced landing page background with modern gradient */
   .landing-page {
-    background: linear-gradient(135deg, 
-      rgb(16, 16, 36) 0%,     /* Very dark purple-blue at edges */
-      rgb(31, 28, 66) 25%,    /* Dark purple-blue */
-      rgb(45, 35, 85) 50%,    /* Medium purple-blue center */
-      rgb(35, 28, 75) 75%,    /* Back to darker */
-      rgb(20, 18, 45) 100%    /* Dark edges */
+    background: radial-gradient(ellipse at center, 
+      rgba(45, 35, 85, 0.8) 0%,     /* Center glow */
+      rgba(31, 28, 66, 0.9) 30%,    /* Mid purple-blue */
+      rgba(20, 18, 45, 1) 70%,      /* Darker edges */
+      rgba(16, 16, 36, 1) 100%      /* Very dark edges */
+    ), 
+    linear-gradient(135deg, 
+      rgba(16, 16, 36, 1) 0%,       /* Very dark purple-blue at edges */
+      rgba(31, 28, 66, 0.9) 25%,    /* Dark purple-blue */
+      rgba(45, 35, 85, 0.8) 50%,    /* Medium purple-blue center */
+      rgba(35, 28, 75, 0.9) 75%,    /* Back to darker */
+      rgba(20, 18, 45, 1) 100%      /* Dark edges */
     );
     background-attachment: fixed;
     min-height: 100vh;
     color: white;
+    position: relative;
+  }
+
+  /* Modern glass morphism effect */
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-medium;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
@@ -89,5 +107,19 @@
 
   .animation-delay-4000 {
     animation-delay: 4s;
+  }
+
+  /* Modern backdrop blur utilities */
+  .backdrop-blur-xs {
+    backdrop-filter: blur(2px);
+  }
+  
+  .backdrop-blur-3xl {
+    backdrop-filter: blur(64px);
+  }
+
+  /* Gradient text utilities */
+  .gradient-text {
+    @apply bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent;
   }
 }
