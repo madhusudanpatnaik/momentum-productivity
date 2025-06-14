@@ -54,38 +54,57 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className={`${isCollapsed ? "w-16" : "w-64"} bg-gray-900 border-gray-800`}>
-      <SidebarContent className="bg-gray-900">
-        <div className="p-4 border-b border-gray-800">
+    <Sidebar className={`${isCollapsed ? "w-16" : "w-64"} bg-slate-900 border-slate-700`}>
+      <SidebarContent className="bg-slate-900">
+        {/* Header/Logo Section */}
+        <div className="p-4 border-b border-slate-700">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-gray-900 font-bold text-sm">S</span>
+            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-sm">S</span>
             </div>
             {!isCollapsed && (
-              <span className="text-white font-semibold text-lg">Synthezy</span>
+              <span className="text-white font-semibold text-lg tracking-wide">Synthezy</span>
             )}
           </div>
         </div>
 
-        <SidebarGroup>
+        <SidebarGroup className="px-2 py-4">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink 
                       to={item.url} 
                       end={item.url === "/app"}
-                      className={({ isActive: navIsActive }) => 
-                        `flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
-                          isActive(item.url) || navIsActive
-                            ? 'bg-white text-gray-900 font-medium' 
-                            : 'text-gray-300 hover:text-white hover:bg-gray-800'
-                        }`
-                      }
+                      className={({ isActive: navIsActive }) => {
+                        const active = isActive(item.url) || navIsActive;
+                        return `flex items-center space-x-3 px-3 py-3 mx-1 rounded-xl transition-all duration-200 group ${
+                          active
+                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25 scale-[1.02]' 
+                            : 'text-slate-300 hover:text-white hover:bg-slate-800 hover:scale-[1.01]'
+                        }`;
+                      }}
                     >
-                      <item.icon className="w-5 h-5" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      {({ isActive: navIsActive }) => {
+                        const active = isActive(item.url) || navIsActive;
+                        return (
+                          <>
+                            <item.icon 
+                              className={`w-5 h-5 transition-colors ${
+                                active ? 'text-white' : 'text-slate-400 group-hover:text-white'
+                              }`} 
+                            />
+                            {!isCollapsed && (
+                              <span className={`font-medium text-sm transition-colors ${
+                                active ? 'text-white' : 'text-slate-300 group-hover:text-white'
+                              }`}>
+                                {item.title}
+                              </span>
+                            )}
+                          </>
+                        );
+                      }}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -93,6 +112,15 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Footer section for collapsed state info */}
+        {isCollapsed && (
+          <div className="mt-auto p-4 border-t border-slate-700">
+            <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
+              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+            </div>
+          </div>
+        )}
       </SidebarContent>
     </Sidebar>
   );
