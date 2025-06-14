@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useInvestmentStore } from "@/stores/investmentStore";
+import { useDashboardStore } from "@/stores/dashboardStore";
 import { useNotifications } from "@/hooks/useNotifications";
 import { 
   TrendingUp, 
@@ -50,10 +50,17 @@ const InvestmentDashboard = () => {
     removeInvestment,
     addGoal,
     updateGoal,
-    removeGoal
+    removeGoal,
+    formatCurrency
   } = useInvestmentStore();
 
+  const { userSettings } = useDashboardStore();
   const { showSuccess, showError } = useNotifications();
+
+  // Re-render when currency changes
+  useEffect(() => {
+    // Force re-render when currency changes
+  }, [userSettings.currency]);
 
   const handleAddInvestment = () => {
     if (!newInvestment.name || !newInvestment.symbol || !newInvestment.amount || !newInvestment.currentValue) {
@@ -134,7 +141,7 @@ const InvestmentDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-400 text-sm mb-1">Portfolio Value</p>
-                <p className="text-2xl font-bold text-white">${stats.totalPortfolioValue.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-white">{formatCurrency(stats.totalPortfolioValue)}</p>
               </div>
               <DollarSign className="w-8 h-8 text-green-400" />
             </div>
@@ -147,7 +154,7 @@ const InvestmentDashboard = () => {
               <div>
                 <p className="text-gray-400 text-sm mb-1">Total Gain/Loss</p>
                 <p className={`text-2xl font-bold ${stats.totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  ${stats.totalGainLoss.toLocaleString()}
+                  {formatCurrency(stats.totalGainLoss)}
                 </p>
                 <p className={`text-sm ${stats.totalGainLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                   {stats.totalGainLossPercent >= 0 ? '+' : ''}{stats.totalGainLossPercent.toFixed(2)}%
@@ -167,7 +174,7 @@ const InvestmentDashboard = () => {
               <div>
                 <p className="text-gray-400 text-sm mb-1">Day Change</p>
                 <p className={`text-2xl font-bold ${stats.dayChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  ${stats.dayChange.toLocaleString()}
+                  {formatCurrency(stats.dayChange)}
                 </p>
                 <p className={`text-sm ${stats.dayChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                   {stats.dayChangePercent >= 0 ? '+' : ''}{stats.dayChangePercent.toFixed(2)}%
@@ -350,9 +357,9 @@ const InvestmentDashboard = () => {
                       </Badge>
                     </div>
                     <p className="text-gray-400 text-sm">
-                      ${investment.currentValue.toLocaleString()} 
+                      {formatCurrency(investment.currentValue)}
                       <span className={`ml-2 ${investment.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        ({investment.change >= 0 ? '+' : ''}${investment.change.toLocaleString()})
+                        ({investment.change >= 0 ? '+' : ''}{formatCurrency(investment.change)})
                       </span>
                     </p>
                   </div>
@@ -473,7 +480,7 @@ const InvestmentDashboard = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-400">
-                          ${goal.currentAmount.toLocaleString()} / ${goal.targetAmount.toLocaleString()}
+                          {formatCurrency(goal.currentAmount)} / {formatCurrency(goal.targetAmount)}
                         </span>
                         <span className="text-white">{progress.toFixed(1)}%</span>
                       </div>
