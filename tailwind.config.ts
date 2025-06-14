@@ -77,7 +77,7 @@ export default {
 				'pixel': ['Monaco', 'Consolas', 'Courier New', 'monospace'],
 				'retro': ['Orbitron', 'monospace'],
 				'premium': ['Playfair Display', 'serif'],
-				'moxy': ['Moxy', 'serif'],
+				'mooxy': ['Mooxy', 'serif'],
 				'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif']
 			},
 			borderRadius: {

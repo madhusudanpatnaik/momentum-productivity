@@ -98,7 +98,7 @@ const Dashboard: React.FC = () => {
       <nav className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto backdrop-blur-sm">
         <div className="text-white font-bold text-2xl tracking-tight font-premium">
           <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-            Goal Quest
+            Momentum
           </span>
         </div>
         <div className="hidden md:flex items-center space-x-8">
@@ -131,7 +131,7 @@ const Dashboard: React.FC = () => {
             <span className="text-sm text-gray-200 font-medium font-sans">Gamified Productivity Platform</span>
           </div>
 
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-light text-white mb-8 leading-tight tracking-tight font-moxy">
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-light text-white mb-8 leading-tight tracking-tight font-mooxy">
             <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
               Work deeper,
             </span>
@@ -345,15 +345,15 @@ const Dashboard: React.FC = () => {
             <div>
               <h2 className="text-5xl md:text-6xl font-light text-white mb-8 leading-tight font-premium">
                 <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-                  About Goal Quest
+                  About Momentum
                 </span>
               </h2>
               <div className="space-y-6 text-gray-300 text-lg leading-relaxed font-sans">
                 <p>
-                  We believe that achieving ambitious goals shouldn't feel like a grind. That's why we created Goal Quest - a platform that transforms your biggest challenges into an engaging, game-like experience.
+                  We believe that achieving ambitious goals shouldn't feel like a grind. That's why we created Momentum - a platform that transforms your biggest challenges into an engaging, game-like experience.
                 </p>
                 <p>
-                  Founded by entrepreneurs who understand the struggle of staying motivated, Goal Quest combines proven productivity principles with gamification mechanics that actually work.
+                  Founded by entrepreneurs who understand the struggle of staying motivated, Momentum combines proven productivity principles with gamification mechanics that actually work.
                 </p>
                 <p>
                   Whether you're building a startup, learning a new skill, or pursuing personal growth, our platform helps you stay focused, track progress, and celebrate wins along the way.
@@ -406,7 +406,7 @@ const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto text-center">
           <div className="text-white font-bold text-2xl mb-4 font-premium">
             <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-              Goal Quest
+              Momentum
             </span>
           </div>
           <p className="text-gray-400 mb-8 font-sans">Transform your productivity. Achieve your dreams.</p>
