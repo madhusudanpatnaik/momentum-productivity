@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Target, Trophy, Check, Users, BarChart3, Shield } from 'lucide-react';
@@ -8,130 +9,91 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="landing-page min-h-screen relative overflow-hidden">
-      {/* Enhanced flowing curved lines pattern with more dynamic animations */}
-      <div className="absolute inset-0 opacity-15">
+      {/* Flowing curved lines pattern - inspired by uploaded images */}
+      <div className="absolute inset-0 opacity-10">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-          {[...Array(25)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <path
               key={i}
-              d={`M ${200 + i * 35} 800 Q ${400 + i * 25} ${400 - i * 15} ${600 + i * 45} 0`}
+              d={`M ${200 + i * 40} 800 Q ${400 + i * 30} ${400 - i * 20} ${600 + i * 50} 0`}
               stroke="white"
               strokeWidth="2"
               fill="none"
-              opacity={0.08 + (i * 0.03)}
-              transform={`rotate(${-8 * i} ${400 + i * 20} 400)`}
+              opacity={0.05 + (i * 0.04)}
+              transform={`rotate(${-6 * i} ${400 + i * 20} 400)`}
               className="animate-pulse"
               style={{
-                animationDelay: `${i * 0.15}s`,
-                animationDuration: `${3 + i * 0.2}s`,
-                transform: `rotate(${-8 * i}deg) translateY(${Math.sin(i * 0.5) * 20}px)`,
+                animationDelay: `${i * 0.2}s`,
+                animationDuration: `${4 + i * 0.3}s`
               }}
             />
           ))}
           
-          {[...Array(20)].map((_, i) => (
+          {[...Array(15)].map((_, i) => (
             <path
               key={`curve-${i}`}
-              d={`M ${100 + i * 50} 800 Q ${300 + i * 35} ${500 - i * 20} ${700 + i * 25} 100`}
+              d={`M ${100 + i * 60} 800 Q ${300 + i * 40} ${500 - i * 25} ${700 + i * 30} 100`}
               stroke="white"
               strokeWidth="1.5"
               fill="none"
-              opacity={0.05 + (i * 0.025)}
-              transform={`rotate(${-4 * i} ${350 + i * 25} 450)`}
+              opacity={0.03 + (i * 0.02)}
+              transform={`rotate(${-3 * i} ${350 + i * 25} 450)`}
               className="animate-pulse"
               style={{
-                animationDelay: `${i * 0.2}s`,
-                animationDuration: `${5 + i * 0.15}s`,
-                transform: `rotate(${-4 * i}deg) translateX(${Math.cos(i * 0.3) * 15}px)`,
-              }}
-            />
-          ))}
-
-          {/* Additional flowing lines for more dynamic effect */}
-          {[...Array(15)].map((_, i) => (
-            <path
-              key={`flow-${i}`}
-              d={`M ${50 + i * 70} 0 Q ${250 + i * 50} ${300 + i * 30} ${450 + i * 40} 800`}
-              stroke="rgba(255,255,255,0.1)"
-              strokeWidth="1"
-              fill="none"
-              opacity={0.06 + (i * 0.02)}
-              className="animate-pulse"
-              style={{
-                animationDelay: `${i * 0.25}s`,
-                animationDuration: `${7 + i * 0.1}s`,
-                transform: `translateY(${Math.sin(i * 0.4) * 25}px)`,
+                animationDelay: `${i * 0.3}s`,
+                animationDuration: `${6 + i * 0.2}s`
               }}
             />
           ))}
         </svg>
       </div>
 
-      {/* Enhanced stars background with more layers and movement */}
+      {/* Enhanced stars background with multiple layers */}
       <div className="absolute inset-0">
-        {[...Array(150)].map((_, i) => (
+        {[...Array(120)].map((_, i) => (
           <div
             key={i}
             className="absolute animate-pulse"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${2 + Math.random() * 3}s`,
-              transform: `translateY(${Math.sin(i * 0.1) * 10}px)`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 4}s`
             }}
           >
             <div 
-              className="w-0.5 h-0.5 bg-white rounded-full opacity-80"
+              className="w-0.5 h-0.5 bg-white rounded-full opacity-70"
               style={{
-                boxShadow: '0 0 6px rgba(255, 255, 255, 0.9)',
-                animation: `twinkle ${2 + Math.random() * 2}s ease-in-out infinite alternate`,
+                boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
               }}
             />
           </div>
         ))}
         
-        {[...Array(30)].map((_, i) => (
+        {[...Array(25)].map((_, i) => (
           <div
             key={`large-${i}`}
             className="absolute animate-pulse"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 6}s`,
-              animationDuration: `${3 + Math.random() * 2}s`,
-              transform: `translateX(${Math.cos(i * 0.2) * 15}px)`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 3}s`
             }}
           >
             <div 
-              className="w-1 h-1 bg-white rounded-full opacity-50"
+              className="w-1 h-1 bg-white rounded-full opacity-40"
               style={{
-                boxShadow: '0 0 12px rgba(255, 255, 255, 0.7)',
-                animation: `glow ${3 + Math.random() * 2}s ease-in-out infinite alternate`,
+                boxShadow: '0 0 8px rgba(255, 255, 255, 0.6)'
               }}
             />
           </div>
         ))}
-
-        {/* Floating particles for more dynamic effect */}
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={`particle-${i}`}
-            className="absolute w-2 h-2 bg-white/10 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${8 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 5}s`,
-            }}
-          />
-        ))}
       </div>
 
-      {/* Enhanced gradient overlay with more depth */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/25 via-transparent to-blue-900/25 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/5 to-transparent pointer-events-none animate-pulse" />
+      {/* Modern gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-blue-900/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
 
       {/* Premium top navigation */}
       <nav className="relative z-10 flex justify-between items-center px-6 py-8 max-w-7xl mx-auto backdrop-blur-sm">
@@ -161,60 +123,62 @@ const Dashboard: React.FC = () => {
         </div>
       </nav>
 
-      {/* Enhanced main content with reduced headline size */}
+      {/* Enhanced main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[85vh] px-6 text-center">
         <div className="max-w-6xl mx-auto">
-          {/* Premium badge with enhanced animation */}
-          <div className="inline-flex items-center px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-md mb-12 hover:bg-white/10 transition-all duration-500 hover:scale-105 animate-pulse">
-            <Zap className="w-5 h-5 text-white mr-3 animate-bounce" />
+          {/* Premium badge with modern styling */}
+          <div className="inline-flex items-center px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-md mb-12 hover:bg-white/10 transition-all duration-300">
+            <Zap className="w-5 h-5 text-white mr-3" />
             <span className="text-base text-gray-200 font-medium font-sans">Gamified Productivity Platform</span>
           </div>
 
-          {/* Reduced headline size */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white mb-12 leading-[0.9] tracking-tight font-mooxy max-w-5xl mx-auto animate-fade-in">
-            <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent block hover:scale-105 transition-transform duration-500">
+          <h1 className="text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] font-light text-white mb-12 leading-[0.9] tracking-tight font-mooxy max-w-5xl mx-auto">
+            <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent block">
               Work deeper,
             </span>
-            <span className="bg-gradient-to-r from-gray-100 via-white to-gray-200 bg-clip-text text-transparent block hover:scale-105 transition-transform duration-500 animation-delay-2000">
+            <span className="bg-gradient-to-r from-gray-100 via-white to-gray-200 bg-clip-text text-transparent block">
               sleep better
             </span>
           </h1>
 
-          <p className="text-2xl md:text-3xl text-gray-300 mb-16 max-w-4xl mx-auto leading-relaxed font-light font-sans animate-fade-in animation-delay-4000">
+          <p className="text-2xl md:text-3xl text-gray-300 mb-16 max-w-4xl mx-auto leading-relaxed font-light font-sans">
             Transform your productivity with our gamified platform. Built for founders, entrepreneurs, and anyone ready to achieve their most ambitious goals.
           </p>
 
-          <div className="flex justify-center mb-20 animate-fade-in animation-delay-4000">
+          <div className="flex justify-center mb-20">
             <Button 
               size="lg" 
               onClick={() => navigate('/app')}
-              className="bg-white text-gray-900 hover:bg-gray-100 px-16 py-8 text-2xl font-semibold rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-2xl backdrop-blur-sm font-sans animate-bounce"
-              style={{ animationDuration: '3s' }}
+              className="bg-white text-gray-900 hover:bg-gray-100 px-16 py-8 text-2xl font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-2xl backdrop-blur-sm font-sans"
             >
               Start Your Quest
-              <ArrowRight className="ml-4 h-7 w-7 animate-pulse" />
+              <ArrowRight className="ml-4 h-7 w-7" />
             </Button>
           </div>
 
-          {/* Enhanced feature highlights with staggered animations */}
+          {/* Premium feature highlights with modern design */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
-            {[
-              { icon: Target, title: "Goal Tracking", desc: "Set, track, and achieve your most important objectives with precision", delay: "0s" },
-              { icon: Trophy, title: "Achievements", desc: "Unlock rewards and celebrate milestones in your journey", delay: "0.2s" },
-              { icon: Zap, title: "Progress Boost", desc: "Accelerate your progress with smart insights and motivation", delay: "0.4s" }
-            ].map((feature, index) => (
-              <div 
-                key={index}
-                className="flex flex-col items-center p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/15 hover:border-white/30 transition-all duration-500 group hover:scale-105 animate-fade-in"
-                style={{ animationDelay: feature.delay }}
-              >
-                <div className="p-4 rounded-full bg-white/10 mb-8 group-hover:bg-white/25 transition-all duration-500 group-hover:scale-110 animate-pulse">
-                  <feature.icon className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-semibold text-white mb-4 font-premium">{feature.title}</h3>
-                <p className="text-gray-400 text-center text-lg leading-relaxed font-sans">{feature.desc}</p>
+            <div className="flex flex-col items-center p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
+              <div className="p-4 rounded-full bg-white/10 mb-8 group-hover:bg-white/20 transition-all duration-300">
+                <Target className="w-10 h-10 text-white" />
               </div>
-            ))}
+              <h3 className="text-2xl font-semibold text-white mb-4 font-premium">Goal Tracking</h3>
+              <p className="text-gray-400 text-center text-lg leading-relaxed font-sans">Set, track, and achieve your most important objectives with precision</p>
+            </div>
+            <div className="flex flex-col items-center p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
+              <div className="p-4 rounded-full bg-white/10 mb-8 group-hover:bg-white/20 transition-all duration-300">
+                <Trophy className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-semibold text-white mb-4 font-premium">Achievements</h3>
+              <p className="text-gray-400 text-center text-lg leading-relaxed font-sans">Unlock rewards and celebrate milestones in your journey</p>
+            </div>
+            <div className="flex flex-col items-center p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
+              <div className="p-4 rounded-full bg-white/10 mb-8 group-hover:bg-white/20 transition-all duration-300">
+                <Zap className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-semibold text-white mb-4 font-premium">Progress Boost</h3>
+              <p className="text-gray-400 text-center text-lg leading-relaxed font-sans">Accelerate your progress with smart insights and motivation</p>
+            </div>
           </div>
         </div>
       </div>
@@ -453,25 +417,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </footer>
-
-      <style>{`
-        @keyframes twinkle {
-          0% { opacity: 0.3; transform: scale(1); }
-          100% { opacity: 1; transform: scale(1.2); }
-        }
-        
-        @keyframes glow {
-          0% { opacity: 0.2; box-shadow: 0 0 12px rgba(255, 255, 255, 0.4); }
-          100% { opacity: 0.8; box-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) translateX(0px); }
-          25% { transform: translateY(-20px) translateX(10px); }
-          50% { transform: translateY(-10px) translateX(-5px); }
-          75% { transform: translateY(-30px) translateX(15px); }
-        }
-      `}</style>
     </div>
   );
 };
