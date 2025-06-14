@@ -1,27 +1,40 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Target, Trophy, Check, Users, BarChart3, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   return (
     <div className="landing-page min-h-screen relative overflow-hidden">
-      {/* Flowing curved lines pattern - inspired by uploaded images */}
+      {/* Dynamic flowing curved lines pattern - follows cursor */}
       <div className="absolute inset-0 opacity-10">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
           {[...Array(20)].map((_, i) => (
             <path
               key={i}
-              d={`M ${200 + i * 40} 800 Q ${400 + i * 30} ${400 - i * 20} ${600 + i * 50} 0`}
+              d={`M ${200 + i * 40} 800 Q ${400 + i * 30 + mousePosition.x * 2} ${400 - i * 20 + mousePosition.y} ${600 + i * 50} 0`}
               stroke="white"
               strokeWidth="2"
               fill="none"
               opacity={0.05 + (i * 0.04)}
-              transform={`rotate(${-6 * i} ${400 + i * 20} 400)`}
-              className="animate-pulse"
+              transform={`rotate(${-6 * i + mousePosition.x * 0.1} ${400 + i * 20} 400)`}
+              className="transition-all duration-500 ease-out"
               style={{
                 animationDelay: `${i * 0.2}s`,
                 animationDuration: `${4 + i * 0.3}s`
@@ -32,33 +45,47 @@ const Dashboard: React.FC = () => {
           {[...Array(15)].map((_, i) => (
             <path
               key={`curve-${i}`}
-              d={`M ${100 + i * 60} 800 Q ${300 + i * 40} ${500 - i * 25} ${700 + i * 30} 100`}
+              d={`M ${100 + i * 60} 800 Q ${300 + i * 40 + mousePosition.x} ${500 - i * 25 + mousePosition.y * 0.5} ${700 + i * 30} 100`}
               stroke="white"
               strokeWidth="1.5"
               fill="none"
               opacity={0.03 + (i * 0.02)}
-              transform={`rotate(${-3 * i} ${350 + i * 25} 450)`}
-              className="animate-pulse"
+              transform={`rotate(${-3 * i + mousePosition.y * 0.05} ${350 + i * 25} 450)`}
+              className="transition-all duration-700 ease-out"
               style={{
                 animationDelay: `${i * 0.3}s`,
                 animationDuration: `${6 + i * 0.2}s`
               }}
             />
           ))}
+
+          {/* Additional dynamic flow lines */}
+          {[...Array(10)].map((_, i) => (
+            <path
+              key={`flow-${i}`}
+              d={`M ${mousePosition.x * 10 + i * 80} 0 Q ${mousePosition.x * 8 + 400} ${mousePosition.y * 6 + 300} ${mousePosition.x * 12 + 800} 800`}
+              stroke="white"
+              strokeWidth="1"
+              fill="none"
+              opacity={0.02 + (i * 0.01)}
+              className="transition-all duration-1000 ease-out"
+            />
+          ))}
         </svg>
       </div>
 
-      {/* Enhanced stars background with multiple layers */}
+      {/* Enhanced stars background with cursor interaction */}
       <div className="absolute inset-0">
         {[...Array(120)].map((_, i) => (
           <div
             key={i}
-            className="absolute animate-pulse"
+            className="absolute animate-pulse transition-all duration-1000"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 4}s`
+              animationDuration: `${2 + Math.random() * 4}s`,
+              transform: `translate(${mousePosition.x * 0.1}px, ${mousePosition.y * 0.1}px)`
             }}
           >
             <div 
@@ -73,12 +100,13 @@ const Dashboard: React.FC = () => {
         {[...Array(25)].map((_, i) => (
           <div
             key={`large-${i}`}
-            className="absolute animate-pulse"
+            className="absolute animate-pulse transition-all duration-1500"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 3}s`
+              animationDuration: `${3 + Math.random() * 3}s`,
+              transform: `translate(${mousePosition.x * 0.2}px, ${mousePosition.y * 0.2}px)`
             }}
           >
             <div 
@@ -91,8 +119,13 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Modern gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-blue-900/20 pointer-events-none" />
+      {/* Modern gradient overlay with cursor influence */}
+      <div 
+        className="absolute inset-0 transition-all duration-1000 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(147, 51, 234, 0.1) 0%, transparent 50%), linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%)`
+        }}
+      />
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
 
       {/* Premium top navigation */}
@@ -104,7 +137,6 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="hidden md:flex items-center space-x-10">
           <a href="#features" className="text-gray-300 hover:text-white transition-all duration-300 font-medium text-lg font-sans">Features</a>
-          <a href="#pricing" className="text-gray-300 hover:text-white transition-all duration-300 font-medium text-lg font-sans">Pricing</a>
           <a href="#about" className="text-gray-300 hover:text-white transition-all duration-300 font-medium text-lg font-sans">About</a>
         </div>
         <div className="flex items-center space-x-6">
@@ -132,7 +164,7 @@ const Dashboard: React.FC = () => {
             <span className="text-base text-gray-200 font-medium font-sans">Gamified Productivity Platform</span>
           </div>
 
-          <h1 className="text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] font-light text-white mb-12 leading-[0.9] tracking-tight font-mooxy max-w-5xl mx-auto">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white mb-12 leading-[0.9] tracking-tight font-mooxy max-w-5xl mx-auto">
             <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent block">
               Work deeper,
             </span>
@@ -142,7 +174,7 @@ const Dashboard: React.FC = () => {
           </h1>
 
           <p className="text-2xl md:text-3xl text-gray-300 mb-16 max-w-4xl mx-auto leading-relaxed font-light font-sans">
-            Transform your productivity with our gamified platform. Built for founders, entrepreneurs, and anyone ready to achieve their most ambitious goals.
+            Built for action, built for success. For founders, entrepreneurs, and anyone ready to achieve their most ambitious goals.
           </p>
 
           <div className="flex justify-center mb-20">
@@ -220,119 +252,6 @@ const Dashboard: React.FC = () => {
               </div>
               <h3 className="text-2xl font-semibold text-white mb-6 font-premium">Data Security</h3>
               <p className="text-gray-400 leading-relaxed text-lg font-sans">Your data is protected with enterprise-grade security, encrypted at rest and in transit with regular backups.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="relative z-10 py-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <h2 className="text-6xl md:text-7xl font-light text-white mb-8 leading-tight font-premium max-w-4xl mx-auto">
-              <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-                Simple Pricing
-              </span>
-            </h2>
-            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-sans">
-              Choose the plan that fits your ambition. Start free, upgrade when you're ready to level up.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-            {/* Starter Plan */}
-            <div className="p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
-              <div className="mb-10">
-                <h3 className="text-3xl font-semibold text-white mb-3 font-premium">Starter</h3>
-                <div className="text-5xl font-bold text-white mb-6 font-premium">
-                  $0<span className="text-xl font-normal text-gray-400 font-sans">/month</span>
-                </div>
-                <p className="text-gray-400 text-lg font-sans">Perfect for getting started</p>
-              </div>
-              <ul className="space-y-5 mb-10">
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Up to 3 active goals</span>
-                </li>
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Basic progress tracking</span>
-                </li>
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Mobile app access</span>
-                </li>
-              </ul>
-              <Button className="w-full bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:border-white/40 text-lg py-4 font-sans">
-                Get Started Free
-              </Button>
-            </div>
-
-            {/* Pro Plan */}
-            <div className="p-10 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 relative hover:bg-white/15 hover:border-white/30 transition-all duration-300 scale-105">
-              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
-                <span className="bg-white text-gray-900 px-6 py-3 rounded-full text-lg font-semibold font-sans">Most Popular</span>
-              </div>
-              <div className="mb-10">
-                <h3 className="text-3xl font-semibold text-white mb-3 font-premium">Pro</h3>
-                <div className="text-5xl font-bold text-white mb-6 font-premium">
-                  $15<span className="text-xl font-normal text-gray-400 font-sans">/month</span>
-                </div>
-                <p className="text-gray-400 text-lg font-sans">For serious goal achievers</p>
-              </div>
-              <ul className="space-y-5 mb-10">
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Unlimited goals & projects</span>
-                </li>
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Advanced analytics</span>
-                </li>
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Team collaboration</span>
-                </li>
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Priority support</span>
-                </li>
-              </ul>
-              <Button className="w-full bg-white text-gray-900 hover:bg-gray-100 text-lg py-4 font-sans">
-                Start Pro Trial
-              </Button>
-            </div>
-
-            {/* Enterprise Plan */}
-            <div className="p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
-              <div className="mb-10">
-                <h3 className="text-3xl font-semibold text-white mb-3 font-premium">Enterprise</h3>
-                <div className="text-5xl font-bold text-white mb-6 font-premium">
-                  $49<span className="text-xl font-normal text-gray-400 font-sans">/month</span>
-                </div>
-                <p className="text-gray-400 text-lg font-sans">For teams and organizations</p>
-              </div>
-              <ul className="space-y-5 mb-10">
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Everything in Pro</span>
-                </li>
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Advanced security</span>
-                </li>
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Custom integrations</span>
-                </li>
-                <li className="flex items-center text-gray-300">
-                  <Check className="w-6 h-6 text-green-400 mr-4" />
-                  <span className="font-sans text-lg">Dedicated support</span>
-                </li>
-              </ul>
-              <Button className="w-full bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:border-white/40 text-lg py-4 font-sans">
-                Contact Sales
-              </Button>
             </div>
           </div>
         </div>
