@@ -20,6 +20,10 @@ interface Goal {
 
 const GoalQuest: React.FC = () => {
   const navigate = useNavigate();
+  
+  // Add console log to verify component is loading
+  console.log('GoalQuest component loaded');
+  
   const [goals, setGoals] = useState<Goal[]>([
     {
       id: '1',
@@ -132,21 +136,24 @@ const GoalQuest: React.FC = () => {
   };
 
   const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'health': return 'bg-cyan-500/20 text-cyan-300 border-cyan-400/30';
-      case 'career': case 'learning': return 'bg-indigo-500/20 text-indigo-300 border-indigo-400/30';
-      case 'personal': return 'bg-violet-500/20 text-violet-300 border-violet-400/30';
-      default: return 'bg-gray-500/20 text-gray-300 border-gray-400/30';
-    }
+    const colors = {
+      health: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30',
+      career: 'bg-indigo-500/20 text-indigo-300 border-indigo-400/30', 
+      learning: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
+      personal: 'bg-violet-500/20 text-violet-300 border-violet-400/30'
+    };
+    console.log(`Category ${category} getting color:`, colors[category] || 'bg-gray-500/20 text-gray-300 border-gray-400/30');
+    return colors[category] || 'bg-gray-500/20 text-gray-300 border-gray-400/30';
   };
 
   const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'bg-rose-500/20 text-rose-300 border-rose-400/40';
-      case 'medium': return 'bg-sky-500/20 text-sky-300 border-sky-400/40';
-      case 'low': return 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40';
-      default: return 'bg-gray-500/20 text-gray-300 border-gray-400/40';
-    }
+    const colors = {
+      high: 'bg-red-500/20 text-red-300 border-red-400/40',
+      medium: 'bg-blue-500/20 text-blue-300 border-blue-400/40',
+      low: 'bg-green-500/20 text-green-300 border-green-400/40'
+    };
+    console.log(`Priority ${priority} getting color:`, colors[priority] || 'bg-gray-500/20 text-gray-300 border-gray-400/40');
+    return colors[priority] || 'bg-gray-500/20 text-gray-300 border-gray-400/40';
   };
 
   return (
@@ -275,16 +282,16 @@ const GoalQuest: React.FC = () => {
 
       {/* Main content */}
       <div className="relative z-10 max-w-7xl mx-auto p-6">
-        {/* Stats overview */}
+        {/* Stats overview with updated colors */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-blue-500/15 to-indigo-500/15">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">Current Level</p>
+                  <p className="text-gray-300 text-sm mb-1">Current Level</p>
                   <p className="text-3xl font-bold text-white">{userStats.level}</p>
                 </div>
-                <Trophy className="w-8 h-8 text-indigo-400" />
+                <Trophy className="w-8 h-8 text-blue-400" />
               </div>
               <div className="mt-4">
                 <Progress value={(userStats.xp / userStats.xpToNextLevel) * 100} className="h-2" />
@@ -295,11 +302,11 @@ const GoalQuest: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-cyan-500/10 to-blue-500/10">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-cyan-500/15 to-blue-500/15">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">Total XP</p>
+                  <p className="text-gray-300 text-sm mb-1">Total XP</p>
                   <p className="text-3xl font-bold text-white">{userStats.xp}</p>
                 </div>
                 <Zap className="w-8 h-8 text-cyan-400" />
@@ -307,11 +314,11 @@ const GoalQuest: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-emerald-500/10 to-teal-500/10">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-emerald-500/15 to-green-500/15">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">Goals Completed</p>
+                  <p className="text-gray-300 text-sm mb-1">Goals Completed</p>
                   <p className="text-3xl font-bold text-white">{userStats.totalGoalsCompleted}</p>
                 </div>
                 <CheckCircle2 className="w-8 h-8 text-emerald-400" />
@@ -319,14 +326,14 @@ const GoalQuest: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-violet-500/10 to-pink-500/10">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-purple-500/15 to-violet-500/15">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-sm mb-1">Current Streak</p>
+                  <p className="text-gray-300 text-sm mb-1">Current Streak</p>
                   <p className="text-3xl font-bold text-white">{userStats.streakDays}</p>
                 </div>
-                <Star className="w-8 h-8 text-violet-400" />
+                <Star className="w-8 h-8 text-purple-400" />
               </div>
             </CardContent>
           </Card>
@@ -412,91 +419,94 @@ const GoalQuest: React.FC = () => {
           </Card>
         )}
 
-        {/* Goals grid */}
+        {/* Goals grid with updated card colors */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {goals.map((goal) => (
-            <Card 
-              key={goal.id} 
-              className={`glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 ${
-                goal.completed 
-                  ? 'bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border-emerald-400/30' 
-                  : 'bg-gradient-to-br from-slate-500/10 to-gray-500/10'
-              }`}
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className={`text-lg ${goal.completed ? 'line-through text-gray-400' : 'text-white'}`}>
-                      {goal.title}
-                    </CardTitle>
-                    <p className="text-gray-400 text-sm mt-1">{goal.description}</p>
-                  </div>
-                  {goal.completed && (
-                    <CheckCircle2 className="w-6 h-6 text-emerald-400 animate-badge-bounce" />
-                  )}
-                </div>
-                
-                <div className="flex items-center space-x-2 mt-3">
-                  <Badge className={getCategoryColor(goal.category)}>
-                    {getCategoryIcon(goal.category)}
-                    <span className="ml-1 capitalize">{goal.category}</span>
-                  </Badge>
-                  <Badge className={getPriorityColor(goal.priority)}>
-                    <Flag className="w-3 h-3 mr-1" />
-                    {goal.priority}
-                  </Badge>
-                  {goal.dueDate && (
-                    <Badge className="bg-slate-500/20 text-slate-300 border-slate-400/40">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {new Date(goal.dueDate).toLocaleDateString()}
-                    </Badge>
-                  )}
-                </div>
-              </CardHeader>
-              
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm text-gray-400 mb-2">
-                      <span>Progress</span>
-                      <span>{goal.progress}%</span>
+          {goals.map((goal) => {
+            console.log(`Rendering goal ${goal.id} with category ${goal.category}`);
+            return (
+              <Card 
+                key={goal.id} 
+                className={`glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 ${
+                  goal.completed 
+                    ? 'bg-gradient-to-br from-emerald-500/20 to-green-500/20 border-emerald-400/40' 
+                    : 'bg-gradient-to-br from-slate-500/10 to-gray-600/15 border-slate-400/30'
+                }`}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className={`text-lg ${goal.completed ? 'line-through text-gray-400' : 'text-white'}`}>
+                        {goal.title}
+                      </CardTitle>
+                      <p className="text-gray-300 text-sm mt-1">{goal.description}</p>
                     </div>
-                    <Progress 
-                      value={goal.progress} 
-                      className="h-2"
-                    />
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border border-indigo-400/30">
-                      <Zap className="w-4 h-4 text-indigo-400" />
-                      <span className="text-sm font-semibold text-indigo-300">{goal.xpReward} XP</span>
-                    </div>
-                    
-                    {!goal.completed && (
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => updateProgress(goal.id, goal.progress + 25)}
-                          className="border-white/30 text-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
-                        >
-                          +25%
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => updateProgress(goal.id, 100)}
-                          className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 transition-all duration-300"
-                        >
-                          Complete
-                        </Button>
-                      </div>
+                    {goal.completed && (
+                      <CheckCircle2 className="w-6 h-6 text-emerald-400 animate-badge-bounce" />
                     )}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  
+                  <div className="flex items-center space-x-2 mt-3">
+                    <Badge className={getCategoryColor(goal.category)}>
+                      {getCategoryIcon(goal.category)}
+                      <span className="ml-1 capitalize">{goal.category}</span>
+                    </Badge>
+                    <Badge className={getPriorityColor(goal.priority)}>
+                      <Flag className="w-3 h-3 mr-1" />
+                      {goal.priority}
+                    </Badge>
+                    {goal.dueDate && (
+                      <Badge className="bg-slate-500/20 text-slate-300 border-slate-400/40">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        {new Date(goal.dueDate).toLocaleDateString()}
+                      </Badge>
+                    )}
+                  </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm text-gray-300 mb-2">
+                        <span>Progress</span>
+                        <span>{goal.progress}%</span>
+                      </div>
+                      <Progress 
+                        value={goal.progress} 
+                        className="h-2"
+                      />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border border-blue-400/30">
+                        <Zap className="w-4 h-4 text-blue-400" />
+                        <span className="text-sm font-semibold text-blue-300">{goal.xpReward} XP</span>
+                      </div>
+                      
+                      {!goal.completed && (
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => updateProgress(goal.id, goal.progress + 25)}
+                            className="border-white/30 text-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                          >
+                            +25%
+                          </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => updateProgress(goal.id, 100)}
+                            className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 transition-all duration-300"
+                          >
+                            Complete
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>
