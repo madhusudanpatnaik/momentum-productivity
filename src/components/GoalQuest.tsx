@@ -1,315 +1,503 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Target, Trophy, Calendar, CheckCircle, Star } from 'lucide-react';
+import { Progress } from "@/components/ui/progress";
+import { Plus, Target, Trophy, Zap, Star, Calendar, Flag, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Goal {
   id: string;
   title: string;
   description: string;
   progress: number;
-  target: number;
-  category: 'personal' | 'professional' | 'fitness' | 'learning';
-  priority: 'low' | 'medium' | 'high';
-  dueDate: string;
-  completed: boolean;
   xpReward: number;
-}
-
-interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  unlocked: boolean;
-  xpValue: number;
+  category: 'health' | 'career' | 'personal' | 'learning';
+  priority: 'low' | 'medium' | 'high';
+  dueDate?: string;
+  completed: boolean;
 }
 
 const GoalQuest: React.FC = () => {
+  const navigate = useNavigate();
   const [goals, setGoals] = useState<Goal[]>([
     {
       id: '1',
-      title: 'Complete MVP',
-      description: 'Build and launch the minimum viable product',
+      title: 'Complete Morning Workout',
+      description: 'Exercise for 30 minutes every morning',
       progress: 75,
-      target: 100,
-      category: 'professional',
+      xpReward: 50,
+      category: 'health',
       priority: 'high',
-      dueDate: '2024-07-01',
-      completed: false,
-      xpReward: 500
+      dueDate: '2024-06-20',
+      completed: false
     },
     {
       id: '2',
-      title: 'Learn TypeScript',
-      description: 'Master TypeScript fundamentals and advanced concepts',
-      progress: 60,
-      target: 100,
+      title: 'Learn React Advanced Patterns',
+      description: 'Study and implement advanced React patterns',
+      progress: 40,
+      xpReward: 100,
       category: 'learning',
       priority: 'medium',
-      dueDate: '2024-06-30',
-      completed: false,
-      xpReward: 300
+      dueDate: '2024-06-25',
+      completed: false
+    },
+    {
+      id: '3',
+      title: 'Meditate Daily',
+      description: '10 minutes of meditation each day',
+      progress: 100,
+      xpReward: 30,
+      category: 'personal',
+      priority: 'medium',
+      completed: true
     }
   ]);
 
   const [userStats, setUserStats] = useState({
-    level: 12,
-    xp: 2840,
-    xpToNext: 160,
-    totalGoals: 15,
-    completedGoals: 8,
-    streakDays: 7
+    level: 7,
+    xp: 1250,
+    xpToNextLevel: 1500,
+    totalGoalsCompleted: 23,
+    streakDays: 12
   });
 
-  const [achievements] = useState<Achievement[]>([
-    {
-      id: '1',
-      title: 'First Goal',
-      description: 'Complete your first goal',
-      icon: '🎯',
-      unlocked: true,
-      xpValue: 100
-    },
-    {
-      id: '2',
-      title: 'Streak Master',
-      description: 'Maintain a 7-day streak',
-      icon: '🔥',
-      unlocked: true,
-      xpValue: 200
-    },
-    {
-      id: '3',
-      title: 'Level Up',
-      description: 'Reach level 10',
-      icon: '⚡',
-      unlocked: true,
-      xpValue: 300
-    }
-  ]);
-
-  const [newGoalTitle, setNewGoalTitle] = useState('');
   const [showAddGoal, setShowAddGoal] = useState(false);
+  const [newGoal, setNewGoal] = useState({
+    title: '',
+    description: '',
+    category: 'personal' as const,
+    priority: 'medium' as const,
+    dueDate: ''
+  });
 
   const addGoal = () => {
-    if (newGoalTitle.trim()) {
-      const newGoal: Goal = {
+    if (newGoal.title && newGoal.description) {
+      const goal: Goal = {
         id: Date.now().toString(),
-        title: newGoalTitle,
-        description: 'New goal description',
+        title: newGoal.title,
+        description: newGoal.description,
         progress: 0,
-        target: 100,
+        xpReward: Math.floor(Math.random() * 80) + 20,
+        category: newGoal.category,
+        priority: newGoal.priority,
+        dueDate: newGoal.dueDate || undefined,
+        completed: false
+      };
+
+      setGoals([...goals, goal]);
+      setNewGoal({
+        title: '',
+        description: '',
         category: 'personal',
         priority: 'medium',
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        completed: false,
-        xpReward: 250
-      };
-      setGoals([...goals, newGoal]);
-      setNewGoalTitle('');
+        dueDate: ''
+      });
       setShowAddGoal(false);
     }
   };
 
-  const updateGoalProgress = (goalId: string, newProgress: number) => {
+  const updateProgress = (goalId: string, newProgress: number) => {
     setGoals(goals.map(goal => {
       if (goal.id === goalId) {
-        const completed = newProgress >= goal.target;
-        if (completed && !goal.completed) {
+        const wasCompleted = goal.completed;
+        const isNowCompleted = newProgress >= 100;
+        
+        if (!wasCompleted && isNowCompleted) {
           setUserStats(prev => ({
             ...prev,
             xp: prev.xp + goal.xpReward,
-            completedGoals: prev.completedGoals + 1
+            totalGoalsCompleted: prev.totalGoalsCompleted + 1
           }));
         }
-        return { ...goal, progress: newProgress, completed };
+        
+        return {
+          ...goal,
+          progress: Math.min(newProgress, 100),
+          completed: newProgress >= 100
+        };
       }
       return goal;
     }));
   };
 
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'health': return <Target className="w-4 h-4" />;
+      case 'career': case 'learning': return <Zap className="w-4 h-4" />;
+      case 'personal': return <Star className="w-4 h-4" />;
+      default: return <Target className="w-4 h-4" />;
+    }
+  };
+
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'professional': return 'bg-blue-500';
-      case 'personal': return 'bg-green-500';
-      case 'fitness': return 'bg-red-500';
-      case 'learning': return 'bg-purple-500';
-      default: return 'bg-gray-500';
+      case 'health': return 'bg-green-500/20 text-green-300 border-green-500/30';
+      case 'career': case 'learning': return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+      case 'personal': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'high': return 'bg-red-500/20 text-red-300 border-red-500/40';
+      case 'medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40';
+      case 'low': return 'bg-green-500/20 text-green-300 border-green-500/40';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/40';
     }
   };
 
   return (
-    <div className="min-h-screen p-6 space-y-6">
-      {/* Header with user stats */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        <Card className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Star className="w-6 h-6" />
-              Level {userStats.level} Quester
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span>XP Progress</span>
-                  <span>{userStats.xp} / {userStats.xp + userStats.xpToNext}</span>
-                </div>
-                <Progress value={(userStats.xp / (userStats.xp + userStats.xpToNext)) * 100} className="h-3" />
-              </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-2xl font-bold">{userStats.completedGoals}</div>
-                  <div className="text-sm opacity-90">Goals Done</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">{userStats.streakDays}</div>
-                  <div className="text-sm opacity-90">Day Streak</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">{userStats.totalGoals}</div>
-                  <div className="text-sm opacity-90">Total Goals</div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="lg:w-80">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="w-5 h-5" />
-              Recent Achievements
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {achievements.filter(a => a.unlocked).slice(0, 3).map(achievement => (
-                <div key={achievement.id} className="flex items-center gap-3 p-2 rounded-lg bg-yellow-50">
-                  <span className="text-2xl">{achievement.icon}</span>
-                  <div className="flex-1">
-                    <div className="font-medium text-sm">{achievement.title}</div>
-                    <div className="text-xs text-gray-500">{achievement.description}</div>
-                  </div>
-                  <Badge variant="secondary" className="text-xs">+{achievement.xpValue} XP</Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+    <div className="landing-page min-h-screen relative overflow-hidden">
+      {/* Same background effects as landing page */}
+      <div className="absolute inset-0 opacity-10">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+          {[...Array(20)].map((_, i) => (
+            <path
+              key={i}
+              d={`M ${200 + i * 40} 800 Q ${400 + i * 30} ${400 - i * 20} ${600 + i * 50} 0`}
+              stroke="white"
+              strokeWidth="2"
+              fill="none"
+              opacity={0.05 + (i * 0.04)}
+              transform={`rotate(${-6 * i} ${400 + i * 20} 400)`}
+              className="animate-pulse"
+              style={{
+                animationDelay: `${i * 0.2}s`,
+                animationDuration: `${4 + i * 0.3}s`
+              }}
+            />
+          ))}
+          
+          {[...Array(15)].map((_, i) => (
+            <path
+              key={`curve-${i}`}
+              d={`M ${100 + i * 60} 800 Q ${300 + i * 40} ${500 - i * 25} ${700 + i * 30} 100`}
+              stroke="white"
+              strokeWidth="1.5"
+              fill="none"
+              opacity={0.03 + (i * 0.02)}
+              transform={`rotate(${-3 * i} ${350 + i * 25} 450)`}
+              className="animate-pulse"
+              style={{
+                animationDelay: `${i * 0.3}s`,
+                animationDuration: `${6 + i * 0.2}s`
+              }}
+            />
+          ))}
+        </svg>
       </div>
 
-      {/* Goals section */}
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5" />
-              Active Quests
-            </CardTitle>
-            <Button onClick={() => setShowAddGoal(true)} className="flex items-center gap-2">
-              <Plus className="w-4 h-4" />
-              New Quest
-            </Button>
+      {/* Enhanced stars background */}
+      <div className="absolute inset-0">
+        {[...Array(120)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 4}s`
+            }}
+          >
+            <div 
+              className="w-0.5 h-0.5 bg-white rounded-full opacity-70"
+              style={{
+                boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
+              }}
+            />
           </div>
-        </CardHeader>
-        <CardContent>
-          {showAddGoal && (
-            <div className="mb-6 p-4 border rounded-lg bg-gray-50">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Enter your new goal..."
-                  value={newGoalTitle}
-                  onChange={(e) => setNewGoalTitle(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && addGoal()}
-                />
-                <Button onClick={addGoal}>Add</Button>
-                <Button variant="outline" onClick={() => setShowAddGoal(false)}>Cancel</Button>
-              </div>
-            </div>
-          )}
+        ))}
+        
+        {[...Array(25)].map((_, i) => (
+          <div
+            key={`large-${i}`}
+            className="absolute animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 3}s`
+            }}
+          >
+            <div 
+              className="w-1 h-1 bg-white rounded-full opacity-40"
+              style={{
+                boxShadow: '0 0 8px rgba(255, 255, 255, 0.6)'
+              }}
+            />
+          </div>
+        ))}
+      </div>
 
-          <div className="grid gap-4">
-            {goals.map(goal => (
-              <div key={goal.id} className="p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                <div className="flex items-start justify-between mb-3">
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-blue-900/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+
+      {/* Premium navigation */}
+      <nav className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto backdrop-blur-sm">
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-300"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Home
+          </Button>
+          <div className="text-white font-bold text-2xl tracking-tight">
+            <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+              Goal Quest
+            </span>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4 text-white">
+            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+              <Trophy className="w-4 h-4 text-yellow-400" />
+              <span className="font-semibold">Level {userStats.level}</span>
+            </div>
+            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+              <Zap className="w-4 h-4 text-blue-400" />
+              <span className="font-semibold">{userStats.xp} XP</span>
+            </div>
+            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+              <Star className="w-4 h-4 text-purple-400" />
+              <span className="font-semibold">{userStats.streakDays} day streak</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main content */}
+      <div className="relative z-10 max-w-7xl mx-auto p-6">
+        {/* Stats overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">Current Level</p>
+                  <p className="text-3xl font-bold text-white">{userStats.level}</p>
+                </div>
+                <Trophy className="w-8 h-8 text-yellow-400" />
+              </div>
+              <div className="mt-4">
+                <Progress value={(userStats.xp / userStats.xpToNextLevel) * 100} className="h-2" />
+                <p className="text-xs text-gray-400 mt-1">
+                  {userStats.xpToNextLevel - userStats.xp} XP to next level
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">Total XP</p>
+                  <p className="text-3xl font-bold text-white">{userStats.xp}</p>
+                </div>
+                <Zap className="w-8 h-8 text-blue-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">Goals Completed</p>
+                  <p className="text-3xl font-bold text-white">{userStats.totalGoalsCompleted}</p>
+                </div>
+                <CheckCircle2 className="w-8 h-8 text-green-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">Current Streak</p>
+                  <p className="text-3xl font-bold text-white">{userStats.streakDays}</p>
+                </div>
+                <Star className="w-8 h-8 text-purple-400" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Goals section */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold text-white">Your Goals</h2>
+          <Button 
+            onClick={() => setShowAddGoal(true)}
+            className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add New Goal
+          </Button>
+        </div>
+
+        {/* Add goal form */}
+        {showAddGoal && (
+          <Card className="glass-morphism border-white/20 mb-6 animate-fade-in">
+            <CardHeader>
+              <CardTitle className="text-white">Create New Goal</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Goal title"
+                  value={newGoal.title}
+                  onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
+                  className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 focus:outline-none transition-all duration-300"
+                />
+              </div>
+              <div>
+                <textarea
+                  placeholder="Goal description"
+                  value={newGoal.description}
+                  onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
+                  className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 focus:outline-none transition-all duration-300 resize-none"
+                  rows={3}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <select
+                  value={newGoal.category}
+                  onChange={(e) => setNewGoal({...newGoal, category: e.target.value as any})}
+                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
+                >
+                  <option value="personal">Personal</option>
+                  <option value="health">Health</option>
+                  <option value="career">Career</option>
+                  <option value="learning">Learning</option>
+                </select>
+                <select
+                  value={newGoal.priority}
+                  onChange={(e) => setNewGoal({...newGoal, priority: e.target.value as any})}
+                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
+                >
+                  <option value="low">Low Priority</option>
+                  <option value="medium">Medium Priority</option>
+                  <option value="high">High Priority</option>
+                </select>
+                <input
+                  type="date"
+                  value={newGoal.dueDate}
+                  onChange={(e) => setNewGoal({...newGoal, dueDate: e.target.value})}
+                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
+                />
+              </div>
+              <div className="flex space-x-3">
+                <Button onClick={addGoal} className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300">
+                  Create Goal
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowAddGoal(false)}
+                  className="border-white/30 text-white hover:bg-white/10 transition-all duration-300"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Goals grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {goals.map((goal) => (
+            <Card 
+              key={goal.id} 
+              className={`glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 ${
+                goal.completed ? 'bg-green-500/10' : ''
+              }`}
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold">{goal.title}</h3>
-                      <Badge className={getCategoryColor(goal.category)} variant="secondary">
-                        {goal.category}
-                      </Badge>
-                      <Badge className={getPriorityColor(goal.priority)} variant="outline">
-                        {goal.priority}
-                      </Badge>
-                    </div>
-                    <p className="text-gray-600 text-sm mb-2">{goal.description}</p>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        Due: {goal.dueDate}
-                      </span>
-                      <span>Reward: {goal.xpReward} XP</span>
-                    </div>
+                    <CardTitle className={`text-lg ${goal.completed ? 'line-through text-gray-400' : 'text-white'}`}>
+                      {goal.title}
+                    </CardTitle>
+                    <p className="text-gray-400 text-sm mt-1">{goal.description}</p>
                   </div>
                   {goal.completed && (
-                    <CheckCircle className="w-6 h-6 text-green-500 ml-2" />
+                    <CheckCircle2 className="w-6 h-6 text-green-400 animate-badge-bounce" />
                   )}
                 </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Progress</span>
-                    <span>{goal.progress}% / {goal.target}%</span>
+                
+                <div className="flex items-center space-x-2 mt-3">
+                  <Badge className={getCategoryColor(goal.category)}>
+                    {getCategoryIcon(goal.category)}
+                    <span className="ml-1 capitalize">{goal.category}</span>
+                  </Badge>
+                  <Badge className={getPriorityColor(goal.priority)}>
+                    <Flag className="w-3 h-3 mr-1" />
+                    {goal.priority}
+                  </Badge>
+                  {goal.dueDate && (
+                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/40">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      {new Date(goal.dueDate).toLocaleDateString()}
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm text-gray-400 mb-2">
+                      <span>Progress</span>
+                      <span>{goal.progress}%</span>
+                    </div>
+                    <Progress 
+                      value={goal.progress} 
+                      className="h-2"
+                    />
                   </div>
-                  <Progress value={goal.progress} className="h-2" />
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateGoalProgress(goal.id, Math.min(goal.progress + 10, goal.target))}
-                      disabled={goal.completed}
-                    >
-                      +10%
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateGoalProgress(goal.id, Math.min(goal.progress + 25, goal.target))}
-                      disabled={goal.completed}
-                    >
-                      +25%
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateGoalProgress(goal.id, goal.target)}
-                      disabled={goal.completed}
-                    >
-                      Complete
-                    </Button>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 text-yellow-400">
+                      <Zap className="w-4 h-4" />
+                      <span className="text-sm font-semibold">{goal.xpReward} XP</span>
+                    </div>
+                    
+                    {!goal.completed && (
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => updateProgress(goal.id, goal.progress + 25)}
+                          className="border-white/30 text-white hover:bg-white/10 transition-all duration-300"
+                        >
+                          +25%
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => updateProgress(goal.id, 100)}
+                          className="bg-green-600 hover:bg-green-700 transition-all duration-300"
+                        >
+                          Complete
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
