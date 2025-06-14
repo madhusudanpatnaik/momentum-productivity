@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 
@@ -51,6 +52,7 @@ interface DashboardStats {
   completionRate: number;
   dailyTarget: number;
   monthlyTarget: number;
+  lastUpdated: string;
 }
 
 interface WorkflowMetrics {
@@ -58,6 +60,7 @@ interface WorkflowMetrics {
   completedTasks: number;
   efficiency: number;
   avgCompletionTime: number;
+  lastCalculated: string;
 }
 
 interface DashboardState {
@@ -81,13 +84,14 @@ interface DashboardState {
   completeTask: () => void;
   exportData: () => void;
   
-  // Workflow Actions
+  // Real-time Actions
   calculateStats: () => void;
   updateWorkflowMetrics: () => void;
   addActivityLog: (activity: Omit<ActivityLog, 'id' | 'timestamp'>) => void;
   getRecentActivity: () => ActivityLog[];
   getGoalsByCategory: (category: Goal['category']) => Goal[];
   updateDashboardMetrics: () => void;
+  refreshRealTimeData: () => void;
 }
 
 export const useDashboardStore = create<DashboardState>()(
@@ -105,7 +109,8 @@ export const useDashboardStore = create<DashboardState>()(
       averageOrderValue: 17.35,
       completionRate: 100,
       dailyTarget: 50,
-      monthlyTarget: 1500
+      monthlyTarget: 1500,
+      lastUpdated: new Date().toISOString()
     },
     
     customers: [
@@ -193,10 +198,9 @@ export const useDashboardStore = create<DashboardState>()(
     workflowMetrics: {
       totalTasks: 45,
       completedTasks: 38,
-      pendingTasks: 7,
-      overdueTasks: 2,
       efficiency: 84.4,
-      avgCompletionTime: 2.5
+      avgCompletionTime: 2.5,
+      lastCalculated: new Date().toISOString()
     },
 
     revenueData: [
@@ -232,7 +236,7 @@ export const useDashboardStore = create<DashboardState>()(
     ],
 
     addCustomer: (customerData: Omit<Customer, 'id'>) => {
-      const { addActivityLog, updateDashboardMetrics } = get();
+      const { addActivityLog, refreshRealTimeData } = get();
       const newCustomer: Customer = {
         ...customerData,
         id: (Date.now()).toString(),
@@ -251,11 +255,12 @@ export const useDashboardStore = create<DashboardState>()(
         entityType: 'customer'
       });
 
-      updateDashboardMetrics();
+      // Trigger real-time refresh
+      refreshRealTimeData();
     },
 
     updateCustomer: (id: string, updates: Partial<Customer>) => {
-      const { customers, addActivityLog } = get();
+      const { customers, addActivityLog, refreshRealTimeData } = get();
       const customer = customers.find(c => c.id === id);
 
       set((state) => ({
@@ -272,10 +277,12 @@ export const useDashboardStore = create<DashboardState>()(
           entityType: 'customer'
         });
       }
+
+      refreshRealTimeData();
     },
 
     updateGoalProgress: (id: string, progress: number) => {
-      const { goals, addActivityLog, updateDashboardMetrics } = get();
+      const { goals, addActivityLog, refreshRealTimeData } = get();
       const goal = goals.find(g => g.id === id);
       const oldProgress = goal?.progress || 0;
 
@@ -300,11 +307,11 @@ export const useDashboardStore = create<DashboardState>()(
         }
       }
 
-      updateDashboardMetrics();
+      refreshRealTimeData();
     },
 
     addGoal: (goalData: Omit<Goal, 'id'>) => {
-      const { addActivityLog, updateDashboardMetrics } = get();
+      const { addActivityLog, refreshRealTimeData } = get();
       const newGoal: Goal = {
         ...goalData,
         id: Date.now().toString(),
@@ -322,11 +329,11 @@ export const useDashboardStore = create<DashboardState>()(
         entityType: 'goal'
       });
 
-      updateDashboardMetrics();
+      refreshRealTimeData();
     },
 
     updateGoal: (id: string, updates: Partial<Goal>) => {
-      const { goals, addActivityLog } = get();
+      const { goals, addActivityLog, refreshRealTimeData } = get();
       const goal = goals.find(g => g.id === id);
 
       set((state) => ({
@@ -343,10 +350,12 @@ export const useDashboardStore = create<DashboardState>()(
           entityType: 'goal'
         });
       }
+
+      refreshRealTimeData();
     },
 
     completeGoal: (id: string) => {
-      const { goals, addActivityLog, completeTask } = get();
+      const { goals, addActivityLog, completeTask, refreshRealTimeData } = get();
       const goal = goals.find(g => g.id === id);
 
       if (goal && goal.status !== 'Completed') {
@@ -364,6 +373,7 @@ export const useDashboardStore = create<DashboardState>()(
         });
 
         completeTask();
+        refreshRealTimeData();
       }
     },
 
@@ -372,7 +382,8 @@ export const useDashboardStore = create<DashboardState>()(
         stats: {
           ...state.stats,
           completedToday: state.stats.completedToday + 1,
-          totalXP: state.stats.totalXP + 50
+          totalXP: state.stats.totalXP + 50,
+          lastUpdated: new Date().toISOString()
         }
       }));
     },
@@ -423,7 +434,8 @@ export const useDashboardStore = create<DashboardState>()(
           deliveredOrders,
           averageOrderValue,
           completionRate,
-          activeGoals
+          activeGoals,
+          lastUpdated: new Date().toISOString()
         }
       }));
     },
@@ -440,7 +452,8 @@ export const useDashboardStore = create<DashboardState>()(
           ...state.workflowMetrics,
           totalTasks,
           completedTasks,
-          efficiency
+          efficiency,
+          lastCalculated: new Date().toISOString()
         }
       }));
     },
@@ -448,6 +461,35 @@ export const useDashboardStore = create<DashboardState>()(
     updateDashboardMetrics: () => {
       get().calculateStats();
       get().updateWorkflowMetrics();
+    },
+
+    refreshRealTimeData: () => {
+      const { calculateStats, updateWorkflowMetrics } = get();
+      
+      // Update all metrics immediately
+      calculateStats();
+      updateWorkflowMetrics();
+      
+      // Update performance data with current metrics
+      const currentStats = get().stats;
+      const currentMetrics = get().workflowMetrics;
+      
+      set((state) => ({
+        performanceData: [
+          ...state.performanceData.slice(1),
+          {
+            date: new Date().toISOString().split('T')[0],
+            efficiency: currentMetrics.efficiency,
+            completed: currentStats.completedToday,
+            target: currentStats.dailyTarget
+          }
+        ],
+        goalProgress: [
+          { name: 'Completed', value: Math.round(currentStats.completionRate), color: '#10b981' },
+          { name: 'In Progress', value: Math.round((currentStats.activeGoals / (currentStats.activeGoals + 1)) * 100), color: '#3b82f6' },
+          { name: 'Remaining', value: Math.round(100 - currentStats.completionRate), color: '#6b7280' }
+        ]
+      }));
     },
 
     addActivityLog: (activity: Omit<ActivityLog, 'id' | 'timestamp'>) => {
@@ -474,17 +516,27 @@ export const useDashboardStore = create<DashboardState>()(
   }))
 );
 
-// Subscribe to store changes to automatically update metrics
+// Enhanced real-time subscriptions
 useDashboardStore.subscribe(
   (state) => state.customers,
-  () => {
-    useDashboardStore.getState().updateDashboardMetrics();
+  (customers) => {
+    console.log('Real-time update: Customers changed', customers.length);
+    useDashboardStore.getState().refreshRealTimeData();
   }
 );
 
 useDashboardStore.subscribe(
   (state) => state.goals,
-  () => {
-    useDashboardStore.getState().updateDashboardMetrics();
+  (goals) => {
+    console.log('Real-time update: Goals changed', goals.length);
+    useDashboardStore.getState().refreshRealTimeData();
   }
 );
+
+// Auto-refresh every 30 seconds to ensure data freshness
+if (typeof window !== 'undefined') {
+  setInterval(() => {
+    useDashboardStore.getState().refreshRealTimeData();
+    console.log('Auto-refresh: Dashboard data updated');
+  }, 30000);
+}

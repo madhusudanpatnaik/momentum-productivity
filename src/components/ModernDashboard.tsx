@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,8 @@ import {
   Truck,
   ShoppingCart,
   Timer,
-  Workflow
+  Workflow,
+  RefreshCw
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 
@@ -43,6 +45,7 @@ export function ModernDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddCustomer, setShowAddCustomer] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState<'revenue' | 'customers' | 'efficiency'>('revenue');
+  const [lastRefresh, setLastRefresh] = useState(new Date());
   const [newCustomer, setNewCustomer] = useState({
     name: '',
     address: '',
@@ -67,19 +70,28 @@ export function ModernDashboard() {
     exportData,
     getRecentActivity,
     getGoalsByCategory,
-    updateDashboardMetrics
+    updateDashboardMetrics,
+    refreshRealTimeData
   } = useDashboardStore();
 
   const { showSuccess, showError } = useNotifications();
 
-  // Auto-refresh dashboard metrics
+  // Enhanced real-time refresh system
   useEffect(() => {
     const interval = setInterval(() => {
-      updateDashboardMetrics();
-    }, 30000); // Update every 30 seconds
+      refreshRealTimeData();
+      setLastRefresh(new Date());
+      console.log('Dashboard refreshed with real-time data');
+    }, 10000); // Refresh every 10 seconds for better real-time feel
 
     return () => clearInterval(interval);
-  }, [updateDashboardMetrics]);
+  }, [refreshRealTimeData]);
+
+  // Initial data load
+  useEffect(() => {
+    refreshRealTimeData();
+    setLastRefresh(new Date());
+  }, []);
 
   const workflowStats = [
     { 
@@ -88,7 +100,8 @@ export function ModernDashboard() {
       icon: Workflow, 
       color: "text-blue-400",
       trend: workflowMetrics.efficiency > 80 ? "up" : "down",
-      description: `${workflowMetrics.completedTasks}/${workflowMetrics.totalTasks} tasks completed`
+      description: `${workflowMetrics.completedTasks}/${workflowMetrics.totalTasks} tasks completed`,
+      lastUpdated: workflowMetrics.lastCalculated
     },
     { 
       title: "Total Orders", 
@@ -96,7 +109,8 @@ export function ModernDashboard() {
       icon: ShoppingCart, 
       color: "text-green-400",
       trend: "up",
-      description: "All completed orders"
+      description: "All completed orders",
+      lastUpdated: stats.lastUpdated
     },
     { 
       title: "Revenue", 
@@ -104,7 +118,8 @@ export function ModernDashboard() {
       icon: DollarSign, 
       color: "text-purple-400",
       trend: "up",
-      description: "Total earnings"
+      description: "Total earnings",
+      lastUpdated: stats.lastUpdated
     },
     { 
       title: "Completion Rate", 
@@ -112,7 +127,8 @@ export function ModernDashboard() {
       icon: CheckCircle, 
       color: "text-green-400",
       trend: "up",
-      description: "Overall success rate"
+      description: "Overall success rate",
+      lastUpdated: stats.lastUpdated
     }
   ];
 
@@ -144,7 +160,8 @@ export function ModernDashboard() {
     addCustomer(customerData);
     setNewCustomer({ name: '', address: '', price: '', payment: 'Online', priority: 'Medium' });
     setShowAddCustomer(false);
-    showSuccess('Customer added successfully! Dashboard metrics updated.');
+    showSuccess('Customer added successfully! Dashboard metrics updated in real-time.');
+    setLastRefresh(new Date());
   };
 
   const handleGoalProgressUpdate = (goalId: string, increment: number) => {
@@ -156,9 +173,16 @@ export function ModernDashboard() {
       if (newProgress === 100 && goal.progress < 100) {
         showSuccess('Goal completed! Dashboard updated with new achievements. 🎉');
       } else {
-        showSuccess(`Progress updated to ${newProgress}%. Workflow metrics refreshed.`);
+        showSuccess(`Progress updated to ${newProgress}%. Real-time metrics refreshed.`);
       }
+      setLastRefresh(new Date());
     }
+  };
+
+  const handleManualRefresh = () => {
+    refreshRealTimeData();
+    setLastRefresh(new Date());
+    showSuccess('Dashboard refreshed with latest data!');
   };
 
   const getPriorityColor = (priority: string) => {
@@ -172,43 +196,58 @@ export function ModernDashboard() {
 
   return (
     <div className="p-6 space-y-6 relative">
-      {/* Header with Real-time Indicators */}
+      {/* Enhanced Header with Real-time Status */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
             Dashboard
             <div className="ml-3 flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-400">Live</span>
+              <span className="text-sm text-gray-400">Live Data</span>
             </div>
           </h1>
           <p className="text-gray-400">Real-time workflow management and analytics</p>
         </div>
         <div className="flex items-center space-x-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleManualRefresh}
+            className="border-gray-700 text-gray-300 hover:bg-gray-800"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
           <div className="text-right">
             <p className="text-sm text-gray-400">Last Updated</p>
-            <p className="text-white font-medium">{new Date().toLocaleTimeString()}</p>
+            <p className="text-white font-medium">{lastRefresh.toLocaleTimeString()}</p>
           </div>
           <ModeToggle currentMode={currentMode} onModeChange={setCurrentMode} />
         </div>
       </div>
 
-      {/* Workflow Stats */}
+      {/* Enhanced Workflow Stats with Real-time Indicators */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {workflowStats.map((stat, index) => (
-          <Card key={index} className="bg-gray-900 border-gray-800 hover:bg-gray-800/50 transition-all duration-300 cursor-pointer">
+          <Card key={index} className="bg-gray-900 border-gray-800 hover:bg-gray-800/50 transition-all duration-300 cursor-pointer relative">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm mb-1">{stat.title}</p>
                   <p className="text-2xl font-bold text-white">{stat.value}</p>
                   <p className="text-xs text-gray-500 mt-1">{stat.description}</p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Updated: {new Date(stat.lastUpdated).toLocaleTimeString()}
+                  </p>
                 </div>
                 <div className="flex flex-col items-end">
                   <stat.icon className={`w-8 h-8 ${stat.color}`} />
                   {stat.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-400 mt-1" />}
                   {stat.trend === 'down' && <TrendingUp className="w-4 h-4 text-red-400 mt-1 rotate-180" />}
                 </div>
+              </div>
+              <div className="absolute top-2 right-2">
+                <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
               </div>
             </CardContent>
           </Card>
@@ -220,7 +259,10 @@ export function ModernDashboard() {
         {realtimeMetrics.map((metric, index) => (
           <Card key={index} className="bg-gray-900 border-gray-800">
             <CardHeader className="pb-2">
-              <CardTitle className="text-white text-sm">{metric.title}</CardTitle>
+              <CardTitle className="text-white text-sm flex items-center justify-between">
+                {metric.title}
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -249,9 +291,12 @@ export function ModernDashboard() {
         {/* Performance Analytics */}
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <BarChart3 className="w-5 h-5 mr-2" />
-              Performance Analytics
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <BarChart3 className="w-5 h-5 mr-2" />
+                Performance Analytics
+              </div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -280,9 +325,12 @@ export function ModernDashboard() {
         {/* Workflow Distribution */}
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <PieChart className="w-5 h-5 mr-2" />
-              Workflow Distribution
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <PieChart className="w-5 h-5 mr-2" />
+                Workflow Distribution
+              </div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -330,15 +378,18 @@ export function ModernDashboard() {
         {/* Real-time Activity Feed */}
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <Activity className="w-5 h-5 mr-2" />
-              Live Activity Feed
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <Activity className="w-5 h-5 mr-2" />
+                Live Activity Feed
+              </div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 max-h-80 overflow-y-auto">
             {getRecentActivity().map((activity) => (
               <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-800 rounded-lg">
-                <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
                 <div className="flex-1">
                   <p className="text-white text-sm">{activity.description}</p>
                   <p className="text-gray-400 text-xs mt-1">
@@ -356,9 +407,12 @@ export function ModernDashboard() {
         {/* Interactive Goals with Progress */}
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <Target className="w-5 h-5 mr-2" />
-              Active Goals
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <Target className="w-5 h-5 mr-2" />
+                Active Goals
+              </div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -401,6 +455,7 @@ export function ModernDashboard() {
             <CardTitle className="text-white text-xl flex items-center">
               <Users className="w-5 h-5 mr-2" />
               Customer Management
+              <div className="ml-3 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             </CardTitle>
             <div className="flex items-center space-x-3">
               <Button 
