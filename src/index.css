@@ -57,7 +57,13 @@
   }
 
   body {
-    @apply text-white;
+    @apply text-foreground;
+    background: rgb(var(--background));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Landing page specific background */
+  .landing-page {
     background: linear-gradient(135deg, 
       rgb(16, 16, 36) 0%,     /* Very dark purple-blue at edges */
       rgb(31, 28, 66) 25%,    /* Dark purple-blue */
@@ -67,7 +73,7 @@
     );
     background-attachment: fixed;
     min-height: 100vh;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: white;
   }
 
   h1, h2, h3, h4, h5, h6 {
