@@ -133,4 +133,13 @@
       0 0 10px rgba(255,255,0,0.5),
       inset 0 0 5px rgba(255,255,0,0.2);
   }
+
+  /* Animation delay utilities */
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
 }
