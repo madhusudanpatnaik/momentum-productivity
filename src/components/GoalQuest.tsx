@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -134,19 +133,19 @@ const GoalQuest: React.FC = () => {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'health': return 'bg-gradient-to-r from-green-400/20 to-blue-500/20 text-green-300 border-green-400/30';
-      case 'career': case 'learning': return 'bg-gradient-to-r from-purple-400/20 to-pink-500/20 text-blue-300 border-blue-400/30';
-      case 'personal': return 'bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-purple-300 border-purple-400/30';
-      default: return 'bg-gradient-to-r from-gray-500/20 to-gray-400/20 text-gray-300 border-gray-400/30';
+      case 'health': return 'bg-green-500/20 text-green-300 border-green-400/30';
+      case 'career': case 'learning': return 'bg-blue-500/20 text-blue-300 border-blue-400/30';
+      case 'personal': return 'bg-purple-500/20 text-purple-300 border-purple-400/30';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-400/30';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-gradient-to-r from-red-500/20 to-orange-500/20 text-red-300 border-red-400/40';
-      case 'medium': return 'bg-gradient-to-r from-yellow-400/20 to-orange-400/20 text-yellow-300 border-yellow-400/40';
-      case 'low': return 'bg-gradient-to-r from-green-400/20 to-teal-400/20 text-green-300 border-green-400/40';
-      default: return 'bg-gradient-to-r from-gray-500/20 to-gray-400/20 text-gray-300 border-gray-400/40';
+      case 'high': return 'bg-red-500/20 text-red-300 border-red-400/40';
+      case 'medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-400/40';
+      case 'low': return 'bg-green-500/20 text-green-300 border-green-400/40';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-400/40';
     }
   };
 
@@ -447,7 +446,7 @@ const GoalQuest: React.FC = () => {
                     {goal.priority}
                   </Badge>
                   {goal.dueDate && (
-                    <Badge className="bg-gradient-to-r from-orange-400/20 to-red-400/20 text-orange-300 border-orange-400/40">
+                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-400/40">
                       <Calendar className="w-3 h-3 mr-1" />
                       {new Date(goal.dueDate).toLocaleDateString()}
                     </Badge>
@@ -469,7 +468,7 @@ const GoalQuest: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border border-yellow-400/30">
+                    <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/30">
                       <Zap className="w-4 h-4 text-yellow-400" />
                       <span className="text-sm font-semibold text-yellow-300">{goal.xpReward} XP</span>
                     </div>
