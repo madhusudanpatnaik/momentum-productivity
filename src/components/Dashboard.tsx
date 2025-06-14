@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Target, Trophy, Check, Users, BarChart3, Shield } from 'lucide-react';
@@ -455,7 +454,7 @@ const Dashboard: React.FC = () => {
         </div>
       </footer>
 
-      <style jsx>{`
+      <style>{`
         @keyframes twinkle {
           0% { opacity: 0.3; transform: scale(1); }
           100% { opacity: 1; transform: scale(1.2); }
