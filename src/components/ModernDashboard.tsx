@@ -8,7 +8,7 @@ import {
   Package, 
   TrendingUp, 
   DollarSign,
-  Export,
+  Download,
   Filter,
   MoreHorizontal
 } from 'lucide-react';
@@ -105,7 +105,7 @@ export function ModernDashboard() {
             <CardTitle className="text-white text-xl">Customers</CardTitle>
             <div className="flex items-center space-x-3">
               <Button variant="outline" size="sm" className="border-gray-700 text-gray-300 hover:bg-gray-800">
-                <Export className="w-4 h-4 mr-2" />
+                <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
               <Button variant="outline" size="sm" className="border-gray-700 text-gray-300 hover:bg-gray-800">

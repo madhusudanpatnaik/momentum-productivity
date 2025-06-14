@@ -36,9 +36,10 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
+  const isCollapsed = state === "collapsed";
 
   const isActive = (path: string) => {
     if (path === "/app") {
@@ -48,14 +49,14 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className={`${collapsed ? "w-16" : "w-64"} bg-gray-900 border-gray-800`}>
+    <Sidebar className={`${isCollapsed ? "w-16" : "w-64"} bg-gray-900 border-gray-800`}>
       <SidebarContent className="bg-gray-900">
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
               <span className="text-gray-900 font-bold text-sm">S</span>
             </div>
-            {!collapsed && (
+            {!isCollapsed && (
               <span className="text-white font-semibold text-lg">Synthezy</span>
             )}
           </div>
@@ -79,7 +80,7 @@ export function AppSidebar() {
                       }
                     >
                       <item.icon className="w-5 h-5" />
-                      {!collapsed && <span>{item.title}</span>}
+                      {!isCollapsed && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
