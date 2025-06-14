@@ -131,7 +131,7 @@ const Dashboard: React.FC = () => {
             <span className="text-sm text-gray-200 font-medium font-sans">Gamified Productivity Platform</span>
           </div>
 
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-light text-white mb-8 leading-tight tracking-tight font-premium">
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-light text-white mb-8 leading-tight tracking-tight font-moxy">
             <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
               Work deeper,
             </span>
