@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Plus, Target, Trophy, Zap, Star, Calendar, Flag, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Plus, Target, Trophy, Zap, Star, Calendar, Flag, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface Goal {
@@ -151,352 +150,224 @@ const GoalQuest: React.FC = () => {
   };
 
   return (
-    <div className="landing-page min-h-screen relative overflow-hidden">
-      {/* Same background effects as landing page */}
-      <div className="absolute inset-0 opacity-10">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-          {[...Array(20)].map((_, i) => (
-            <path
-              key={i}
-              d={`M ${200 + i * 40} 800 Q ${400 + i * 30} ${400 - i * 20} ${600 + i * 50} 0`}
-              stroke="white"
-              strokeWidth="2"
-              fill="none"
-              opacity={0.05 + (i * 0.04)}
-              transform={`rotate(${-6 * i} ${400 + i * 20} 400)`}
-              className="animate-pulse"
-              style={{
-                animationDelay: `${i * 0.2}s`,
-                animationDuration: `${4 + i * 0.3}s`
-              }}
-            />
-          ))}
-          
-          {[...Array(15)].map((_, i) => (
-            <path
-              key={`curve-${i}`}
-              d={`M ${100 + i * 60} 800 Q ${300 + i * 40} ${500 - i * 25} ${700 + i * 30} 100`}
-              stroke="white"
-              strokeWidth="1.5"
-              fill="none"
-              opacity={0.03 + (i * 0.02)}
-              transform={`rotate(${-3 * i} ${350 + i * 25} 450)`}
-              className="animate-pulse"
-              style={{
-                animationDelay: `${i * 0.3}s`,
-                animationDuration: `${6 + i * 0.2}s`
-              }}
-            />
-          ))}
-        </svg>
+    <div className="p-6 space-y-6 bg-gray-950 min-h-full">
+      {/* Stats overview */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="bg-gray-900 border-gray-800">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Current Level</p>
+                <p className="text-3xl font-bold text-white">{userStats.level}</p>
+              </div>
+              <Trophy className="w-8 h-8 text-yellow-400" />
+            </div>
+            <div className="mt-4">
+              <Progress value={(userStats.xp / userStats.xpToNextLevel) * 100} className="h-2" />
+              <p className="text-xs text-gray-400 mt-1">
+                {userStats.xpToNextLevel - userStats.xp} XP to next level
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-900 border-gray-800">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Total XP</p>
+                <p className="text-3xl font-bold text-white">{userStats.xp}</p>
+              </div>
+              <Zap className="w-8 h-8 text-blue-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-900 border-gray-800">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Goals Completed</p>
+                <p className="text-3xl font-bold text-white">{userStats.totalGoalsCompleted}</p>
+              </div>
+              <CheckCircle2 className="w-8 h-8 text-green-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gray-900 border-gray-800">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Current Streak</p>
+                <p className="text-3xl font-bold text-white">{userStats.streakDays}</p>
+              </div>
+              <Star className="w-8 h-8 text-purple-400" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Enhanced stars background */}
-      <div className="absolute inset-0">
-        {[...Array(120)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 4}s`
-            }}
-          >
-            <div 
-              className="w-0.5 h-0.5 bg-white rounded-full opacity-70"
-              style={{
-                boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
-              }}
-            />
-          </div>
-        ))}
-        
-        {[...Array(25)].map((_, i) => (
-          <div
-            key={`large-${i}`}
-            className="absolute animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 3}s`
-            }}
-          >
-            <div 
-              className="w-1 h-1 bg-white rounded-full opacity-40"
-              style={{
-                boxShadow: '0 0 8px rgba(255, 255, 255, 0.6)'
-              }}
-            />
-          </div>
-        ))}
+      {/* Goals section */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-bold text-white">Your Goals</h2>
+        <Button 
+          onClick={() => setShowAddGoal(true)}
+          className="bg-white text-gray-900 hover:bg-gray-100"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add New Goal
+        </Button>
       </div>
 
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-blue-900/20 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+      {/* Add goal form */}
+      {showAddGoal && (
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white">Create New Goal</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <input
+                type="text"
+                placeholder="Goal title"
+                value={newGoal.title}
+                onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-gray-600 focus:outline-none"
+              />
+            </div>
+            <div>
+              <textarea
+                placeholder="Goal description"
+                value={newGoal.description}
+                onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
+                className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:border-gray-600 focus:outline-none resize-none"
+                rows={3}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <select
+                value={newGoal.category}
+                onChange={(e) => setNewGoal({...newGoal, category: e.target.value as any})}
+                className="p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:border-gray-600 focus:outline-none"
+              >
+                <option value="personal">Personal</option>
+                <option value="health">Health</option>
+                <option value="career">Career</option>
+                <option value="learning">Learning</option>
+              </select>
+              <select
+                value={newGoal.priority}
+                onChange={(e) => setNewGoal({...newGoal, priority: e.target.value as any})}
+                className="p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:border-gray-600 focus:outline-none"
+              >
+                <option value="low">Low Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+              </select>
+              <input
+                type="date"
+                value={newGoal.dueDate}
+                onChange={(e) => setNewGoal({...newGoal, dueDate: e.target.value})}
+                className="p-3 rounded-lg bg-gray-800 border border-gray-700 text-white focus:border-gray-600 focus:outline-none"
+              />
+            </div>
+            <div className="flex space-x-3">
+              <Button onClick={addGoal} className="bg-white text-gray-900 hover:bg-gray-100">
+                Create Goal
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowAddGoal(false)}
+                className="border-gray-700 text-gray-300 hover:bg-gray-800"
+              >
+                Cancel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Premium navigation */}
-      <nav className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto backdrop-blur-sm">
-        <div className="flex items-center space-x-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/')}
-            className="text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-300"
+      {/* Goals grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {goals.map((goal) => (
+          <Card 
+            key={goal.id} 
+            className={`bg-gray-900 border-gray-800 hover:border-gray-700 transition-all duration-300 ${
+              goal.completed ? 'bg-green-500/10' : ''
+            }`}
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
-          </Button>
-          <div className="text-white font-bold text-2xl tracking-tight">
-            <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-              Goal Quest
-            </span>
-          </div>
-        </div>
-        
-        <div className="flex items-center space-x-6">
-          <div className="flex items-center space-x-4 text-white">
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-              <Trophy className="w-4 h-4 text-yellow-400" />
-              <span className="font-semibold">Level {userStats.level}</span>
-            </div>
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-              <Zap className="w-4 h-4 text-blue-400" />
-              <span className="font-semibold">{userStats.xp} XP</span>
-            </div>
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-              <Star className="w-4 h-4 text-purple-400" />
-              <span className="font-semibold">{userStats.streakDays} day streak</span>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main content */}
-      <div className="relative z-10 max-w-7xl mx-auto p-6">
-        {/* Stats overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Current Level</p>
-                  <p className="text-3xl font-bold text-white">{userStats.level}</p>
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className={`text-lg ${goal.completed ? 'line-through text-gray-400' : 'text-white'}`}>
+                    {goal.title}
+                  </CardTitle>
+                  <p className="text-gray-400 text-sm mt-1">{goal.description}</p>
                 </div>
-                <Trophy className="w-8 h-8 text-yellow-400" />
+                {goal.completed && (
+                  <CheckCircle2 className="w-6 h-6 text-green-400" />
+                )}
               </div>
-              <div className="mt-4">
-                <Progress value={(userStats.xp / userStats.xpToNextLevel) * 100} className="h-2" />
-                <p className="text-xs text-gray-400 mt-1">
-                  {userStats.xpToNextLevel - userStats.xp} XP to next level
-                </p>
+              
+              <div className="flex items-center space-x-2 mt-3">
+                <Badge className={getCategoryColor(goal.category)}>
+                  {getCategoryIcon(goal.category)}
+                  <span className="ml-1 capitalize">{goal.category}</span>
+                </Badge>
+                <Badge className={getPriorityColor(goal.priority)}>
+                  <Flag className="w-3 h-3 mr-1" />
+                  {goal.priority}
+                </Badge>
+                {goal.dueDate && (
+                  <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/40">
+                    <Calendar className="w-3 h-3 mr-1" />
+                    {new Date(goal.dueDate).toLocaleDateString()}
+                  </Badge>
+                )}
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Total XP</p>
-                  <p className="text-3xl font-bold text-white">{userStats.xp}</p>
-                </div>
-                <Zap className="w-8 h-8 text-blue-400" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Goals Completed</p>
-                  <p className="text-3xl font-bold text-white">{userStats.totalGoalsCompleted}</p>
-                </div>
-                <CheckCircle2 className="w-8 h-8 text-green-400" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Current Streak</p>
-                  <p className="text-3xl font-bold text-white">{userStats.streakDays}</p>
-                </div>
-                <Star className="w-8 h-8 text-purple-400" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Goals section */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-white">Your Goals</h2>
-          <Button 
-            onClick={() => setShowAddGoal(true)}
-            className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Goal
-          </Button>
-        </div>
-
-        {/* Add goal form */}
-        {showAddGoal && (
-          <Card className="glass-morphism border-white/20 mb-6 animate-fade-in">
-            <CardHeader>
-              <CardTitle className="text-white">Create New Goal</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Goal title"
-                  value={newGoal.title}
-                  onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
-                  className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 focus:outline-none transition-all duration-300"
-                />
-              </div>
-              <div>
-                <textarea
-                  placeholder="Goal description"
-                  value={newGoal.description}
-                  onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
-                  className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 focus:outline-none transition-all duration-300 resize-none"
-                  rows={3}
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <select
-                  value={newGoal.category}
-                  onChange={(e) => setNewGoal({...newGoal, category: e.target.value as any})}
-                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
-                >
-                  <option value="personal">Personal</option>
-                  <option value="health">Health</option>
-                  <option value="career">Career</option>
-                  <option value="learning">Learning</option>
-                </select>
-                <select
-                  value={newGoal.priority}
-                  onChange={(e) => setNewGoal({...newGoal, priority: e.target.value as any})}
-                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
-                >
-                  <option value="low">Low Priority</option>
-                  <option value="medium">Medium Priority</option>
-                  <option value="high">High Priority</option>
-                </select>
-                <input
-                  type="date"
-                  value={newGoal.dueDate}
-                  onChange={(e) => setNewGoal({...newGoal, dueDate: e.target.value})}
-                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
-                />
-              </div>
-              <div className="flex space-x-3">
-                <Button onClick={addGoal} className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300">
-                  Create Goal
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowAddGoal(false)}
-                  className="border-white/30 text-white hover:bg-white/10 transition-all duration-300"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Goals grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {goals.map((goal) => (
-            <Card 
-              key={goal.id} 
-              className={`glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 ${
-                goal.completed ? 'bg-green-500/10' : ''
-              }`}
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className={`text-lg ${goal.completed ? 'line-through text-gray-400' : 'text-white'}`}>
-                      {goal.title}
-                    </CardTitle>
-                    <p className="text-gray-400 text-sm mt-1">{goal.description}</p>
+            
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm text-gray-400 mb-2">
+                    <span>Progress</span>
+                    <span>{goal.progress}%</span>
                   </div>
-                  {goal.completed && (
-                    <CheckCircle2 className="w-6 h-6 text-green-400 animate-badge-bounce" />
-                  )}
+                  <Progress value={goal.progress} className="h-2" />
                 </div>
                 
-                <div className="flex items-center space-x-2 mt-3">
-                  <Badge className={getCategoryColor(goal.category)}>
-                    {getCategoryIcon(goal.category)}
-                    <span className="ml-1 capitalize">{goal.category}</span>
-                  </Badge>
-                  <Badge className={getPriorityColor(goal.priority)}>
-                    <Flag className="w-3 h-3 mr-1" />
-                    {goal.priority}
-                  </Badge>
-                  {goal.dueDate && (
-                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/40">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {new Date(goal.dueDate).toLocaleDateString()}
-                    </Badge>
-                  )}
-                </div>
-              </CardHeader>
-              
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm text-gray-400 mb-2">
-                      <span>Progress</span>
-                      <span>{goal.progress}%</span>
-                    </div>
-                    <Progress 
-                      value={goal.progress} 
-                      className="h-2"
-                    />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2 text-yellow-400">
+                    <Zap className="w-4 h-4" />
+                    <span className="text-sm font-semibold">{goal.xpReward} XP</span>
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-yellow-400">
-                      <Zap className="w-4 h-4" />
-                      <span className="text-sm font-semibold">{goal.xpReward} XP</span>
+                  {!goal.completed && (
+                    <div className="flex space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateProgress(goal.id, goal.progress + 25)}
+                        className="border-gray-700 text-white hover:bg-gray-800"
+                      >
+                        +25%
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => updateProgress(goal.id, 100)}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        Complete
+                      </Button>
                     </div>
-                    
-                    {!goal.completed && (
-                      <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => updateProgress(goal.id, goal.progress + 25)}
-                          className="border-white/30 text-white hover:bg-white/10 transition-all duration-300"
-                        >
-                          +25%
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => updateProgress(goal.id, 100)}
-                          className="bg-green-600 hover:bg-green-700 transition-all duration-300"
-                        >
-                          Complete
-                        </Button>
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   );
