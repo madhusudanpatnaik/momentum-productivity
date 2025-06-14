@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
@@ -14,9 +13,6 @@ import {
 } from "@/components/ui/sidebar";
 import { 
   LayoutDashboard, 
-  Users, 
-  Package, 
-  Truck, 
   BarChart3, 
   Settings,
   Target,
@@ -32,9 +28,6 @@ const menuItems = [
   { title: "Projects", url: "/app/projects", icon: FolderKanban },
   { title: "Investment", url: "/app/investment", icon: DollarSign },
   { title: "Personal", url: "/app/personal", icon: Heart },
-  { title: "Customers", url: "/app/customers", icon: Users },
-  { title: "Orders", url: "/app/orders", icon: Package },
-  { title: "Delivery", url: "/app/delivery", icon: Truck },
   { title: "Analytics", url: "/app/analytics", icon: BarChart3 },
   { title: "Calendar", url: "/app/calendar", icon: Calendar },
   { title: "Settings", url: "/app/settings", icon: Settings },
