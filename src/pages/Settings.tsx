@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppLayout } from "@/components/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,9 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { User, Bell, Shield, Palette, Globe, Database } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { useDashboardStore } from "@/stores/dashboardStore";
 
 const Settings = () => {
   const { toast } = useToast();
+  const { userSettings, updateUserSettings } = useDashboardStore();
+  
   const [profile, setProfile] = useState({
     name: 'John Doe',
     email: 'john@example.com',
@@ -38,6 +40,16 @@ const Settings = () => {
     autoSave: true
   });
 
+  // Sync preferences with dashboard store
+  useEffect(() => {
+    setPreferences(prev => ({
+      ...prev,
+      currency: userSettings.currency,
+      dateFormat: userSettings.dateFormat,
+      theme: userSettings.theme
+    }));
+  }, [userSettings]);
+
   const handleSaveProfile = () => {
     toast({
       title: "Profile Updated",
@@ -53,9 +65,17 @@ const Settings = () => {
   };
 
   const handleSavePreferences = () => {
+    // Update dashboard store with new settings
+    updateUserSettings({
+      currency: preferences.currency as 'USD' | 'EUR' | 'GBP' | 'JPY' | 'INR',
+      dateFormat: preferences.dateFormat,
+      theme: preferences.theme,
+      language: profile.language
+    });
+
     toast({
       title: "Preferences Updated",
-      description: "Your application preferences have been saved.",
+      description: "Your application preferences have been saved and applied across the system.",
     });
   };
 
@@ -68,7 +88,7 @@ const Settings = () => {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-800">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-800">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="w-4 h-4" />
               Profile
@@ -80,10 +100,6 @@ const Settings = () => {
             <TabsTrigger value="preferences" className="flex items-center gap-2">
               <Palette className="w-4 h-4" />
               Preferences
-            </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              Security
             </TabsTrigger>
           </TabsList>
 
@@ -316,66 +332,6 @@ const Settings = () => {
                 <Button onClick={handleSavePreferences} className="bg-blue-600 hover:bg-blue-700 text-white">
                   Save Preferences
                 </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="security">
-            <Card className="bg-gray-900 border-gray-800">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  Security Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-white mb-4">Password</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="current-password" className="text-gray-300">Current Password</Label>
-                      <Input
-                        id="current-password"
-                        type="password"
-                        className="bg-gray-800 border-gray-700 text-white mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="new-password" className="text-gray-300">New Password</Label>
-                      <Input
-                        id="new-password"
-                        type="password"
-                        className="bg-gray-800 border-gray-700 text-white mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="confirm-password" className="text-gray-300">Confirm New Password</Label>
-                      <Input
-                        id="confirm-password"
-                        type="password"
-                        className="bg-gray-800 border-gray-700 text-white mt-1"
-                      />
-                    </div>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                      Update Password
-                    </Button>
-                  </div>
-                </div>
-
-                <Separator className="bg-gray-700" />
-
-                <div>
-                  <h3 className="text-lg font-medium text-white mb-4">Data & Privacy</h3>
-                  <div className="space-y-4">
-                    <Button variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-800">
-                      <Database className="w-4 h-4 mr-2" />
-                      Export My Data
-                    </Button>
-                    <Button variant="destructive" className="bg-red-600 hover:bg-red-700">
-                      Delete Account
-                    </Button>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>

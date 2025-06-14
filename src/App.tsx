@@ -10,7 +10,6 @@ import GoalsPage from "./pages/Goals";
 import ProjectsPage from "./pages/Projects";
 import InvestmentPage from "./pages/Investment";
 import PersonalPage from "./pages/Personal";
-import AnalyticsPage from "./pages/Analytics";
 import CalendarPage from "./pages/Calendar";
 import SettingsPage from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -30,7 +29,6 @@ const App = () => (
           <Route path="/app/projects" element={<ProjectsPage />} />
           <Route path="/app/investment" element={<InvestmentPage />} />
           <Route path="/app/personal" element={<PersonalPage />} />
-          <Route path="/app/analytics" element={<AnalyticsPage />} />
           <Route path="/app/calendar" element={<CalendarPage />} />
           <Route path="/app/settings" element={<SettingsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

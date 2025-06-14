@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 
@@ -63,12 +62,20 @@ interface WorkflowMetrics {
   lastCalculated: string;
 }
 
+interface UserSettings {
+  currency: 'USD' | 'EUR' | 'GBP' | 'JPY' | 'INR';
+  dateFormat: string;
+  theme: string;
+  language: string;
+}
+
 interface DashboardState {
   stats: DashboardStats;
   customers: Customer[];
   goals: Goal[];
   activityLog: ActivityLog[];
   workflowMetrics: WorkflowMetrics;
+  userSettings: UserSettings;
   revenueData: Array<{ month: string; revenue: number; target: number }>;
   taskData: Array<{ day: string; completed: number; total: number }>;
   goalProgress: Array<{ name: string; value: number; color: string }>;
@@ -83,6 +90,8 @@ interface DashboardState {
   completeGoal: (id: string) => void;
   completeTask: () => void;
   exportData: () => void;
+  updateUserSettings: (settings: Partial<UserSettings>) => void;
+  formatCurrency: (amount: number) => string;
   
   // Real-time Actions
   calculateStats: () => void;
@@ -93,6 +102,17 @@ interface DashboardState {
   updateDashboardMetrics: () => void;
   refreshRealTimeData: () => void;
 }
+
+const getCurrencySymbol = (currency: string) => {
+  const symbols = {
+    USD: '$',
+    EUR: '€',
+    GBP: '£',
+    JPY: '¥',
+    INR: '₹'
+  };
+  return symbols[currency as keyof typeof symbols] || '$';
+};
 
 export const useDashboardStore = create<DashboardState>()(
   subscribeWithSelector((set, get) => ({
@@ -111,6 +131,13 @@ export const useDashboardStore = create<DashboardState>()(
       dailyTarget: 50,
       monthlyTarget: 1500,
       lastUpdated: new Date().toISOString()
+    },
+
+    userSettings: {
+      currency: 'USD',
+      dateFormat: 'MM/DD/YYYY',
+      theme: 'dark',
+      language: 'English'
     },
     
     customers: [
@@ -235,6 +262,43 @@ export const useDashboardStore = create<DashboardState>()(
       { date: '2024-10-04', efficiency: 88, completed: 13, target: 15 }
     ],
 
+    formatCurrency: (amount: number) => {
+      const { userSettings } = get();
+      const symbol = getCurrencySymbol(userSettings.currency);
+      
+      // Convert USD amounts to selected currency (simplified conversion)
+      const conversionRates = {
+        USD: 1,
+        EUR: 0.85,
+        GBP: 0.73,
+        JPY: 110,
+        INR: 83
+      };
+      
+      const rate = conversionRates[userSettings.currency as keyof typeof conversionRates] || 1;
+      const convertedAmount = amount * rate;
+      
+      return `${symbol}${convertedAmount.toFixed(2)}`;
+    },
+
+    updateUserSettings: (settings: Partial<UserSettings>) => {
+      set((state) => ({
+        userSettings: { ...state.userSettings, ...settings }
+      }));
+
+      // Update all price displays when currency changes
+      if (settings.currency) {
+        const { customers, formatCurrency } = get();
+        const updatedCustomers = customers.map(customer => ({
+          ...customer,
+          price: formatCurrency(parseFloat(customer.price.replace(/[^0-9.]/g, '')))
+        }));
+
+        set({ customers: updatedCustomers });
+        get().refreshRealTimeData();
+      }
+    },
+
     addCustomer: (customerData: Omit<Customer, 'id'>) => {
       const { addActivityLog, refreshRealTimeData } = get();
       const newCustomer: Customer = {
@@ -255,7 +319,6 @@ export const useDashboardStore = create<DashboardState>()(
         entityType: 'customer'
       });
 
-      // Trigger real-time refresh
       refreshRealTimeData();
     },
 
@@ -396,6 +459,7 @@ export const useDashboardStore = create<DashboardState>()(
         goals: data.goals,
         activityLog: data.activityLog,
         workflowMetrics: data.workflowMetrics,
+        userSettings: data.userSettings,
         exportDate: new Date().toISOString()
       };
       
@@ -411,18 +475,18 @@ export const useDashboardStore = create<DashboardState>()(
     },
 
     calculateStats: () => {
-      const { customers, goals } = get();
+      const { customers, goals, formatCurrency } = get();
       
       const deliveredOrders = customers.length;
       const totalOrders = customers.length;
       
       const totalRevenue = customers.reduce((sum, customer) => {
-        const price = parseFloat(customer.price.replace('$', ''));
+        const price = parseFloat(customer.price.replace(/[^0-9.]/g, ''));
         return sum + (isNaN(price) ? 0 : price);
       }, 0);
       
       const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-      const completionRate = 100; // All orders are delivered
+      const completionRate = 100;
       const activeGoals = goals.filter(g => g.status === 'Active').length;
 
       set((state) => ({
@@ -466,11 +530,9 @@ export const useDashboardStore = create<DashboardState>()(
     refreshRealTimeData: () => {
       const { calculateStats, updateWorkflowMetrics } = get();
       
-      // Update all metrics immediately
       calculateStats();
       updateWorkflowMetrics();
       
-      // Update performance data with current metrics
       const currentStats = get().stats;
       const currentMetrics = get().workflowMetrics;
       
@@ -500,7 +562,7 @@ export const useDashboardStore = create<DashboardState>()(
       };
 
       set((state) => ({
-        activityLog: [newActivity, ...state.activityLog.slice(0, 49)] // Keep last 50 activities
+        activityLog: [newActivity, ...state.activityLog.slice(0, 49)]
       }));
     },
 
