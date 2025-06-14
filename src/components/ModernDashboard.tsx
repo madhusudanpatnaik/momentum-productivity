@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,7 +40,6 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, R
 
 export function ModernDashboard() {
   const [currentMode, setCurrentMode] = useState<'work' | 'personal'>('work');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddCustomer, setShowAddCustomer] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState<'revenue' | 'customers' | 'efficiency'>('revenue');
@@ -63,14 +61,12 @@ export function ModernDashboard() {
     workflowMetrics,
     activityLog,
     performanceData,
-    updateCustomerStatus,
     addCustomer,
     updateGoalProgress,
     completeTask,
     exportData,
     getRecentActivity,
     getGoalsByCategory,
-    getCustomersByStatus,
     updateDashboardMetrics
   } = useDashboardStore();
 
@@ -95,27 +91,27 @@ export function ModernDashboard() {
       description: `${workflowMetrics.completedTasks}/${workflowMetrics.totalTasks} tasks completed`
     },
     { 
-      title: "Pending Orders", 
-      value: stats.pendingOrders.toString(), 
-      icon: Clock, 
-      color: "text-orange-400",
-      trend: stats.pendingOrders < 20 ? "up" : "down",
-      description: "Awaiting processing"
+      title: "Total Orders", 
+      value: stats.orders.toString(), 
+      icon: ShoppingCart, 
+      color: "text-green-400",
+      trend: "up",
+      description: "All completed orders"
     },
     { 
-      title: "On Delivery", 
-      value: stats.onDeliveryOrders.toString(), 
-      icon: Truck, 
+      title: "Revenue", 
+      value: `$${stats.revenue.toFixed(2)}`, 
+      icon: DollarSign, 
       color: "text-purple-400",
-      trend: "neutral",
-      description: "In transit"
+      trend: "up",
+      description: "Total earnings"
     },
     { 
       title: "Completion Rate", 
       value: `${stats.completionRate.toFixed(1)}%`, 
       icon: CheckCircle, 
       color: "text-green-400",
-      trend: stats.completionRate > 85 ? "up" : "down",
+      trend: "up",
       description: "Overall success rate"
     }
   ];
@@ -129,8 +125,7 @@ export function ModernDashboard() {
   const filteredCustomers = customers.filter(customer => {
     const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.address.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || customer.status === filterStatus;
-    return matchesSearch && matchesFilter;
+    return matchesSearch;
   });
 
   const handleAddCustomer = () => {
@@ -143,18 +138,13 @@ export function ModernDashboard() {
       ...newCustomer,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       date: new Date().toLocaleDateString('en-GB').replace(/\//g, '/'),
-      status: 'Pending' as const
+      status: 'Delivered' as const
     };
 
     addCustomer(customerData);
     setNewCustomer({ name: '', address: '', price: '', payment: 'Online', priority: 'Medium' });
     setShowAddCustomer(false);
     showSuccess('Customer added successfully! Dashboard metrics updated.');
-  };
-
-  const handleStatusChange = (customerId: string, newStatus: 'Pending' | 'On Delivery' | 'Delivered') => {
-    updateCustomerStatus(customerId, newStatus);
-    showSuccess(`Status updated to ${newStatus}. Metrics automatically refreshed.`);
   };
 
   const handleGoalProgressUpdate = (goalId: string, increment: number) => {
@@ -176,15 +166,6 @@ export function ModernDashboard() {
       case 'High': return 'bg-red-500/20 text-red-300 border-red-500/40';
       case 'Medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40';
       case 'Low': return 'bg-green-500/20 text-green-300 border-green-500/40';
-      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/40';
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Pending': return 'bg-orange-500/20 text-orange-300 border-orange-500/40';
-      case 'On Delivery': return 'bg-blue-500/20 text-blue-300 border-blue-500/40';
-      case 'Delivered': return 'bg-green-500/20 text-green-300 border-green-500/40';
       default: return 'bg-gray-500/20 text-gray-300 border-gray-500/40';
     }
   };
@@ -419,7 +400,7 @@ export function ModernDashboard() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-white text-xl flex items-center">
               <Users className="w-5 h-5 mr-2" />
-              Customer Workflow Management
+              Customer Management
             </CardTitle>
             <div className="flex items-center space-x-3">
               <Button 
@@ -443,7 +424,7 @@ export function ModernDashboard() {
             </div>
           </div>
           
-          {/* Enhanced Search and Filter */}
+          {/* Enhanced Search */}
           <div className="flex items-center space-x-4 mt-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -454,18 +435,6 @@ export function ModernDashboard() {
                 className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
               />
             </div>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-40 bg-gray-800 border-gray-700 text-white">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-700">
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-                <SelectItem value="On Delivery">On Delivery</SelectItem>
-                <SelectItem value="Delivered">Delivered</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </CardHeader>
         
@@ -540,7 +509,6 @@ export function ModernDashboard() {
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">PAYMENT</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">STATUS</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">ASSIGNED</th>
-                  <th className="text-left py-3 px-4 text-gray-400 font-medium">ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -557,30 +525,11 @@ export function ModernDashboard() {
                     <td className="py-4 px-4 text-white font-medium">{customer.price}</td>
                     <td className="py-4 px-4 text-gray-300">{customer.payment}</td>
                     <td className="py-4 px-4">
-                      <Select
-                        value={customer.status}
-                        onValueChange={(value: 'Pending' | 'On Delivery' | 'Delivered') => 
-                          handleStatusChange(customer.id, value)
-                        }
-                      >
-                        <SelectTrigger className="w-32 h-8 text-xs bg-transparent border-none p-0">
-                          <Badge className={getStatusColor(customer.status)}>
-                            {customer.status}
-                          </Badge>
-                        </SelectTrigger>
-                        <SelectContent className="bg-gray-800 border-gray-700">
-                          <SelectItem value="Pending">Pending</SelectItem>
-                          <SelectItem value="On Delivery">On Delivery</SelectItem>
-                          <SelectItem value="Delivered">Delivered</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Badge className="bg-green-500/20 text-green-300 border-green-500/40">
+                        Delivered
+                      </Badge>
                     </td>
                     <td className="py-4 px-4 text-gray-300 text-sm">{customer.assignedTo || 'Unassigned'}</td>
-                    <td className="py-4 px-4">
-                      <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
-                    </td>
                   </tr>
                 ))}
               </tbody>

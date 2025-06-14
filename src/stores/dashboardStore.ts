@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 
@@ -10,10 +9,9 @@ interface Customer {
   price: string;
   payment: string;
   date: string;
-  status: 'Pending' | 'On Delivery' | 'Delivered';
+  status: 'Delivered';
   priority: 'Low' | 'Medium' | 'High';
   assignedTo?: string;
-  estimatedDelivery?: string;
   notes?: string;
 }
 
@@ -31,7 +29,7 @@ interface Goal {
 interface ActivityLog {
   id: string;
   timestamp: string;
-  type: 'customer_added' | 'customer_updated' | 'goal_updated' | 'goal_completed' | 'status_changed';
+  type: 'customer_added' | 'customer_updated' | 'goal_updated' | 'goal_completed';
   description: string;
   entityId: string;
   entityType: 'customer' | 'goal';
@@ -48,9 +46,7 @@ interface DashboardStats {
   orders: number;
   revenue: number;
   growth: number;
-  pendingOrders: number;
   deliveredOrders: number;
-  onDeliveryOrders: number;
   averageOrderValue: number;
   completionRate: number;
   dailyTarget: number;
@@ -60,8 +56,6 @@ interface DashboardStats {
 interface WorkflowMetrics {
   totalTasks: number;
   completedTasks: number;
-  pendingTasks: number;
-  overdueTasks: number;
   efficiency: number;
   avgCompletionTime: number;
 }
@@ -78,7 +72,6 @@ interface DashboardState {
   performanceData: Array<{ date: string; efficiency: number; completed: number; target: number }>;
   
   // Core Actions
-  updateCustomerStatus: (id: string, status: Customer['status']) => void;
   addCustomer: (customer: Omit<Customer, 'id'>) => void;
   updateCustomer: (id: string, updates: Partial<Customer>) => void;
   updateGoalProgress: (id: string, progress: number) => void;
@@ -94,7 +87,6 @@ interface DashboardState {
   addActivityLog: (activity: Omit<ActivityLog, 'id' | 'timestamp'>) => void;
   getRecentActivity: () => ActivityLog[];
   getGoalsByCategory: (category: Goal['category']) => Goal[];
-  getCustomersByStatus: (status: Customer['status']) => Customer[];
   updateDashboardMetrics: () => void;
 }
 
@@ -109,11 +101,9 @@ export const useDashboardStore = create<DashboardState>()(
       orders: 1429,
       revenue: 24780,
       growth: 18.2,
-      pendingOrders: 15,
-      deliveredOrders: 1380,
-      onDeliveryOrders: 34,
+      deliveredOrders: 1429,
       averageOrderValue: 17.35,
-      completionRate: 86.5,
+      completionRate: 100,
       dailyTarget: 50,
       monthlyTarget: 1500
     },
@@ -127,10 +117,9 @@ export const useDashboardStore = create<DashboardState>()(
         price: "$15.50",
         payment: "Online",
         date: "24/10/04",
-        status: "Pending",
+        status: "Delivered",
         priority: "High",
         assignedTo: "Team A",
-        estimatedDelivery: "2024-10-05",
         notes: "Rush order - customer event"
       },
       {
@@ -141,10 +130,9 @@ export const useDashboardStore = create<DashboardState>()(
         price: "$13.50",
         payment: "Cash",
         date: "24/10/04",
-        status: "On Delivery",
+        status: "Delivered",
         priority: "Medium",
-        assignedTo: "Team B",
-        estimatedDelivery: "2024-10-04"
+        assignedTo: "Team B"
       },
       {
         id: "1249",
@@ -243,38 +231,13 @@ export const useDashboardStore = create<DashboardState>()(
       { date: '2024-10-04', efficiency: 88, completed: 13, target: 15 }
     ],
 
-    updateCustomerStatus: (id: string, status: Customer['status']) => {
-      const { customers, addActivityLog, updateDashboardMetrics } = get();
-      const customer = customers.find(c => c.id === id);
-      const oldStatus = customer?.status;
-
-      set((state) => ({
-        customers: state.customers.map(customer =>
-          customer.id === id ? { ...customer, status } : customer
-        )
-      }));
-
-      if (customer && oldStatus !== status) {
-        addActivityLog({
-          type: 'status_changed',
-          description: `Customer ${customer.name} status changed from ${oldStatus} to ${status}`,
-          entityId: id,
-          entityType: 'customer',
-          oldValue: oldStatus,
-          newValue: status
-        });
-      }
-
-      updateDashboardMetrics();
-    },
-
     addCustomer: (customerData: Omit<Customer, 'id'>) => {
       const { addActivityLog, updateDashboardMetrics } = get();
       const newCustomer: Customer = {
         ...customerData,
         id: (Date.now()).toString(),
         priority: customerData.priority || 'Medium',
-        estimatedDelivery: customerData.estimatedDelivery || new Date(Date.now() + 86400000).toISOString().split('T')[0]
+        status: 'Delivered'
       };
 
       set((state) => ({
@@ -439,9 +402,7 @@ export const useDashboardStore = create<DashboardState>()(
     calculateStats: () => {
       const { customers, goals } = get();
       
-      const pendingOrders = customers.filter(c => c.status === 'Pending').length;
-      const deliveredOrders = customers.filter(c => c.status === 'Delivered').length;
-      const onDeliveryOrders = customers.filter(c => c.status === 'On Delivery').length;
+      const deliveredOrders = customers.length;
       const totalOrders = customers.length;
       
       const totalRevenue = customers.reduce((sum, customer) => {
@@ -450,7 +411,7 @@ export const useDashboardStore = create<DashboardState>()(
       }, 0);
       
       const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-      const completionRate = totalOrders > 0 ? (deliveredOrders / totalOrders) * 100 : 0;
+      const completionRate = 100; // All orders are delivered
       const activeGoals = goals.filter(g => g.status === 'Active').length;
 
       set((state) => ({
@@ -459,9 +420,7 @@ export const useDashboardStore = create<DashboardState>()(
           totalCustomers: totalOrders,
           orders: totalOrders,
           revenue: totalRevenue,
-          pendingOrders,
           deliveredOrders,
-          onDeliveryOrders,
           averageOrderValue,
           completionRate,
           activeGoals
@@ -473,9 +432,7 @@ export const useDashboardStore = create<DashboardState>()(
       const { customers, goals } = get();
       
       const totalTasks = customers.length + goals.length;
-      const completedTasks = customers.filter(c => c.status === 'Delivered').length + 
-                           goals.filter(g => g.status === 'Completed').length;
-      const pendingTasks = totalTasks - completedTasks;
+      const completedTasks = customers.length + goals.filter(g => g.status === 'Completed').length;
       const efficiency = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
       set((state) => ({
@@ -483,9 +440,7 @@ export const useDashboardStore = create<DashboardState>()(
           ...state.workflowMetrics,
           totalTasks,
           completedTasks,
-          pendingTasks,
-          efficiency,
-          overdueTasks: Math.max(0, state.workflowMetrics.overdueTasks)
+          efficiency
         }
       }));
     },
@@ -515,11 +470,6 @@ export const useDashboardStore = create<DashboardState>()(
     getGoalsByCategory: (category: Goal['category']) => {
       const { goals } = get();
       return goals.filter(goal => goal.category === category);
-    },
-
-    getCustomersByStatus: (status: Customer['status']) => {
-      const { customers } = get();
-      return customers.filter(customer => customer.status === status);
     }
   }))
 );
