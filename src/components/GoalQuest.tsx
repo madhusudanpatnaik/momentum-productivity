@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,10 +21,6 @@ interface Goal {
 
 const GoalQuest: React.FC = () => {
   const navigate = useNavigate();
-  
-  // Add console log to verify component is loading
-  console.log('GoalQuest component loaded');
-  
   const [goals, setGoals] = useState<Goal[]>([
     {
       id: '1',
@@ -136,24 +133,21 @@ const GoalQuest: React.FC = () => {
   };
 
   const getCategoryColor = (category: string) => {
-    const colors = {
-      health: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30',
-      career: 'bg-indigo-500/20 text-indigo-300 border-indigo-400/30', 
-      learning: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
-      personal: 'bg-violet-500/20 text-violet-300 border-violet-400/30'
-    };
-    console.log(`Category ${category} getting color:`, colors[category] || 'bg-gray-500/20 text-gray-300 border-gray-400/30');
-    return colors[category] || 'bg-gray-500/20 text-gray-300 border-gray-400/30';
+    switch (category) {
+      case 'health': return 'bg-green-500/20 text-green-300 border-green-500/30';
+      case 'career': case 'learning': return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+      case 'personal': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+    }
   };
 
   const getPriorityColor = (priority: string) => {
-    const colors = {
-      high: 'bg-red-500/20 text-red-300 border-red-400/40',
-      medium: 'bg-blue-500/20 text-blue-300 border-blue-400/40',
-      low: 'bg-green-500/20 text-green-300 border-green-400/40'
-    };
-    console.log(`Priority ${priority} getting color:`, colors[priority] || 'bg-gray-500/20 text-gray-300 border-gray-400/40');
-    return colors[priority] || 'bg-gray-500/20 text-gray-300 border-gray-400/40';
+    switch (priority) {
+      case 'high': return 'bg-red-500/20 text-red-300 border-red-500/40';
+      case 'medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40';
+      case 'low': return 'bg-green-500/20 text-green-300 border-green-500/40';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/40';
+    }
   };
 
   return (
@@ -264,15 +258,15 @@ const GoalQuest: React.FC = () => {
         
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-4 text-white">
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20">
-              <Trophy className="w-4 h-4 text-violet-400" />
+            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+              <Trophy className="w-4 h-4 text-yellow-400" />
               <span className="font-semibold">Level {userStats.level}</span>
             </div>
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-md border border-blue-400/20">
+            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
               <Zap className="w-4 h-4 text-blue-400" />
               <span className="font-semibold">{userStats.xp} XP</span>
             </div>
-            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-md border border-purple-400/20">
+            <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
               <Star className="w-4 h-4 text-purple-400" />
               <span className="font-semibold">{userStats.streakDays} day streak</span>
             </div>
@@ -282,16 +276,16 @@ const GoalQuest: React.FC = () => {
 
       {/* Main content */}
       <div className="relative z-10 max-w-7xl mx-auto p-6">
-        {/* Stats overview with updated colors */}
+        {/* Stats overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-blue-500/15 to-indigo-500/15">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-300 text-sm mb-1">Current Level</p>
+                  <p className="text-gray-400 text-sm mb-1">Current Level</p>
                   <p className="text-3xl font-bold text-white">{userStats.level}</p>
                 </div>
-                <Trophy className="w-8 h-8 text-blue-400" />
+                <Trophy className="w-8 h-8 text-yellow-400" />
               </div>
               <div className="mt-4">
                 <Progress value={(userStats.xp / userStats.xpToNextLevel) * 100} className="h-2" />
@@ -302,35 +296,35 @@ const GoalQuest: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-cyan-500/15 to-blue-500/15">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-300 text-sm mb-1">Total XP</p>
+                  <p className="text-gray-400 text-sm mb-1">Total XP</p>
                   <p className="text-3xl font-bold text-white">{userStats.xp}</p>
                 </div>
-                <Zap className="w-8 h-8 text-cyan-400" />
+                <Zap className="w-8 h-8 text-blue-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-emerald-500/15 to-green-500/15">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-300 text-sm mb-1">Goals Completed</p>
+                  <p className="text-gray-400 text-sm mb-1">Goals Completed</p>
                   <p className="text-3xl font-bold text-white">{userStats.totalGoalsCompleted}</p>
                 </div>
-                <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                <CheckCircle2 className="w-8 h-8 text-green-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-purple-500/15 to-violet-500/15">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-300 text-sm mb-1">Current Streak</p>
+                  <p className="text-gray-400 text-sm mb-1">Current Streak</p>
                   <p className="text-3xl font-bold text-white">{userStats.streakDays}</p>
                 </div>
                 <Star className="w-8 h-8 text-purple-400" />
@@ -344,7 +338,7 @@ const GoalQuest: React.FC = () => {
           <h2 className="text-3xl font-bold text-white">Your Goals</h2>
           <Button 
             onClick={() => setShowAddGoal(true)}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white transition-all duration-300 hover:scale-105 backdrop-blur-sm shadow-lg"
+            className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add New Goal
@@ -353,7 +347,7 @@ const GoalQuest: React.FC = () => {
 
         {/* Add goal form */}
         {showAddGoal && (
-          <Card className="glass-morphism border-white/20 mb-6 animate-fade-in bg-gradient-to-br from-slate-500/10 to-gray-500/10">
+          <Card className="glass-morphism border-white/20 mb-6 animate-fade-in">
             <CardHeader>
               <CardTitle className="text-white">Create New Goal</CardTitle>
             </CardHeader>
@@ -364,7 +358,7 @@ const GoalQuest: React.FC = () => {
                   placeholder="Goal title"
                   value={newGoal.title}
                   onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
-                  className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 focus:outline-none transition-all duration-300 backdrop-blur-sm"
+                  className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 focus:outline-none transition-all duration-300"
                 />
               </div>
               <div>
@@ -372,7 +366,7 @@ const GoalQuest: React.FC = () => {
                   placeholder="Goal description"
                   value={newGoal.description}
                   onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
-                  className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 focus:outline-none transition-all duration-300 resize-none backdrop-blur-sm"
+                  className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 focus:outline-none transition-all duration-300 resize-none"
                   rows={3}
                 />
               </div>
@@ -380,7 +374,7 @@ const GoalQuest: React.FC = () => {
                 <select
                   value={newGoal.category}
                   onChange={(e) => setNewGoal({...newGoal, category: e.target.value as any})}
-                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300 backdrop-blur-sm"
+                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
                 >
                   <option value="personal">Personal</option>
                   <option value="health">Health</option>
@@ -390,7 +384,7 @@ const GoalQuest: React.FC = () => {
                 <select
                   value={newGoal.priority}
                   onChange={(e) => setNewGoal({...newGoal, priority: e.target.value as any})}
-                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300 backdrop-blur-sm"
+                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
                 >
                   <option value="low">Low Priority</option>
                   <option value="medium">Medium Priority</option>
@@ -400,17 +394,17 @@ const GoalQuest: React.FC = () => {
                   type="date"
                   value={newGoal.dueDate}
                   onChange={(e) => setNewGoal({...newGoal, dueDate: e.target.value})}
-                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300 backdrop-blur-sm"
+                  className="p-3 rounded-lg bg-white/10 border border-white/20 text-white focus:border-white/40 focus:outline-none transition-all duration-300"
                 />
               </div>
               <div className="flex space-x-3">
-                <Button onClick={addGoal} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white transition-all duration-300">
+                <Button onClick={addGoal} className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300">
                   Create Goal
                 </Button>
                 <Button 
                   variant="outline" 
                   onClick={() => setShowAddGoal(false)}
-                  className="border-white/30 text-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                  className="border-white/30 text-white hover:bg-white/10 transition-all duration-300"
                 >
                   Cancel
                 </Button>
@@ -419,94 +413,89 @@ const GoalQuest: React.FC = () => {
           </Card>
         )}
 
-        {/* Goals grid with updated card colors */}
+        {/* Goals grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {goals.map((goal) => {
-            console.log(`Rendering goal ${goal.id} with category ${goal.category}`);
-            return (
-              <Card 
-                key={goal.id} 
-                className={`glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 ${
-                  goal.completed 
-                    ? 'bg-gradient-to-br from-emerald-500/20 to-green-500/20 border-emerald-400/40' 
-                    : 'bg-gradient-to-br from-slate-500/10 to-gray-600/15 border-slate-400/30'
-                }`}
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className={`text-lg ${goal.completed ? 'line-through text-gray-400' : 'text-white'}`}>
-                        {goal.title}
-                      </CardTitle>
-                      <p className="text-gray-300 text-sm mt-1">{goal.description}</p>
+          {goals.map((goal) => (
+            <Card 
+              key={goal.id} 
+              className={`glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 ${
+                goal.completed ? 'bg-green-500/10' : ''
+              }`}
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className={`text-lg ${goal.completed ? 'line-through text-gray-400' : 'text-white'}`}>
+                      {goal.title}
+                    </CardTitle>
+                    <p className="text-gray-400 text-sm mt-1">{goal.description}</p>
+                  </div>
+                  {goal.completed && (
+                    <CheckCircle2 className="w-6 h-6 text-green-400 animate-badge-bounce" />
+                  )}
+                </div>
+                
+                <div className="flex items-center space-x-2 mt-3">
+                  <Badge className={getCategoryColor(goal.category)}>
+                    {getCategoryIcon(goal.category)}
+                    <span className="ml-1 capitalize">{goal.category}</span>
+                  </Badge>
+                  <Badge className={getPriorityColor(goal.priority)}>
+                    <Flag className="w-3 h-3 mr-1" />
+                    {goal.priority}
+                  </Badge>
+                  {goal.dueDate && (
+                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/40">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      {new Date(goal.dueDate).toLocaleDateString()}
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm text-gray-400 mb-2">
+                      <span>Progress</span>
+                      <span>{goal.progress}%</span>
                     </div>
-                    {goal.completed && (
-                      <CheckCircle2 className="w-6 h-6 text-emerald-400 animate-badge-bounce" />
-                    )}
+                    <Progress 
+                      value={goal.progress} 
+                      className="h-2"
+                    />
                   </div>
                   
-                  <div className="flex items-center space-x-2 mt-3">
-                    <Badge className={getCategoryColor(goal.category)}>
-                      {getCategoryIcon(goal.category)}
-                      <span className="ml-1 capitalize">{goal.category}</span>
-                    </Badge>
-                    <Badge className={getPriorityColor(goal.priority)}>
-                      <Flag className="w-3 h-3 mr-1" />
-                      {goal.priority}
-                    </Badge>
-                    {goal.dueDate && (
-                      <Badge className="bg-slate-500/20 text-slate-300 border-slate-400/40">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        {new Date(goal.dueDate).toLocaleDateString()}
-                      </Badge>
-                    )}
-                  </div>
-                </CardHeader>
-                
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm text-gray-300 mb-2">
-                        <span>Progress</span>
-                        <span>{goal.progress}%</span>
-                      </div>
-                      <Progress 
-                        value={goal.progress} 
-                        className="h-2"
-                      />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 text-yellow-400">
+                      <Zap className="w-4 h-4" />
+                      <span className="text-sm font-semibold">{goal.xpReward} XP</span>
                     </div>
                     
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 to-indigo-500/20 border border-blue-400/30">
-                        <Zap className="w-4 h-4 text-blue-400" />
-                        <span className="text-sm font-semibold text-blue-300">{goal.xpReward} XP</span>
+                    {!goal.completed && (
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => updateProgress(goal.id, goal.progress + 25)}
+                          className="border-white/30 text-white hover:bg-white/10 transition-all duration-300"
+                        >
+                          +25%
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => updateProgress(goal.id, 100)}
+                          className="bg-green-600 hover:bg-green-700 transition-all duration-300"
+                        >
+                          Complete
+                        </Button>
                       </div>
-                      
-                      {!goal.completed && (
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => updateProgress(goal.id, goal.progress + 25)}
-                            className="border-white/30 text-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
-                          >
-                            +25%
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={() => updateProgress(goal.id, 100)}
-                            className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 transition-all duration-300"
-                          >
-                            Complete
-                          </Button>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </div>
