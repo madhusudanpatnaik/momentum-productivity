@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,20 +25,32 @@ import {
   Trophy,
   Plus,
   Search,
-  Edit
+  Edit,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Activity,
+  BarChart3,
+  PieChart,
+  Truck,
+  ShoppingCart,
+  Timer,
+  Workflow
 } from 'lucide-react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 
 export function ModernDashboard() {
   const [currentMode, setCurrentMode] = useState<'work' | 'personal'>('work');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddCustomer, setShowAddCustomer] = useState(false);
+  const [selectedMetric, setSelectedMetric] = useState<'revenue' | 'customers' | 'efficiency'>('revenue');
   const [newCustomer, setNewCustomer] = useState({
     name: '',
     address: '',
     price: '',
-    payment: 'Online'
+    payment: 'Online',
+    priority: 'Medium' as 'Low' | 'Medium' | 'High'
   });
 
   const { 
@@ -48,20 +60,70 @@ export function ModernDashboard() {
     revenueData, 
     taskData, 
     goalProgress,
+    workflowMetrics,
+    activityLog,
+    performanceData,
     updateCustomerStatus,
     addCustomer,
     updateGoalProgress,
     completeTask,
-    exportData
+    exportData,
+    getRecentActivity,
+    getGoalsByCategory,
+    getCustomersByStatus,
+    updateDashboardMetrics
   } = useDashboardStore();
 
   const { showSuccess, showError } = useNotifications();
 
-  const quickStats = [
-    { title: "Active Goals", value: stats.activeGoals.toString(), icon: Target, color: "text-blue-400" },
-    { title: "Completed Today", value: stats.completedToday.toString(), icon: Trophy, color: "text-green-400" },
-    { title: "Streak", value: `${stats.streakDays} days`, icon: Star, color: "text-yellow-400" },
-    { title: "Total XP", value: stats.totalXP.toString(), icon: Zap, color: "text-purple-400" }
+  // Auto-refresh dashboard metrics
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateDashboardMetrics();
+    }, 30000); // Update every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [updateDashboardMetrics]);
+
+  const workflowStats = [
+    { 
+      title: "Workflow Efficiency", 
+      value: `${workflowMetrics.efficiency.toFixed(1)}%`, 
+      icon: Workflow, 
+      color: "text-blue-400",
+      trend: workflowMetrics.efficiency > 80 ? "up" : "down",
+      description: `${workflowMetrics.completedTasks}/${workflowMetrics.totalTasks} tasks completed`
+    },
+    { 
+      title: "Pending Orders", 
+      value: stats.pendingOrders.toString(), 
+      icon: Clock, 
+      color: "text-orange-400",
+      trend: stats.pendingOrders < 20 ? "up" : "down",
+      description: "Awaiting processing"
+    },
+    { 
+      title: "On Delivery", 
+      value: stats.onDeliveryOrders.toString(), 
+      icon: Truck, 
+      color: "text-purple-400",
+      trend: "neutral",
+      description: "In transit"
+    },
+    { 
+      title: "Completion Rate", 
+      value: `${stats.completionRate.toFixed(1)}%`, 
+      icon: CheckCircle, 
+      color: "text-green-400",
+      trend: stats.completionRate > 85 ? "up" : "down",
+      description: "Overall success rate"
+    }
+  ];
+
+  const realtimeMetrics = [
+    { title: "Daily Target", current: stats.completedToday, target: stats.dailyTarget, color: "#10b981" },
+    { title: "Monthly Target", current: stats.orders, target: stats.monthlyTarget, color: "#3b82f6" },
+    { title: "Revenue Goal", current: stats.revenue, target: 30000, color: "#f59e0b" },
   ];
 
   const filteredCustomers = customers.filter(customer => {
@@ -85,14 +147,14 @@ export function ModernDashboard() {
     };
 
     addCustomer(customerData);
-    setNewCustomer({ name: '', address: '', price: '', payment: 'Online' });
+    setNewCustomer({ name: '', address: '', price: '', payment: 'Online', priority: 'Medium' });
     setShowAddCustomer(false);
-    showSuccess('Customer added successfully!');
+    showSuccess('Customer added successfully! Dashboard metrics updated.');
   };
 
   const handleStatusChange = (customerId: string, newStatus: 'Pending' | 'On Delivery' | 'Delivered') => {
     updateCustomerStatus(customerId, newStatus);
-    showSuccess(`Status updated to ${newStatus}`);
+    showSuccess(`Status updated to ${newStatus}. Metrics automatically refreshed.`);
   };
 
   const handleGoalProgressUpdate = (goalId: string, increment: number) => {
@@ -102,62 +164,150 @@ export function ModernDashboard() {
       updateGoalProgress(goalId, newProgress);
       
       if (newProgress === 100 && goal.progress < 100) {
-        showSuccess('Goal completed! 🎉');
-        completeTask();
+        showSuccess('Goal completed! Dashboard updated with new achievements. 🎉');
       } else {
-        showSuccess(`Progress updated to ${newProgress}%`);
+        showSuccess(`Progress updated to ${newProgress}%. Workflow metrics refreshed.`);
       }
     }
   };
 
-  const handleExport = () => {
-    try {
-      exportData();
-      showSuccess('Data exported successfully!');
-    } catch (error) {
-      showError('Failed to export data');
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'High': return 'bg-red-500/20 text-red-300 border-red-500/40';
+      case 'Medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40';
+      case 'Low': return 'bg-green-500/20 text-green-300 border-green-500/40';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/40';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Pending': return 'bg-orange-500/20 text-orange-300 border-orange-500/40';
+      case 'On Delivery': return 'bg-blue-500/20 text-blue-300 border-blue-500/40';
+      case 'Delivered': return 'bg-green-500/20 text-green-300 border-green-500/40';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/40';
     }
   };
 
   return (
     <div className="p-6 space-y-6 relative">
-      {/* Header with Mode Toggle */}
+      {/* Header with Real-time Indicators */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-400">Welcome back! Here's your overview.</p>
+          <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
+            Dashboard
+            <div className="ml-3 flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-400">Live</span>
+            </div>
+          </h1>
+          <p className="text-gray-400">Real-time workflow management and analytics</p>
         </div>
-        <ModeToggle currentMode={currentMode} onModeChange={setCurrentMode} />
+        <div className="flex items-center space-x-4">
+          <div className="text-right">
+            <p className="text-sm text-gray-400">Last Updated</p>
+            <p className="text-white font-medium">{new Date().toLocaleTimeString()}</p>
+          </div>
+          <ModeToggle currentMode={currentMode} onModeChange={setCurrentMode} />
+        </div>
       </div>
 
-      {/* Quick Stats */}
+      {/* Workflow Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {quickStats.map((stat, index) => (
+        {workflowStats.map((stat, index) => (
           <Card key={index} className="bg-gray-900 border-gray-800 hover:bg-gray-800/50 transition-all duration-300 cursor-pointer">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm mb-1">{stat.title}</p>
                   <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-xs text-gray-500 mt-1">{stat.description}</p>
                 </div>
-                <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                <div className="flex flex-col items-end">
+                  <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                  {stat.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-400 mt-1" />}
+                  {stat.trend === 'down' && <TrendingUp className="w-4 h-4 text-red-400 mt-1 rotate-180" />}
+                </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Charts Section */}
+      {/* Real-time Progress Indicators */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Goal Progress Donut Chart */}
+        {realtimeMetrics.map((metric, index) => (
+          <Card key={index} className="bg-gray-900 border-gray-800">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-white text-sm">{metric.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Current</span>
+                  <span className="text-white font-medium">{metric.current.toLocaleString()}</span>
+                </div>
+                <Progress 
+                  value={(metric.current / metric.target) * 100} 
+                  className="h-3"
+                />
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-500">Target: {metric.target.toLocaleString()}</span>
+                  <span className="text-gray-400">
+                    {((metric.current / metric.target) * 100).toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Charts Section with Real-time Data */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Performance Analytics */}
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-white">Goal Progress</CardTitle>
+            <CardTitle className="text-white flex items-center">
+              <BarChart3 className="w-5 h-5 mr-2" />
+              Performance Analytics
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+                <AreaChart data={performanceData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="date" stroke="#9ca3af" />
+                  <YAxis stroke="#9ca3af" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1f2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff'
+                    }}
+                  />
+                  <Area type="monotone" dataKey="efficiency" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
+                  <Area type="monotone" dataKey="completed" stackId="2" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Workflow Distribution */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center">
+              <PieChart className="w-5 h-5 mr-2" />
+              Workflow Distribution
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsPieChart>
                   <Pie
                     data={goalProgress}
                     cx="50%"
@@ -179,83 +329,69 @@ export function ModernDashboard() {
                       color: '#fff'
                     }}
                   />
-                </PieChart>
+                </RechartsPieChart>
               </ResponsiveContainer>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Revenue Trend Line Chart */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardHeader>
-            <CardTitle className="text-white">Revenue Trend</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="month" stroke="#9ca3af" />
-                  <YAxis stroke="#9ca3af" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1f2937', 
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                      color: '#fff'
-                    }}
-                  />
-                  <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} />
-                  <Line type="monotone" dataKey="target" stroke="#6b7280" strokeDasharray="5 5" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Task Completion Bar Chart */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardHeader>
-            <CardTitle className="text-white">Weekly Tasks</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={taskData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="day" stroke="#9ca3af" />
-                  <YAxis stroke="#9ca3af" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1f2937', 
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                      color: '#fff'
-                    }}
-                  />
-                  <Bar dataKey="completed" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="total" fill="#374151" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="flex justify-center space-x-4 mt-4">
+              {goalProgress.map((item, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                  <span className="text-xs text-gray-400">{item.name}</span>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Progress Overview & Upcoming Deadlines */}
+      {/* Activity Feed and Goals */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Interactive Progress Overview */}
+        {/* Real-time Activity Feed */}
         <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-white">Goal Progress</CardTitle>
+            <CardTitle className="text-white flex items-center">
+              <Activity className="w-5 h-5 mr-2" />
+              Live Activity Feed
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 max-h-80 overflow-y-auto">
+            {getRecentActivity().map((activity) => (
+              <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-800 rounded-lg">
+                <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                <div className="flex-1">
+                  <p className="text-white text-sm">{activity.description}</p>
+                  <p className="text-gray-400 text-xs mt-1">
+                    {new Date(activity.timestamp).toLocaleTimeString()}
+                  </p>
+                </div>
+                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/40 text-xs">
+                  {activity.type.replace('_', ' ')}
+                </Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Interactive Goals with Progress */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center">
+              <Target className="w-5 h-5 mr-2" />
+              Active Goals
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {goals.map((goal) => (
-              <div key={goal.id}>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-400">{goal.title}</span>
+            {goals.filter(g => g.status === 'Active').map((goal) => (
+              <div key={goal.id} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="text-white font-medium">{goal.title}</span>
+                    <Badge className="ml-2 bg-purple-500/20 text-purple-300 border-purple-500/40 text-xs">
+                      {goal.category}
+                    </Badge>
+                  </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-white">{goal.progress}%</span>
+                    <span className="text-white text-sm">{goal.progress}%</span>
                     <Button
                       size="sm"
                       variant="outline"
@@ -267,61 +403,29 @@ export function ModernDashboard() {
                   </div>
                 </div>
                 <Progress value={goal.progress} className="h-2" />
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Deadline: {goal.deadline}</span>
+                  <span className="text-gray-400">{goal.target - (goal.progress * goal.target / 100)} remaining</span>
+                </div>
               </div>
             ))}
           </CardContent>
         </Card>
-
-        {/* Upcoming Deadlines */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <Calendar className="w-5 h-5 mr-2" />
-              Upcoming Deadlines
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
-              <div>
-                <p className="text-white font-medium">MVP Demo</p>
-                <p className="text-gray-400 text-sm">Product Development</p>
-              </div>
-              <Badge className="bg-red-500/20 text-red-300 border-red-500/40">
-                2 days
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
-              <div>
-                <p className="text-white font-medium">Marketing Campaign Launch</p>
-                <p className="text-gray-400 text-sm">Marketing</p>
-              </div>
-              <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/40">
-                1 week
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
-              <div>
-                <p className="text-white font-medium">Quarterly Review</p>
-                <p className="text-gray-400 text-sm">Business</p>
-              </div>
-              <Badge className="bg-green-500/20 text-green-300 border-green-500/40">
-                3 weeks
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
-      {/* Enhanced Customers Table */}
+      {/* Enhanced Customer Management Table */}
       <Card className="bg-gray-900 border-gray-800">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-white text-xl">Recent Activity</CardTitle>
+            <CardTitle className="text-white text-xl flex items-center">
+              <Users className="w-5 h-5 mr-2" />
+              Customer Workflow Management
+            </CardTitle>
             <div className="flex items-center space-x-3">
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={handleExport}
+                onClick={exportData}
                 className="border-gray-700 text-gray-300 hover:bg-gray-800"
               >
                 <Download className="w-4 h-4 mr-2" />
@@ -339,7 +443,7 @@ export function ModernDashboard() {
             </div>
           </div>
           
-          {/* Search and Filter Controls */}
+          {/* Enhanced Search and Filter */}
           <div className="flex items-center space-x-4 mt-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -365,10 +469,10 @@ export function ModernDashboard() {
           </div>
         </CardHeader>
         
-        {/* Add Customer Form */}
+        {/* Enhanced Add Customer Form */}
         {showAddCustomer && (
           <CardContent className="border-b border-gray-800">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
               <Input
                 placeholder="Customer name"
                 value={newCustomer.name}
@@ -397,6 +501,16 @@ export function ModernDashboard() {
                   <SelectItem value="Card">Card</SelectItem>
                 </SelectContent>
               </Select>
+              <Select value={newCustomer.priority} onValueChange={(value: 'Low' | 'Medium' | 'High') => setNewCustomer({...newCustomer, priority: value})}>
+                <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectItem value="Low">Low Priority</SelectItem>
+                  <SelectItem value="Medium">Medium Priority</SelectItem>
+                  <SelectItem value="High">High Priority</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex space-x-2">
               <Button onClick={handleAddCustomer} className="bg-white text-gray-900 hover:bg-gray-100">
@@ -421,11 +535,11 @@ export function ModernDashboard() {
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">ID</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">NAME</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">ADDRESS</th>
-                  <th className="text-left py-3 px-4 text-gray-400 font-medium">TIME</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">PRIORITY</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">PRICE</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">PAYMENT</th>
-                  <th className="text-left py-3 px-4 text-gray-400 font-medium">DATE</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">STATUS</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">ASSIGNED</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">ACTIONS</th>
                 </tr>
               </thead>
@@ -435,10 +549,13 @@ export function ModernDashboard() {
                     <td className="py-4 px-4 text-gray-300">{customer.id}</td>
                     <td className="py-4 px-4 text-white font-medium">{customer.name}</td>
                     <td className="py-4 px-4 text-gray-300">{customer.address}</td>
-                    <td className="py-4 px-4 text-gray-300">{customer.time}</td>
+                    <td className="py-4 px-4">
+                      <Badge className={getPriorityColor(customer.priority)}>
+                        {customer.priority}
+                      </Badge>
+                    </td>
                     <td className="py-4 px-4 text-white font-medium">{customer.price}</td>
                     <td className="py-4 px-4 text-gray-300">{customer.payment}</td>
-                    <td className="py-4 px-4 text-gray-300">{customer.date}</td>
                     <td className="py-4 px-4">
                       <Select
                         value={customer.status}
@@ -447,15 +564,7 @@ export function ModernDashboard() {
                         }
                       >
                         <SelectTrigger className="w-32 h-8 text-xs bg-transparent border-none p-0">
-                          <Badge 
-                            className={
-                              customer.status === "Pending" 
-                                ? "bg-orange-500/20 text-orange-300 border-orange-500/40" 
-                                : customer.status === "On Delivery"
-                                ? "bg-blue-500/20 text-blue-300 border-blue-500/40"
-                                : "bg-green-500/20 text-green-300 border-green-500/40"
-                            }
-                          >
+                          <Badge className={getStatusColor(customer.status)}>
                             {customer.status}
                           </Badge>
                         </SelectTrigger>
@@ -466,6 +575,7 @@ export function ModernDashboard() {
                         </SelectContent>
                       </Select>
                     </td>
+                    <td className="py-4 px-4 text-gray-300 text-sm">{customer.assignedTo || 'Unassigned'}</td>
                     <td className="py-4 px-4">
                       <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
                         <MoreHorizontal className="w-4 h-4" />
