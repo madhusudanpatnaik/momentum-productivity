@@ -1,16 +1,14 @@
 
 import React from 'react';
 import { AppLayout } from "@/components/AppLayout";
-import GoalQuest from "@/components/GoalQuest";
+import GoalsComponent from "@/components/GoalsComponent";
 
-const GoalsPage = () => {
+const Goals = () => {
   return (
     <AppLayout>
-      <div className="h-full">
-        <GoalQuest />
-      </div>
+      <GoalsComponent />
     </AppLayout>
   );
 };
 
-export default GoalsPage;
+export default Goals;

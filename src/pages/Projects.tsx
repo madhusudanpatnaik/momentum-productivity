@@ -1,16 +1,14 @@
 
 import React from 'react';
 import { AppLayout } from "@/components/AppLayout";
-import ProjectBoard from "@/components/ProjectBoard";
+import ProjectsComponent from "@/components/ProjectsComponent";
 
-const ProjectsPage = () => {
+const Projects = () => {
   return (
     <AppLayout>
-      <div className="h-full">
-        <ProjectBoard />
-      </div>
+      <ProjectsComponent />
     </AppLayout>
   );
 };
 
-export default ProjectsPage;
+export default Projects;
