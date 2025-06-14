@@ -3,51 +3,51 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Fonts for retro aesthetic */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+/* Import Google Fonts for clean typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Definition of the design system with retro game theme */
+/* Definition of the design system with night sky theme */
 
 @layer base {
   :root {
     --background: 26 26 46; /* pixel-dark */
-    --foreground: 0 255 65; /* neon-green */
+    --foreground: 255 255 255; /* white */
 
     --card: 22 33 62; /* pixel-darker */
-    --card-foreground: 0 255 65;
+    --card-foreground: 255 255 255;
 
     --popover: 22 33 62;
-    --popover-foreground: 0 255 65;
+    --popover-foreground: 255 255 255;
 
-    --primary: 0 255 65; /* neon-green */
+    --primary: 255 255 255; /* white */
     --primary-foreground: 26 26 46;
 
-    --secondary: 0 212 255; /* neon-blue */
-    --secondary-foreground: 26 26 46;
+    --secondary: 107 114 142; /* gray */
+    --secondary-foreground: 255 255 255;
 
     --muted: 22 33 62;
-    --muted-foreground: 0 255 255; /* retro-cyan */
+    --muted-foreground: 156 163 175; /* gray-400 */
 
-    --accent: 255 0 128; /* neon-pink */
-    --accent-foreground: 26 26 46;
+    --accent: 107 114 142; /* gray */
+    --accent-foreground: 255 255 255;
 
-    --destructive: 255 107 53; /* arcade-orange */
-    --destructive-foreground: 26 26 46;
+    --destructive: 239 68 68; /* red-500 */
+    --destructive-foreground: 255 255 255;
 
-    --border: 0 255 65;
+    --border: 107 114 142;
     --input: 22 33 62;
-    --ring: 0 255 65;
+    --ring: 255 255 255;
 
-    --radius: 0rem; /* pixel perfect borders */
+    --radius: 0.5rem;
 
     --sidebar-background: 22 33 62;
-    --sidebar-foreground: 0 255 65;
-    --sidebar-primary: 0 255 65;
+    --sidebar-foreground: 255 255 255;
+    --sidebar-primary: 255 255 255;
     --sidebar-primary-foreground: 26 26 46;
     --sidebar-accent: 26 26 46;
-    --sidebar-accent-foreground: 0 255 65;
-    --sidebar-border: 0 255 65;
-    --sidebar-ring: 0 255 65;
+    --sidebar-accent-foreground: 255 255 255;
+    --sidebar-border: 107 114 142;
+    --sidebar-ring: 255 255 255;
   }
 }
 
@@ -58,14 +58,20 @@
 
   body {
     @apply text-white;
-    background: linear-gradient(135deg, rgb(30 27 75) 0%, rgb(88 28 135) 50%, rgb(157 23 77) 100%);
+    background: linear-gradient(135deg, 
+      rgb(16, 16, 36) 0%,     /* Very dark purple-blue at edges */
+      rgb(31, 28, 66) 25%,    /* Dark purple-blue */
+      rgb(45, 35, 85) 50%,    /* Medium purple-blue center */
+      rgb(35, 28, 75) 75%,    /* Back to darker */
+      rgb(20, 18, 45) 100%    /* Dark edges */
+    );
     background-attachment: fixed;
     min-height: 100vh;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
+    @apply font-medium;
   }
 }
 
