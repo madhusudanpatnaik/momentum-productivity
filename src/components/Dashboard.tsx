@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Target, Trophy, Check, Users, BarChart3, Shield } from 'lucide-react';
@@ -22,133 +21,144 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="landing-page min-h-screen relative overflow-hidden">
-      {/* Dynamic flowing curved lines pattern - follows cursor */}
-      <div className="absolute inset-0 opacity-10">
+      {/* Enhanced flowing curved lines pattern with smoother curves */}
+      <div className="absolute inset-0 opacity-8">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-          {[...Array(20)].map((_, i) => (
+          {[...Array(25)].map((_, i) => (
             <path
               key={i}
-              d={`M ${200 + i * 40} 800 Q ${400 + i * 30 + mousePosition.x * 2} ${400 - i * 20 + mousePosition.y} ${600 + i * 50} 0`}
-              stroke="white"
-              strokeWidth="2"
+              d={`M ${100 + i * 35} 800 
+                  C ${250 + i * 40 + mousePosition.x * 1.5} ${600 - i * 15 + mousePosition.y * 0.8}, 
+                    ${400 + i * 25 + mousePosition.x * 1.2} ${300 - i * 12 + mousePosition.y * 0.6}, 
+                    ${650 + i * 45} 0 
+                  S ${800 + i * 30} ${200 + i * 8}, 
+                    ${1000 + i * 20} ${100 + i * 5}`}
+              stroke="url(#gradient1)"
+              strokeWidth={`${1.5 + i * 0.1}`}
               fill="none"
-              opacity={0.05 + (i * 0.04)}
-              transform={`rotate(${-6 * i + mousePosition.x * 0.1} ${400 + i * 20} 400)`}
-              className="transition-all duration-500 ease-out"
+              opacity={0.06 + (i * 0.02)}
+              transform={`rotate(${-4 * i + mousePosition.x * 0.08} ${400 + i * 20} 400)`}
+              className="transition-all duration-700 ease-out"
               style={{
-                animationDelay: `${i * 0.2}s`,
-                animationDuration: `${4 + i * 0.3}s`
+                animationDelay: `${i * 0.15}s`,
+                animationDuration: `${5 + i * 0.2}s`
               }}
             />
           ))}
           
-          {[...Array(15)].map((_, i) => (
+          {/* Smooth bezier curves */}
+          {[...Array(18)].map((_, i) => (
             <path
-              key={`curve-${i}`}
-              d={`M ${100 + i * 60} 800 Q ${300 + i * 40 + mousePosition.x} ${500 - i * 25 + mousePosition.y * 0.5} ${700 + i * 30} 100`}
-              stroke="white"
-              strokeWidth="1.5"
+              key={`bezier-${i}`}
+              d={`M ${50 + i * 50} 800 
+                  C ${200 + i * 35 + mousePosition.x * 2} ${650 - i * 20 + mousePosition.y * 0.5}, 
+                    ${350 + i * 30 + mousePosition.x * 1.8} ${450 - i * 18 + mousePosition.y * 0.7}, 
+                    ${500 + i * 40} 200
+                  C ${650 + i * 20} ${100 + i * 10}, 
+                    ${800 + i * 25} ${50 + i * 8}, 
+                    ${950 + i * 15} 0`}
+              stroke="url(#gradient2)"
+              strokeWidth="1.2"
               fill="none"
-              opacity={0.03 + (i * 0.02)}
-              transform={`rotate(${-3 * i + mousePosition.y * 0.05} ${350 + i * 25} 450)`}
-              className="transition-all duration-700 ease-out"
+              opacity={0.04 + (i * 0.015)}
+              transform={`rotate(${-2 * i + mousePosition.y * 0.04} ${400 + i * 30} 400)`}
+              className="transition-all duration-900 ease-out"
               style={{
-                animationDelay: `${i * 0.3}s`,
-                animationDuration: `${6 + i * 0.2}s`
+                animationDelay: `${i * 0.25}s`,
+                animationDuration: `${7 + i * 0.15}s`
               }}
             />
           ))}
 
-          {/* Additional dynamic flow lines */}
-          {[...Array(10)].map((_, i) => (
-            <path
-              key={`flow-${i}`}
-              d={`M ${mousePosition.x * 10 + i * 80} 0 Q ${mousePosition.x * 8 + 400} ${mousePosition.y * 6 + 300} ${mousePosition.x * 12 + 800} 800`}
-              stroke="white"
-              strokeWidth="1"
-              fill="none"
-              opacity={0.02 + (i * 0.01)}
-              className="transition-all duration-1000 ease-out"
-            />
-          ))}
+          {/* Gradient definitions */}
+          <defs>
+            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(255,255,255,0.3)" />
+              <stop offset="50%" stopColor="rgba(147,51,234,0.2)" />
+              <stop offset="100%" stopColor="rgba(59,130,246,0.1)" />
+            </linearGradient>
+            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(59,130,246,0.2)" />
+              <stop offset="50%" stopColor="rgba(255,255,255,0.15)" />
+              <stop offset="100%" stopColor="rgba(147,51,234,0.1)" />
+            </linearGradient>
+          </defs>
         </svg>
       </div>
 
-      {/* Enhanced stars background with cursor interaction */}
+      {/* Enhanced stars background */}
       <div className="absolute inset-0">
-        {[...Array(120)].map((_, i) => (
+        {[...Array(150)].map((_, i) => (
           <div
             key={i}
             className="absolute animate-pulse transition-all duration-1000"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 4}s`,
-              transform: `translate(${mousePosition.x * 0.1}px, ${mousePosition.y * 0.1}px)`
+              animationDelay: `${Math.random() * 4}s`,
+              animationDuration: `${2.5 + Math.random() * 3}s`,
+              transform: `translate(${mousePosition.x * 0.08}px, ${mousePosition.y * 0.08}px)`
             }}
           >
             <div 
-              className="w-0.5 h-0.5 bg-white rounded-full opacity-70"
+              className="w-0.5 h-0.5 bg-white rounded-full opacity-60"
               style={{
-                boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
-              }}
-            />
-          </div>
-        ))}
-        
-        {[...Array(25)].map((_, i) => (
-          <div
-            key={`large-${i}`}
-            className="absolute animate-pulse transition-all duration-1500"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 3}s`,
-              transform: `translate(${mousePosition.x * 0.2}px, ${mousePosition.y * 0.2}px)`
-            }}
-          >
-            <div 
-              className="w-1 h-1 bg-white rounded-full opacity-40"
-              style={{
-                boxShadow: '0 0 8px rgba(255, 255, 255, 0.6)'
+                boxShadow: '0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(147, 51, 234, 0.3)'
               }}
             />
           </div>
         ))}
       </div>
 
-      {/* Modern gradient overlay with cursor influence */}
+      {/* Enhanced gradient overlay */}
       <div 
         className="absolute inset-0 transition-all duration-1000 pointer-events-none"
         style={{
-          background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(147, 51, 234, 0.1) 0%, transparent 50%), linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%)`
+          background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, 
+            rgba(147, 51, 234, 0.12) 0%, 
+            rgba(59, 130, 246, 0.08) 35%, 
+            transparent 70%), 
+            linear-gradient(135deg, 
+              rgba(59, 130, 246, 0.08) 0%, 
+              rgba(147, 51, 234, 0.06) 50%, 
+              transparent 100%)`
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
 
-      {/* Premium top navigation */}
-      <nav className="relative z-10 flex justify-between items-center px-6 py-8 max-w-7xl mx-auto backdrop-blur-sm">
-        <div className="text-white font-bold text-3xl tracking-tight font-premium">
-          <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-            Momentum
-          </span>
+      {/* Perfect navigation alignment */}
+      <nav className="relative z-10 flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+        {/* Left side - App name */}
+        <div className="flex-shrink-0">
+          <div className="text-white font-bold text-4xl tracking-tight font-premium">
+            <span className="bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text text-transparent drop-shadow-2xl">
+              Momentum
+            </span>
+          </div>
         </div>
-        <div className="hidden md:flex items-center space-x-10">
-          <a href="#features" className="text-gray-300 hover:text-white transition-all duration-300 font-medium text-lg font-sans">Features</a>
-          <a href="#about" className="text-gray-300 hover:text-white transition-all duration-300 font-medium text-lg font-sans">About</a>
+
+        {/* Center - Navigation links */}
+        <div className="hidden md:flex items-center space-x-12 flex-1 justify-center">
+          <a href="#features" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-lg font-sans relative group">
+            Features
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 group-hover:w-full"></span>
+          </a>
+          <a href="#about" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-lg font-sans relative group">
+            About
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 group-hover:w-full"></span>
+          </a>
         </div>
-        <div className="flex items-center space-x-6">
+
+        {/* Right side - Buttons with perfect alignment */}
+        <div className="flex items-center space-x-4 flex-shrink-0">
           <Button 
             variant="ghost" 
-            className="text-gray-300 hover:text-white hover:bg-white/10 font-medium transition-all duration-300 text-lg px-6 py-3 font-sans"
+            className="text-gray-200 hover:text-white hover:bg-white/10 font-medium transition-all duration-300 text-lg px-8 py-3 font-sans rounded-full backdrop-blur-sm border border-transparent hover:border-white/20"
           >
             Login
           </Button>
           <Button 
             variant="outline" 
-            className="border-gray-400/60 text-gray-300 hover:bg-white/10 hover:text-white hover:border-white/40 font-medium transition-all duration-300 backdrop-blur-sm text-lg px-6 py-3 font-sans"
+            className="border-2 border-gray-300/40 text-gray-200 hover:bg-white/10 hover:text-white hover:border-white/60 font-medium transition-all duration-300 backdrop-blur-sm text-lg px-8 py-3 font-sans rounded-full shadow-lg hover:shadow-xl"
           >
             Sign up
           </Button>
@@ -158,59 +168,55 @@ const Dashboard: React.FC = () => {
       {/* Enhanced main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[85vh] px-6 text-center">
         <div className="max-w-6xl mx-auto">
-          {/* Premium badge with modern styling */}
-          <div className="inline-flex items-center px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-md mb-12 hover:bg-white/10 transition-all duration-300">
-            <Zap className="w-5 h-5 text-white mr-3" />
-            <span className="text-base text-gray-200 font-medium font-sans">Gamified Productivity Platform</span>
+          {/* Premium badge */}
+          <div className="inline-flex items-center px-10 py-5 rounded-full border-2 border-white/25 bg-white/8 backdrop-blur-lg mb-16 hover:bg-white/12 transition-all duration-500 shadow-2xl">
+            <Zap className="w-6 h-6 text-white mr-4 animate-pulse" />
+            <span className="text-lg text-gray-100 font-medium font-sans tracking-wide">Gamified Productivity Platform</span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white mb-12 leading-[0.9] tracking-tight font-mooxy max-w-5xl mx-auto">
-            <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent block">
+          {/* Enhanced typography with aesthetic fonts */}
+          <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light text-white mb-16 leading-[0.85] tracking-tight font-premium max-w-5xl mx-auto">
+            <span className="bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text text-transparent block drop-shadow-2xl">
               Work deeper,
             </span>
-            <span className="bg-gradient-to-r from-gray-100 via-white to-gray-200 bg-clip-text text-transparent block">
+            <span className="bg-gradient-to-r from-blue-100 via-white to-purple-100 bg-clip-text text-transparent block drop-shadow-2xl">
               sleep better
             </span>
           </h1>
 
-          <p className="text-2xl md:text-3xl text-gray-300 mb-16 max-w-4xl mx-auto leading-relaxed font-light font-sans">
+          <p className="text-2xl md:text-3xl lg:text-4xl text-gray-200 mb-20 max-w-4xl mx-auto leading-relaxed font-light font-sans opacity-90">
             Built for action, built for success. For founders, entrepreneurs, and anyone ready to achieve their most ambitious goals.
           </p>
 
-          <div className="flex justify-center mb-20">
+          <div className="flex justify-center mb-24">
             <Button 
               size="lg" 
               onClick={() => navigate('/app')}
-              className="bg-white text-gray-900 hover:bg-gray-100 px-16 py-8 text-2xl font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-2xl backdrop-blur-sm font-sans"
+              className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white px-20 py-10 text-2xl font-semibold rounded-full transition-all duration-500 hover:scale-110 shadow-2xl backdrop-blur-sm font-sans border-2 border-white/20 hover:border-white/40 hover:shadow-3xl"
+              style={{
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)'
+              }}
             >
               Start Your Quest
-              <ArrowRight className="ml-4 h-7 w-7" />
+              <ArrowRight className="ml-5 h-8 w-8" />
             </Button>
           </div>
 
-          {/* Premium feature highlights with modern design */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-5xl mx-auto">
-            <div className="flex flex-col items-center p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
-              <div className="p-4 rounded-full bg-white/10 mb-8 group-hover:bg-white/20 transition-all duration-300">
-                <Target className="w-10 h-10 text-white" />
+          {/* Enhanced feature highlights */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+            {[
+              { icon: Target, title: "Goal Tracking", desc: "Set, track, and achieve your most important objectives with precision" },
+              { icon: Trophy, title: "Achievements", desc: "Unlock rewards and celebrate milestones in your journey" },
+              { icon: Zap, title: "Progress Boost", desc: "Accelerate your progress with smart insights and motivation" }
+            ].map((feature, index) => (
+              <div key={index} className="flex flex-col items-center p-12 rounded-3xl bg-white/6 backdrop-blur-lg border-2 border-white/15 hover:bg-white/12 hover:border-white/25 transition-all duration-500 group hover:scale-105 shadow-xl hover:shadow-2xl">
+                <div className="p-6 rounded-full bg-gradient-to-br from-white/15 to-white/5 mb-10 group-hover:from-white/25 group-hover:to-white/10 transition-all duration-500 shadow-lg">
+                  <feature.icon className="w-12 h-12 text-white drop-shadow-lg" />
+                </div>
+                <h3 className="text-2xl font-semibold text-white mb-6 font-premium tracking-wide">{feature.title}</h3>
+                <p className="text-gray-300 text-center text-lg leading-relaxed font-sans opacity-90">{feature.desc}</p>
               </div>
-              <h3 className="text-2xl font-semibold text-white mb-4 font-premium">Goal Tracking</h3>
-              <p className="text-gray-400 text-center text-lg leading-relaxed font-sans">Set, track, and achieve your most important objectives with precision</p>
-            </div>
-            <div className="flex flex-col items-center p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
-              <div className="p-4 rounded-full bg-white/10 mb-8 group-hover:bg-white/20 transition-all duration-300">
-                <Trophy className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-2xl font-semibold text-white mb-4 font-premium">Achievements</h3>
-              <p className="text-gray-400 text-center text-lg leading-relaxed font-sans">Unlock rewards and celebrate milestones in your journey</p>
-            </div>
-            <div className="flex flex-col items-center p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
-              <div className="p-4 rounded-full bg-white/10 mb-8 group-hover:bg-white/20 transition-all duration-300">
-                <Zap className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-2xl font-semibold text-white mb-4 font-premium">Progress Boost</h3>
-              <p className="text-gray-400 text-center text-lg leading-relaxed font-sans">Accelerate your progress with smart insights and motivation</p>
-            </div>
+            ))}
           </div>
         </div>
       </div>
