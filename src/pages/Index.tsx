@@ -1,8 +1,8 @@
 
-import Dashboard from "@/components/Dashboard";
+import LandingHero from "@/components/LandingHero";
 
 const Index = () => {
-  return <Dashboard />;
+  return <LandingHero />;
 };
 
 export default Index;
