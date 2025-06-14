@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,13 +25,19 @@ import {
   Trophy,
   Plus,
   Search,
-  Edit
+  Edit,
+  Workflow,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  ArrowRight
 } from 'lucide-react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, FunnelChart, Funnel, LabelList } from 'recharts';
 
 export function ModernDashboard() {
   const [currentMode, setCurrentMode] = useState<'work' | 'personal'>('work');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterWorkflow, setFilterWorkflow] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddCustomer, setShowAddCustomer] = useState(false);
   const [newCustomer, setNewCustomer] = useState({
@@ -45,30 +51,40 @@ export function ModernDashboard() {
     stats, 
     customers, 
     goals, 
+    workflowStages,
     revenueData, 
     taskData, 
     goalProgress,
+    workflowData,
     updateCustomerStatus,
+    updateCustomerWorkflow,
     addCustomer,
     updateGoalProgress,
+    updateGoalWorkflow,
     completeTask,
-    exportData
+    exportData,
+    calculateWorkflowMetrics
   } = useDashboardStore();
 
   const { showSuccess, showError } = useNotifications();
 
+  useEffect(() => {
+    calculateWorkflowMetrics();
+  }, [calculateWorkflowMetrics]);
+
   const quickStats = [
-    { title: "Active Goals", value: stats.activeGoals.toString(), icon: Target, color: "text-blue-400" },
-    { title: "Completed Today", value: stats.completedToday.toString(), icon: Trophy, color: "text-green-400" },
-    { title: "Streak", value: `${stats.streakDays} days`, icon: Star, color: "text-yellow-400" },
-    { title: "Total XP", value: stats.totalXP.toString(), icon: Zap, color: "text-purple-400" }
+    { title: "Workflow Efficiency", value: `${stats.workflowEfficiency}%`, icon: Workflow, color: "text-blue-400" },
+    { title: "Completed Today", value: stats.completedToday.toString(), icon: CheckCircle, color: "text-green-400" },
+    { title: "Avg. Completion", value: `${stats.avgCompletionTime}d`, icon: Clock, color: "text-yellow-400" },
+    { title: "Active Goals", value: stats.activeGoals.toString(), icon: Target, color: "text-purple-400" }
   ];
 
   const filteredCustomers = customers.filter(customer => {
     const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.address.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || customer.status === filterStatus;
-    return matchesSearch && matchesFilter;
+    const matchesStatus = filterStatus === 'all' || customer.status === filterStatus;
+    const matchesWorkflow = filterWorkflow === 'all' || customer.workflowStage === filterWorkflow;
+    return matchesSearch && matchesStatus && matchesWorkflow;
   });
 
   const handleAddCustomer = () => {
@@ -95,6 +111,16 @@ export function ModernDashboard() {
     showSuccess(`Status updated to ${newStatus}`);
   };
 
+  const handleWorkflowChange = (customerId: string, newStage: 'Order Received' | 'Processing' | 'In Transit' | 'Completed') => {
+    updateCustomerWorkflow(customerId, newStage);
+    showSuccess(`Workflow updated to ${newStage}`);
+  };
+
+  const handleGoalWorkflowUpdate = (goalId: string, newStatus: 'Planning' | 'In Progress' | 'Review' | 'Completed') => {
+    updateGoalWorkflow(goalId, newStatus);
+    showSuccess(`Goal workflow updated to ${newStatus}`);
+  };
+
   const handleGoalProgressUpdate = (goalId: string, increment: number) => {
     const goal = goals.find(g => g.id === goalId);
     if (goal) {
@@ -103,6 +129,7 @@ export function ModernDashboard() {
       
       if (newProgress === 100 && goal.progress < 100) {
         showSuccess('Goal completed! 🎉');
+        handleGoalWorkflowUpdate(goalId, 'Completed');
         completeTask();
       } else {
         showSuccess(`Progress updated to ${newProgress}%`);
@@ -119,13 +146,32 @@ export function ModernDashboard() {
     }
   };
 
+  const getWorkflowStageColor = (stage: string) => {
+    const stageMap: Record<string, string> = {
+      'Order Received': 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+      'Processing': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
+      'In Transit': 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+      'Completed': 'bg-green-500/20 text-green-300 border-green-500/40'
+    };
+    return stageMap[stage] || 'bg-gray-500/20 text-gray-300 border-gray-500/40';
+  };
+
+  const getPriorityColor = (priority: string) => {
+    const priorityMap: Record<string, string> = {
+      'High': 'bg-red-500/20 text-red-300 border-red-500/40',
+      'Medium': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
+      'Low': 'bg-green-500/20 text-green-300 border-green-500/40'
+    };
+    return priorityMap[priority] || 'bg-gray-500/20 text-gray-300 border-gray-500/40';
+  };
+
   return (
     <div className="p-6 space-y-6 relative">
       {/* Header with Mode Toggle */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-          <p className="text-gray-400">Welcome back! Here's your overview.</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Workflow Dashboard</h1>
+          <p className="text-gray-400">Monitor and manage your workflow processes in real-time.</p>
         </div>
         <ModeToggle currentMode={currentMode} onModeChange={setCurrentMode} />
       </div>
@@ -145,6 +191,68 @@ export function ModernDashboard() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* Workflow Overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Workflow Stages */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center">
+              <Workflow className="w-5 h-5 mr-2" />
+              Workflow Stages
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {workflowStages.map((stage) => (
+              <div key={stage.id} className="flex items-center justify-between p-4 bg-gray-800 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div 
+                    className="w-4 h-4 rounded-full"
+                    style={{ backgroundColor: stage.color }}
+                  />
+                  <span className="text-white font-medium">{stage.name}</span>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Badge className="bg-gray-700 text-gray-300 border-gray-600">
+                    {stage.count} items
+                  </Badge>
+                  {stage.nextStage && (
+                    <ArrowRight className="w-4 h-4 text-gray-400" />
+                  )}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Workflow Efficiency Chart */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white">Workflow Performance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={workflowData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="stage" stroke="#9ca3af" />
+                  <YAxis stroke="#9ca3af" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1f2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff'
+                    }}
+                  />
+                  <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="efficiency" fill="#10b981" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Charts Section */}
@@ -242,81 +350,71 @@ export function ModernDashboard() {
         </Card>
       </div>
 
-      {/* Progress Overview & Upcoming Deadlines */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Interactive Progress Overview */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardHeader>
-            <CardTitle className="text-white">Goal Progress</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {goals.map((goal) => (
-              <div key={goal.id}>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-400">{goal.title}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-white">{goal.progress}%</span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleGoalProgressUpdate(goal.id, 10)}
-                      className="border-gray-700 text-gray-300 hover:bg-gray-800 h-6 px-2"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
-                  </div>
+      {/* Goals Management with Workflow */}
+      <Card className="bg-gray-900 border-gray-800">
+        <CardHeader>
+          <CardTitle className="text-white">Goals Workflow Management</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {goals.map((goal) => (
+            <div key={goal.id} className="p-4 bg-gray-800 rounded-lg">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h3 className="text-white font-medium">{goal.title}</h3>
+                  <p className="text-gray-400 text-sm">Due: {goal.dueDate} • Assignee: {goal.assignee}</p>
                 </div>
-                <Progress value={goal.progress} className="h-2" />
+                <div className="flex items-center space-x-2">
+                  <Select
+                    value={goal.workflowStatus}
+                    onValueChange={(value: 'Planning' | 'In Progress' | 'Review' | 'Completed') => 
+                      handleGoalWorkflowUpdate(goal.id, value)
+                    }
+                  >
+                    <SelectTrigger className="w-32 h-8 text-xs bg-transparent border-none p-0">
+                      <Badge className={
+                        goal.workflowStatus === "Planning" 
+                          ? "bg-gray-500/20 text-gray-300 border-gray-500/40" 
+                          : goal.workflowStatus === "In Progress"
+                          ? "bg-blue-500/20 text-blue-300 border-blue-500/40"
+                          : goal.workflowStatus === "Review"
+                          ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/40"
+                          : "bg-green-500/20 text-green-300 border-green-500/40"
+                      }>
+                        {goal.workflowStatus}
+                      </Badge>
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="Planning">Planning</SelectItem>
+                      <SelectItem value="In Progress">In Progress</SelectItem>
+                      <SelectItem value="Review">Review</SelectItem>
+                      <SelectItem value="Completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleGoalProgressUpdate(goal.id, 10)}
+                    className="border-gray-700 text-gray-300 hover:bg-gray-800 h-6 px-2"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </Button>
+                </div>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-400">Progress</span>
+                <span className="text-white">{goal.progress}%</span>
+              </div>
+              <Progress value={goal.progress} className="h-2" />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
 
-        {/* Upcoming Deadlines */}
-        <Card className="bg-gray-900 border-gray-800">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <Calendar className="w-5 h-5 mr-2" />
-              Upcoming Deadlines
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
-              <div>
-                <p className="text-white font-medium">MVP Demo</p>
-                <p className="text-gray-400 text-sm">Product Development</p>
-              </div>
-              <Badge className="bg-red-500/20 text-red-300 border-red-500/40">
-                2 days
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
-              <div>
-                <p className="text-white font-medium">Marketing Campaign Launch</p>
-                <p className="text-gray-400 text-sm">Marketing</p>
-              </div>
-              <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/40">
-                1 week
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
-              <div>
-                <p className="text-white font-medium">Quarterly Review</p>
-                <p className="text-gray-400 text-sm">Business</p>
-              </div>
-              <Badge className="bg-green-500/20 text-green-300 border-green-500/40">
-                3 weeks
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Enhanced Customers Table */}
+      {/* Enhanced Customers Table with Workflow */}
       <Card className="bg-gray-900 border-gray-800">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-white text-xl">Recent Activity</CardTitle>
+            <CardTitle className="text-white text-xl">Customer Workflow Management</CardTitle>
             <div className="flex items-center space-x-3">
               <Button 
                 variant="outline" 
@@ -360,6 +458,19 @@ export function ModernDashboard() {
                 <SelectItem value="Pending">Pending</SelectItem>
                 <SelectItem value="On Delivery">On Delivery</SelectItem>
                 <SelectItem value="Delivered">Delivered</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterWorkflow} onValueChange={setFilterWorkflow}>
+              <SelectTrigger className="w-40 bg-gray-800 border-gray-700 text-white">
+                <Workflow className="w-4 h-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-800 border-gray-700">
+                <SelectItem value="all">All Workflow</SelectItem>
+                <SelectItem value="Order Received">Order Received</SelectItem>
+                <SelectItem value="Processing">Processing</SelectItem>
+                <SelectItem value="In Transit">In Transit</SelectItem>
+                <SelectItem value="Completed">Completed</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -421,11 +532,10 @@ export function ModernDashboard() {
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">ID</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">NAME</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">ADDRESS</th>
-                  <th className="text-left py-3 px-4 text-gray-400 font-medium">TIME</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">PRICE</th>
-                  <th className="text-left py-3 px-4 text-gray-400 font-medium">PAYMENT</th>
-                  <th className="text-left py-3 px-4 text-gray-400 font-medium">DATE</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">PRIORITY</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">STATUS</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">WORKFLOW</th>
                   <th className="text-left py-3 px-4 text-gray-400 font-medium">ACTIONS</th>
                 </tr>
               </thead>
@@ -435,10 +545,12 @@ export function ModernDashboard() {
                     <td className="py-4 px-4 text-gray-300">{customer.id}</td>
                     <td className="py-4 px-4 text-white font-medium">{customer.name}</td>
                     <td className="py-4 px-4 text-gray-300">{customer.address}</td>
-                    <td className="py-4 px-4 text-gray-300">{customer.time}</td>
                     <td className="py-4 px-4 text-white font-medium">{customer.price}</td>
-                    <td className="py-4 px-4 text-gray-300">{customer.payment}</td>
-                    <td className="py-4 px-4 text-gray-300">{customer.date}</td>
+                    <td className="py-4 px-4">
+                      <Badge className={getPriorityColor(customer.priority)}>
+                        {customer.priority}
+                      </Badge>
+                    </td>
                     <td className="py-4 px-4">
                       <Select
                         value={customer.status}
@@ -463,6 +575,26 @@ export function ModernDashboard() {
                           <SelectItem value="Pending">Pending</SelectItem>
                           <SelectItem value="On Delivery">On Delivery</SelectItem>
                           <SelectItem value="Delivered">Delivered</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </td>
+                    <td className="py-4 px-4">
+                      <Select
+                        value={customer.workflowStage}
+                        onValueChange={(value: 'Order Received' | 'Processing' | 'In Transit' | 'Completed') => 
+                          handleWorkflowChange(customer.id, value)
+                        }
+                      >
+                        <SelectTrigger className="w-36 h-8 text-xs bg-transparent border-none p-0">
+                          <Badge className={getWorkflowStageColor(customer.workflowStage)}>
+                            {customer.workflowStage}
+                          </Badge>
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-700">
+                          <SelectItem value="Order Received">Order Received</SelectItem>
+                          <SelectItem value="Processing">Processing</SelectItem>
+                          <SelectItem value="In Transit">In Transit</SelectItem>
+                          <SelectItem value="Completed">Completed</SelectItem>
                         </SelectContent>
                       </Select>
                     </td>
