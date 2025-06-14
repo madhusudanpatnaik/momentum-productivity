@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -134,19 +133,19 @@ const GoalQuest: React.FC = () => {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'health': return 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30';
-      case 'career': case 'learning': return 'bg-blue-500/20 text-blue-300 border-blue-400/30';
-      case 'personal': return 'bg-purple-500/20 text-purple-300 border-purple-400/30';
-      default: return 'bg-slate-500/20 text-slate-300 border-slate-400/30';
+      case 'health': return 'bg-cyan-500/20 text-cyan-300 border-cyan-400/30';
+      case 'career': case 'learning': return 'bg-indigo-500/20 text-indigo-300 border-indigo-400/30';
+      case 'personal': return 'bg-violet-500/20 text-violet-300 border-violet-400/30';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-400/30';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-500/20 text-red-300 border-red-400/40';
-      case 'medium': return 'bg-indigo-500/20 text-indigo-300 border-indigo-400/40';
-      case 'low': return 'bg-teal-500/20 text-teal-300 border-teal-400/40';
-      default: return 'bg-slate-500/20 text-slate-300 border-slate-400/40';
+      case 'high': return 'bg-rose-500/20 text-rose-300 border-rose-400/40';
+      case 'medium': return 'bg-sky-500/20 text-sky-300 border-sky-400/40';
+      case 'low': return 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-400/40';
     }
   };
 
@@ -278,14 +277,14 @@ const GoalQuest: React.FC = () => {
       <div className="relative z-10 max-w-7xl mx-auto p-6">
         {/* Stats overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-violet-500/5 to-indigo-500/5">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm mb-1">Current Level</p>
                   <p className="text-3xl font-bold text-white">{userStats.level}</p>
                 </div>
-                <Trophy className="w-8 h-8 text-violet-400" />
+                <Trophy className="w-8 h-8 text-indigo-400" />
               </div>
               <div className="mt-4">
                 <Progress value={(userStats.xp / userStats.xpToNextLevel) * 100} className="h-2" />
@@ -296,19 +295,19 @@ const GoalQuest: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-blue-500/5 to-purple-500/5">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-cyan-500/10 to-blue-500/10">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm mb-1">Total XP</p>
                   <p className="text-3xl font-bold text-white">{userStats.xp}</p>
                 </div>
-                <Zap className="w-8 h-8 text-blue-400" />
+                <Zap className="w-8 h-8 text-cyan-400" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-emerald-500/5 to-teal-500/5">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-emerald-500/10 to-teal-500/10">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -320,14 +319,14 @@ const GoalQuest: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
+          <Card className="glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 bg-gradient-to-br from-violet-500/10 to-pink-500/10">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-400 text-sm mb-1">Current Streak</p>
                   <p className="text-3xl font-bold text-white">{userStats.streakDays}</p>
                 </div>
-                <Star className="w-8 h-8 text-purple-400" />
+                <Star className="w-8 h-8 text-violet-400" />
               </div>
             </CardContent>
           </Card>
@@ -338,7 +337,7 @@ const GoalQuest: React.FC = () => {
           <h2 className="text-3xl font-bold text-white">Your Goals</h2>
           <Button 
             onClick={() => setShowAddGoal(true)}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105 backdrop-blur-sm shadow-lg"
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white transition-all duration-300 hover:scale-105 backdrop-blur-sm shadow-lg"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add New Goal
@@ -347,7 +346,7 @@ const GoalQuest: React.FC = () => {
 
         {/* Add goal form */}
         {showAddGoal && (
-          <Card className="glass-morphism border-white/20 mb-6 animate-fade-in bg-gradient-to-br from-white/5 to-white/10">
+          <Card className="glass-morphism border-white/20 mb-6 animate-fade-in bg-gradient-to-br from-slate-500/10 to-gray-500/10">
             <CardHeader>
               <CardTitle className="text-white">Create New Goal</CardTitle>
             </CardHeader>
@@ -398,7 +397,7 @@ const GoalQuest: React.FC = () => {
                 />
               </div>
               <div className="flex space-x-3">
-                <Button onClick={addGoal} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300">
+                <Button onClick={addGoal} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white transition-all duration-300">
                   Create Goal
                 </Button>
                 <Button 
@@ -420,8 +419,8 @@ const GoalQuest: React.FC = () => {
               key={goal.id} 
               className={`glass-morphism border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 ${
                 goal.completed 
-                  ? 'bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border-emerald-400/30' 
-                  : 'bg-gradient-to-br from-white/5 to-white/10'
+                  ? 'bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border-emerald-400/30' 
+                  : 'bg-gradient-to-br from-slate-500/10 to-gray-500/10'
               }`}
             >
               <CardHeader className="pb-3">
