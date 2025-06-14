@@ -59,11 +59,11 @@ export function AppSidebar() {
         {/* Header/Logo Section */}
         <div className="p-4 border-b border-slate-700">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+            <div className="w-8 h-8 bg-slate-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
             {!isCollapsed && (
-              <span className="text-white font-semibold text-lg tracking-wide">Synthezy</span>
+              <span className="text-slate-200 font-semibold text-lg tracking-wide">Synthezy</span>
             )}
           </div>
         </div>
@@ -79,10 +79,10 @@ export function AppSidebar() {
                       end={item.url === "/app"}
                       className={({ isActive: navIsActive }) => {
                         const active = isActive(item.url) || navIsActive;
-                        return `flex items-center space-x-3 px-3 py-3 mx-1 rounded-xl transition-all duration-200 group ${
+                        return `flex items-center space-x-3 px-3 py-3 mx-1 rounded-lg transition-all duration-200 group ${
                           active
-                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25 scale-[1.02]' 
-                            : 'text-slate-300 hover:text-white hover:bg-slate-800 hover:scale-[1.01]'
+                            ? 'bg-slate-700 text-slate-100 shadow-sm' 
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
                         }`;
                       }}
                     >
@@ -92,12 +92,12 @@ export function AppSidebar() {
                           <>
                             <item.icon 
                               className={`w-5 h-5 transition-colors ${
-                                active ? 'text-white' : 'text-slate-400 group-hover:text-white'
+                                active ? 'text-slate-100' : 'text-slate-500 group-hover:text-slate-300'
                               }`} 
                             />
                             {!isCollapsed && (
                               <span className={`font-medium text-sm transition-colors ${
-                                active ? 'text-white' : 'text-slate-300 group-hover:text-white'
+                                active ? 'text-slate-100' : 'text-slate-400 group-hover:text-slate-200'
                               }`}>
                                 {item.title}
                               </span>
@@ -117,7 +117,7 @@ export function AppSidebar() {
         {isCollapsed && (
           <div className="mt-auto p-4 border-t border-slate-700">
             <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
             </div>
           </div>
         )}
