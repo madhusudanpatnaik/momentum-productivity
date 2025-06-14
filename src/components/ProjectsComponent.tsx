@@ -19,7 +19,11 @@ import {
   AlertCircle,
   Trash2,
   Edit,
-  Filter
+  Filter,
+  MoreHorizontal,
+  Play,
+  Pause,
+  Check
 } from 'lucide-react';
 
 const ProjectsComponent = () => {
@@ -99,6 +103,23 @@ const ProjectsComponent = () => {
     });
     setShowAddTask(null);
     showSuccess('Task added successfully!');
+  };
+
+  const handleTaskStatusChange = (projectId: string, taskId: string, newStatus: 'todo' | 'in-progress' | 'done') => {
+    moveTask(projectId, taskId, newStatus);
+    
+    const statusLabels = {
+      'todo': 'moved to To Do',
+      'in-progress': 'moved to In Progress', 
+      'done': 'marked as Complete'
+    };
+    
+    showSuccess(`Task ${statusLabels[newStatus]}!`);
+  };
+
+  const handleProjectStatusChange = (projectId: string, newStatus: 'planning' | 'active' | 'completed' | 'on-hold') => {
+    updateProject(projectId, { status: newStatus });
+    showSuccess(`Project status updated to ${newStatus}!`);
   };
 
   const filteredProjects = projects.filter(project => {
@@ -300,9 +321,22 @@ const ProjectsComponent = () => {
                   <CardTitle className="text-white text-lg">{project.title}</CardTitle>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Badge className={getStatusColor(project.status)}>
-                    {project.status}
-                  </Badge>
+                  <Select 
+                    value={project.status} 
+                    onValueChange={(value: any) => handleProjectStatusChange(project.id, value)}
+                  >
+                    <SelectTrigger className="w-auto border-0 bg-transparent">
+                      <Badge className={getStatusColor(project.status)}>
+                        {project.status}
+                      </Badge>
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="planning">Planning</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="on-hold">On Hold</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -355,7 +389,18 @@ const ProjectsComponent = () => {
                   {project.tasks.slice(0, 3).map((task) => (
                     <div key={task.id} className="flex items-center justify-between p-2 bg-gray-800 rounded text-sm">
                       <div className="flex items-center space-x-2">
-                        {getTaskStatusIcon(task.status)}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            const nextStatus = task.status === 'todo' ? 'in-progress' : 
+                                             task.status === 'in-progress' ? 'done' : 'todo';
+                            handleTaskStatusChange(project.id, task.id, nextStatus);
+                          }}
+                          className="h-6 w-6 p-0"
+                        >
+                          {getTaskStatusIcon(task.status)}
+                        </Button>
                         <span className={`${task.status === 'done' ? 'line-through text-gray-500' : 'text-white'}`}>
                           {task.title}
                         </span>
@@ -364,6 +409,19 @@ const ProjectsComponent = () => {
                         <Badge className={getPriorityColor(task.priority)} variant="outline">
                           {task.priority}
                         </Badge>
+                        <Select
+                          value={task.status}
+                          onValueChange={(value: any) => handleTaskStatusChange(project.id, task.id, value)}
+                        >
+                          <SelectTrigger className="w-auto h-6 text-xs border-0 bg-transparent">
+                            <MoreHorizontal className="w-3 h-3" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-gray-800 border-gray-700">
+                            <SelectItem value="todo">To Do</SelectItem>
+                            <SelectItem value="in-progress">In Progress</SelectItem>
+                            <SelectItem value="done">Done</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <Button
                           variant="ghost"
                           size="icon"

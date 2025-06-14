@@ -36,6 +36,7 @@ interface ProjectsState {
   updateTask: (projectId: string, taskId: string, updates: Partial<Task>) => void;
   removeTask: (projectId: string, taskId: string) => void;
   moveTask: (projectId: string, taskId: string, newStatus: Task['status']) => void;
+  calculateProgress: (projectId: string) => void;
 }
 
 export const useProjectsStore = create<ProjectsState>((set, get) => ({
@@ -189,6 +190,9 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
           : project
       )
     }));
+
+    // Recalculate progress after adding task
+    get().calculateProgress(projectId);
   },
 
   updateTask: (projectId, taskId, updates) => {
@@ -204,6 +208,9 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
           : project
       )
     }));
+
+    // Recalculate progress after updating task
+    get().calculateProgress(projectId);
   },
 
   removeTask: (projectId, taskId) => {
@@ -217,19 +224,34 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
           : project
       )
     }));
+
+    // Recalculate progress after removing task
+    get().calculateProgress(projectId);
   },
 
   moveTask: (projectId, taskId, newStatus) => {
     get().updateTask(projectId, taskId, { status: newStatus });
+  },
+
+  calculateProgress: (projectId) => {
+    const state = get();
+    const project = state.projects.find(p => p.id === projectId);
     
-    // Update project progress
-    const project = get().projects.find(p => p.id === projectId);
-    if (project) {
+    if (project && project.tasks.length > 0) {
       const completedTasks = project.tasks.filter(t => t.status === 'done').length;
       const totalTasks = project.tasks.length;
-      const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+      const progress = Math.round((completedTasks / totalTasks) * 100);
       
-      get().updateProject(projectId, { progress });
+      // Auto-complete project if all tasks are done
+      const shouldComplete = progress === 100 && project.status !== 'completed';
+      
+      get().updateProject(projectId, { 
+        progress,
+        ...(shouldComplete && { status: 'completed' })
+      });
+    } else if (project && project.tasks.length === 0) {
+      // Reset progress if no tasks
+      get().updateProject(projectId, { progress: 0 });
     }
   }
 }));
