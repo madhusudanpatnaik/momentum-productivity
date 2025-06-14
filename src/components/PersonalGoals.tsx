@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Plus, Target, Bike, Home, Car, Plane, Wallet, TrendingUp } from 'lucide-react';
+import AddItemModal from './AddItemModal';
 
 interface PersonalGoal {
   id: string;
@@ -26,7 +26,9 @@ interface Transaction {
 }
 
 const PersonalGoals: React.FC = () => {
-  const [goals] = useState<PersonalGoal[]>([
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const [goals, setGoals] = useState<PersonalGoal[]>([
     {
       id: '1',
       title: 'Buy a Mountain Bike',
@@ -64,6 +66,22 @@ const PersonalGoals: React.FC = () => {
     { id: '3', goalId: '3', amount: 400, description: 'Travel fund deposit', date: '2024-06-10' }
   ]);
 
+  const handleAddGoal = (newGoal: any) => {
+    setGoals(prev => [...prev, {
+      ...newGoal,
+      currentAmount: 0,
+      category: 'savings' as const,
+      icon: 'target'
+    }]);
+  };
+
+  const goalFields = [
+    { name: 'title', label: 'Goal Title', type: 'text', required: true, placeholder: 'Enter goal title...' },
+    { name: 'description', label: 'Description', type: 'text', placeholder: 'Enter goal description...' },
+    { name: 'targetAmount', label: 'Target Amount', type: 'number', required: true, placeholder: 'Enter target amount...' },
+    { name: 'dueDate', label: 'Target Date', type: 'date' }
+  ];
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'bike': return <Bike className="w-6 h-6" />;
@@ -94,7 +112,10 @@ const PersonalGoals: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Personal Goals</h1>
-        <Button className="bg-white text-gray-900 hover:bg-gray-100">
+        <Button 
+          className="bg-white text-gray-900 hover:bg-gray-100"
+          onClick={() => setShowAddModal(true)}
+        >
           <Plus className="w-4 h-4 mr-2" />
           Add Goal
         </Button>
@@ -240,6 +261,14 @@ const PersonalGoals: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      <AddItemModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add New Goal"
+        onAdd={handleAddGoal}
+        fields={goalFields}
+      />
     </div>
   );
 };

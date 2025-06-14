@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Calendar, List, LayoutGrid, Filter } from 'lucide-react';
+import AddItemModal from './AddItemModal';
 
 interface Task {
   id: string;
@@ -25,6 +25,7 @@ interface Project {
 const ProjectBoard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'kanban' | 'list' | 'calendar'>('kanban');
   const [selectedProject, setSelectedProject] = useState<string>('all');
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const [projects] = useState<Project[]>([
     { id: '1', name: 'MVP Development', color: 'bg-blue-500', taskCount: 12 },
@@ -32,7 +33,7 @@ const ProjectBoard: React.FC = () => {
     { id: '3', name: 'User Research', color: 'bg-purple-500', taskCount: 5 }
   ]);
 
-  const [tasks] = useState<Task[]>([
+  const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
       title: 'Design user authentication flow',
@@ -78,6 +79,21 @@ const ProjectBoard: React.FC = () => {
       default: return 'bg-gray-500/20 text-gray-300 border-gray-500/40';
     }
   };
+
+  const handleAddTask = (newTask: any) => {
+    setTasks(prev => [...prev, {
+      ...newTask,
+      status: 'todo' as const,
+      priority: 'medium' as const,
+      project: projects[0]?.name || 'General'
+    }]);
+  };
+
+  const taskFields = [
+    { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Enter task title...' },
+    { name: 'description', label: 'Description', type: 'text', placeholder: 'Enter task description...' },
+    { name: 'dueDate', label: 'Due Date', type: 'date' }
+  ];
 
   const renderKanbanBoard = () => {
     const columns = [
@@ -129,7 +145,10 @@ const ProjectBoard: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Project Board</h1>
-        <Button className="bg-white text-gray-900 hover:bg-gray-100">
+        <Button 
+          className="bg-white text-gray-900 hover:bg-gray-100"
+          onClick={() => setShowAddModal(true)}
+        >
           <Plus className="w-4 h-4 mr-2" />
           Add Task
         </Button>
@@ -216,6 +235,14 @@ const ProjectBoard: React.FC = () => {
           <p className="text-gray-400">Calendar view coming soon...</p>
         </div>
       )}
+
+      <AddItemModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add New Task"
+        onAdd={handleAddTask}
+        fields={taskFields}
+      />
     </div>
   );
 };

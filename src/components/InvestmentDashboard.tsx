@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { DollarSign, TrendingUp, TrendingDown, PieChart, Plus, Download } from 'lucide-react';
+import AddItemModal from './AddItemModal';
 
 interface Investment {
   id: string;
@@ -17,13 +17,27 @@ interface Investment {
 
 const InvestmentDashboard: React.FC = () => {
   const [timeframe, setTimeframe] = useState<'month' | 'quarter' | 'year'>('month');
+  const [showAddModal, setShowAddModal] = useState(false);
 
-  const [investments] = useState<Investment[]>([
+  const [investments, setInvestments] = useState<Investment[]>([
     { id: '1', name: 'Seed Funding Round A', amount: 250000, type: 'funding', date: '2024-06-01', category: 'Investment' },
     { id: '2', name: 'AWS Infrastructure', amount: -2500, type: 'expense', date: '2024-06-15', category: 'Technology' },
     { id: '3', name: 'Marketing Campaign', amount: -15000, type: 'expense', date: '2024-06-10', category: 'Marketing' },
     { id: '4', name: 'First Customer Payment', amount: 5000, type: 'revenue', date: '2024-06-20', category: 'Revenue' }
   ]);
+
+  const handleAddTransaction = (newTransaction: any) => {
+    setInvestments(prev => [...prev, {
+      ...newTransaction,
+      type: newTransaction.amount > 0 ? 'revenue' : 'expense'
+    }]);
+  };
+
+  const transactionFields = [
+    { name: 'name', label: 'Description', type: 'text', required: true, placeholder: 'Enter transaction description...' },
+    { name: 'amount', label: 'Amount', type: 'number', required: true, placeholder: 'Enter amount (negative for expenses)...' },
+    { name: 'category', label: 'Category', type: 'text', required: true, placeholder: 'Enter category...' }
+  ];
 
   const totalFunding = investments.filter(i => i.type === 'funding').reduce((sum, i) => sum + i.amount, 0);
   const totalExpenses = Math.abs(investments.filter(i => i.type === 'expense').reduce((sum, i) => sum + i.amount, 0));
@@ -55,7 +69,10 @@ const InvestmentDashboard: React.FC = () => {
             <option value="quarter">This Quarter</option>
             <option value="year">This Year</option>
           </select>
-          <Button className="bg-white text-gray-900 hover:bg-gray-100">
+          <Button 
+            className="bg-white text-gray-900 hover:bg-gray-100"
+            onClick={() => setShowAddModal(true)}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Add Transaction
           </Button>
@@ -166,6 +183,14 @@ const InvestmentDashboard: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      <AddItemModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add New Transaction"
+        onAdd={handleAddTransaction}
+        fields={transactionFields}
+      />
     </div>
   );
 };

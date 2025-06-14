@@ -5,17 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Target, Package, DollarSign, X, Calendar } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 interface QuickAddModalProps {
   isOpen: boolean;
   onClose: () => void;
   type: 'goal' | 'task' | 'financial' | null;
+  onAdd?: (data: any) => void;
 }
 
-const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, type }) => {
+const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, type, onAdd }) => {
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [description, setDescription] = useState('');
+  const { toast } = useToast();
 
   if (!isOpen || !type) return null;
 
@@ -26,21 +30,21 @@ const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, type }) 
           icon: Target,
           title: 'Add New Goal',
           color: 'text-blue-400',
-          fields: ['title', 'target', 'dueDate']
+          fields: ['title', 'description', 'target', 'dueDate']
         };
       case 'task':
         return {
           icon: Package,
           title: 'Add New Task',
           color: 'text-green-400',
-          fields: ['title', 'dueDate']
+          fields: ['title', 'description', 'dueDate']
         };
       case 'financial':
         return {
           icon: DollarSign,
           title: 'Add Financial Entry',
           color: 'text-yellow-400',
-          fields: ['title', 'amount']
+          fields: ['title', 'description', 'amount']
         };
       default:
         return { icon: Target, title: '', color: '', fields: [] };
@@ -52,8 +56,44 @@ const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, type }) 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Submitting:', { type, title, amount, dueDate });
+    
+    const newData = {
+      id: Date.now().toString(),
+      title,
+      description,
+      ...(config.fields.includes('amount') && { amount: parseFloat(amount) || 0 }),
+      ...(config.fields.includes('target') && { targetAmount: parseFloat(amount) || 0, currentAmount: 0 }),
+      ...(config.fields.includes('dueDate') && dueDate && { dueDate }),
+      ...(type === 'task' && { 
+        status: 'todo' as const, 
+        priority: 'medium' as const,
+        project: 'General'
+      }),
+      ...(type === 'goal' && { 
+        category: 'savings' as const,
+        icon: 'target'
+      }),
+      ...(type === 'financial' && { 
+        type: 'expense' as const,
+        date: new Date().toISOString().split('T')[0],
+        category: 'General'
+      })
+    };
+
+    if (onAdd) {
+      onAdd(newData);
+    }
+
+    toast({
+      title: "Success!",
+      description: `${type.charAt(0).toUpperCase() + type.slice(1)} added successfully.`,
+    });
+
+    // Reset form
+    setTitle('');
+    setAmount('');
+    setDueDate('');
+    setDescription('');
     onClose();
   };
 
@@ -88,6 +128,18 @@ const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, type }) 
                 required
               />
             </div>
+
+            {config.fields.includes('description') && (
+              <div>
+                <label className="text-gray-400 text-sm mb-2 block">Description</label>
+                <Input
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Enter description..."
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+            )}
             
             {config.fields.includes('amount') && (
               <div>
