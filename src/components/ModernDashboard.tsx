@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import ModeToggle from "@/components/ModeToggle";
+import FloatingActionButton from "@/components/FloatingActionButton";
 import { 
   Users, 
   Package, 
@@ -19,6 +19,7 @@ import {
   Zap,
   Trophy
 } from 'lucide-react';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer } from 'recharts';
 
 const statsCards = [
   {
@@ -91,11 +92,36 @@ const quickStats = [
   { title: "Total XP", value: "2,450", icon: Zap, color: "text-purple-400" }
 ];
 
+const goalProgress = [
+  { name: 'Completed', value: 65, color: '#10b981' },
+  { name: 'In Progress', value: 25, color: '#3b82f6' },
+  { name: 'Remaining', value: 10, color: '#6b7280' }
+];
+
+const revenueData = [
+  { month: 'Jan', revenue: 12000, target: 15000 },
+  { month: 'Feb', revenue: 18000, target: 15000 },
+  { month: 'Mar', revenue: 14000, target: 15000 },
+  { month: 'Apr', revenue: 22000, target: 15000 },
+  { month: 'May', revenue: 24000, target: 15000 },
+  { month: 'Jun', revenue: 28000, target: 15000 }
+];
+
+const taskCompletionData = [
+  { day: 'Mon', completed: 8, total: 12 },
+  { day: 'Tue', completed: 6, total: 10 },
+  { day: 'Wed', completed: 9, total: 11 },
+  { day: 'Thu', completed: 12, total: 15 },
+  { day: 'Fri', completed: 7, total: 9 },
+  { day: 'Sat', completed: 5, total: 6 },
+  { day: 'Sun', completed: 3, total: 4 }
+];
+
 export function ModernDashboard() {
   const [currentMode, setCurrentMode] = useState<'work' | 'personal'>('work');
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 relative">
       {/* Header with Mode Toggle */}
       <div className="flex items-center justify-between">
         <div>
@@ -122,25 +148,102 @@ export function ModernDashboard() {
         ))}
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsCards.map((stat, index) => (
-          <Card key={index} className="bg-gray-900 border-gray-800">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">{stat.title}</p>
-                  <p className="text-2xl font-bold text-white">{stat.value}</p>
-                  <p className="text-green-400 text-sm">{stat.change}</p>
-                </div>
-                <stat.icon className={`w-8 h-8 ${stat.color}`} />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Goal Progress Donut Chart */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white">Goal Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={goalProgress}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {goalProgress.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1f2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Revenue Trend Line Chart */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white">Revenue Trend</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={revenueData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="month" stroke="#9ca3af" />
+                  <YAxis stroke="#9ca3af" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1f2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff'
+                    }}
+                  />
+                  <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} />
+                  <Line type="monotone" dataKey="target" stroke="#6b7280" strokeDasharray="5 5" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Task Completion Bar Chart */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white">Weekly Tasks</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={taskCompletionData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="day" stroke="#9ca3af" />
+                  <YAxis stroke="#9ca3af" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1f2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff'
+                    }}
+                  />
+                  <Bar dataKey="completed" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="total" fill="#374151" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Recent Activity & Progress */}
+      {/* Progress Overview & Upcoming Deadlines */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Progress Overview */}
         <Card className="bg-gray-900 border-gray-800">
@@ -280,6 +383,9 @@ export function ModernDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton />
     </div>
   );
 }
