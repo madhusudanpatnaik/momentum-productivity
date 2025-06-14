@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Target, Trophy, Check, Users, BarChart3, Shield } from 'lucide-react';
@@ -97,26 +96,26 @@ const Dashboard: React.FC = () => {
 
       {/* Premium top navigation */}
       <nav className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto backdrop-blur-sm">
-        <div className="text-white font-bold text-2xl tracking-tight">
+        <div className="text-white font-bold text-2xl tracking-tight font-premium">
           <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
             Goal Quest
           </span>
         </div>
         <div className="hidden md:flex items-center space-x-8">
-          <a href="#features" className="text-gray-300 hover:text-white transition-all duration-300 font-medium">Features</a>
-          <a href="#pricing" className="text-gray-300 hover:text-white transition-all duration-300 font-medium">Pricing</a>
-          <a href="#about" className="text-gray-300 hover:text-white transition-all duration-300 font-medium">About</a>
+          <a href="#features" className="text-gray-300 hover:text-white transition-all duration-300 font-medium font-sans">Features</a>
+          <a href="#pricing" className="text-gray-300 hover:text-white transition-all duration-300 font-medium font-sans">Pricing</a>
+          <a href="#about" className="text-gray-300 hover:text-white transition-all duration-300 font-medium font-sans">About</a>
         </div>
         <div className="flex items-center space-x-4">
           <Button 
             variant="ghost" 
-            className="text-gray-300 hover:text-white hover:bg-white/10 font-medium transition-all duration-300"
+            className="text-gray-300 hover:text-white hover:bg-white/10 font-medium transition-all duration-300 font-sans"
           >
             Login
           </Button>
           <Button 
             variant="outline" 
-            className="border-gray-400/60 text-gray-300 hover:bg-white/10 hover:text-white hover:border-white/40 font-medium transition-all duration-300 backdrop-blur-sm"
+            className="border-gray-400/60 text-gray-300 hover:bg-white/10 hover:text-white hover:border-white/40 font-medium transition-all duration-300 backdrop-blur-sm font-sans"
           >
             Sign up
           </Button>
@@ -129,10 +128,10 @@ const Dashboard: React.FC = () => {
           {/* Premium badge with modern styling */}
           <div className="inline-flex items-center px-6 py-3 rounded-full border border-white/20 bg-white/5 backdrop-blur-md mb-8 hover:bg-white/10 transition-all duration-300">
             <Zap className="w-4 h-4 text-white mr-2" />
-            <span className="text-sm text-gray-200 font-medium">Gamified Productivity Platform</span>
+            <span className="text-sm text-gray-200 font-medium font-sans">Gamified Productivity Platform</span>
           </div>
 
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-extralight text-white mb-8 leading-tight tracking-tight">
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-light text-white mb-8 leading-tight tracking-tight font-premium">
             <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
               Work deeper,
             </span>
@@ -142,25 +141,18 @@ const Dashboard: React.FC = () => {
             </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed font-light font-sans">
             Transform your productivity with our gamified platform. Built for founders, entrepreneurs, and anyone ready to achieve their most ambitious goals.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+          <div className="flex justify-center mb-16">
             <Button 
               size="lg" 
               onClick={() => navigate('/app')}
-              className="bg-white text-gray-900 hover:bg-gray-100 px-10 py-5 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-2xl backdrop-blur-sm"
+              className="bg-white text-gray-900 hover:bg-gray-100 px-12 py-6 text-xl font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-2xl backdrop-blur-sm font-sans"
             >
               Start Your Quest
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button 
-              variant="outline"
-              size="lg" 
-              className="border-white/30 text-white hover:bg-white/10 px-10 py-5 text-lg font-medium rounded-2xl transition-all duration-300 backdrop-blur-md hover:backdrop-blur-lg hover:border-white/50"
-            >
-              Watch Demo
+              <ArrowRight className="ml-3 h-6 w-6" />
             </Button>
           </div>
 
@@ -170,22 +162,22 @@ const Dashboard: React.FC = () => {
               <div className="p-3 rounded-full bg-white/10 mb-6 group-hover:bg-white/20 transition-all duration-300">
                 <Target className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-3">Goal Tracking</h3>
-              <p className="text-gray-400 text-center text-sm leading-relaxed">Set, track, and achieve your most important objectives with precision</p>
+              <h3 className="text-lg font-semibold text-white mb-3 font-premium">Goal Tracking</h3>
+              <p className="text-gray-400 text-center text-sm leading-relaxed font-sans">Set, track, and achieve your most important objectives with precision</p>
             </div>
             <div className="flex flex-col items-center p-8 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
               <div className="p-3 rounded-full bg-white/10 mb-6 group-hover:bg-white/20 transition-all duration-300">
                 <Trophy className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-3">Achievements</h3>
-              <p className="text-gray-400 text-center text-sm leading-relaxed">Unlock rewards and celebrate milestones in your journey</p>
+              <h3 className="text-lg font-semibold text-white mb-3 font-premium">Achievements</h3>
+              <p className="text-gray-400 text-center text-sm leading-relaxed font-sans">Unlock rewards and celebrate milestones in your journey</p>
             </div>
             <div className="flex flex-col items-center p-8 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
               <div className="p-3 rounded-full bg-white/10 mb-6 group-hover:bg-white/20 transition-all duration-300">
                 <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-3">Progress Boost</h3>
-              <p className="text-gray-400 text-center text-sm leading-relaxed">Accelerate your progress with smart insights and motivation</p>
+              <h3 className="text-lg font-semibold text-white mb-3 font-premium">Progress Boost</h3>
+              <p className="text-gray-400 text-center text-sm leading-relaxed font-sans">Accelerate your progress with smart insights and motivation</p>
             </div>
           </div>
         </div>
@@ -195,12 +187,12 @@ const Dashboard: React.FC = () => {
       <section id="features" className="relative z-10 py-32 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-6xl font-extralight text-white mb-6 leading-tight">
+            <h2 className="text-5xl md:text-6xl font-light text-white mb-6 leading-tight font-premium">
               <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
                 Powerful Features
               </span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-sans">
               Everything you need to transform your productivity and achieve your biggest goals
             </p>
           </div>
@@ -210,24 +202,24 @@ const Dashboard: React.FC = () => {
               <div className="p-3 rounded-full bg-white/10 mb-6 w-fit group-hover:bg-white/20 transition-all duration-300">
                 <BarChart3 className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Analytics Dashboard</h3>
-              <p className="text-gray-400 leading-relaxed">Get deep insights into your productivity patterns and progress with beautiful visualizations and detailed reports.</p>
+              <h3 className="text-xl font-semibold text-white mb-4 font-premium">Analytics Dashboard</h3>
+              <p className="text-gray-400 leading-relaxed font-sans">Get deep insights into your productivity patterns and progress with beautiful visualizations and detailed reports.</p>
             </div>
             
             <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
               <div className="p-3 rounded-full bg-white/10 mb-6 w-fit group-hover:bg-white/20 transition-all duration-300">
                 <Users className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Team Collaboration</h3>
-              <p className="text-gray-400 leading-relaxed">Work together with your team, share goals, and celebrate achievements collectively in a gamified environment.</p>
+              <h3 className="text-xl font-semibold text-white mb-4 font-premium">Team Collaboration</h3>
+              <p className="text-gray-400 leading-relaxed font-sans">Work together with your team, share goals, and celebrate achievements collectively in a gamified environment.</p>
             </div>
             
             <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
               <div className="p-3 rounded-full bg-white/10 mb-6 w-fit group-hover:bg-white/20 transition-all duration-300">
                 <Shield className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Data Security</h3>
-              <p className="text-gray-400 leading-relaxed">Your data is protected with enterprise-grade security, encrypted at rest and in transit with regular backups.</p>
+              <h3 className="text-xl font-semibold text-white mb-4 font-premium">Data Security</h3>
+              <p className="text-gray-400 leading-relaxed font-sans">Your data is protected with enterprise-grade security, encrypted at rest and in transit with regular backups.</p>
             </div>
           </div>
         </div>
@@ -237,12 +229,12 @@ const Dashboard: React.FC = () => {
       <section id="pricing" className="relative z-10 py-32 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-6xl font-extralight text-white mb-6 leading-tight">
+            <h2 className="text-5xl md:text-6xl font-light text-white mb-6 leading-tight font-premium">
               <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
                 Simple Pricing
               </span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-sans">
               Choose the plan that fits your ambition. Start free, upgrade when you're ready to level up.
             </p>
           </div>
@@ -251,27 +243,27 @@ const Dashboard: React.FC = () => {
             {/* Starter Plan */}
             <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
               <div className="mb-8">
-                <h3 className="text-2xl font-semibold text-white mb-2">Starter</h3>
-                <div className="text-4xl font-bold text-white mb-4">
-                  $0<span className="text-lg font-normal text-gray-400">/month</span>
+                <h3 className="text-2xl font-semibold text-white mb-2 font-premium">Starter</h3>
+                <div className="text-4xl font-bold text-white mb-4 font-premium">
+                  $0<span className="text-lg font-normal text-gray-400 font-sans">/month</span>
                 </div>
-                <p className="text-gray-400">Perfect for getting started</p>
+                <p className="text-gray-400 font-sans">Perfect for getting started</p>
               </div>
               <ul className="space-y-4 mb-8">
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Up to 3 active goals
+                  <span className="font-sans">Up to 3 active goals</span>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Basic progress tracking
+                  <span className="font-sans">Basic progress tracking</span>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Mobile app access
+                  <span className="font-sans">Mobile app access</span>
                 </li>
               </ul>
-              <Button className="w-full bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:border-white/40">
+              <Button className="w-full bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:border-white/40 font-sans">
                 Get Started Free
               </Button>
             </div>
@@ -279,34 +271,34 @@ const Dashboard: React.FC = () => {
             {/* Pro Plan */}
             <div className="p-8 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 relative hover:bg-white/15 hover:border-white/30 transition-all duration-300 scale-105">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-white text-gray-900 px-4 py-2 rounded-full text-sm font-semibold">Most Popular</span>
+                <span className="bg-white text-gray-900 px-4 py-2 rounded-full text-sm font-semibold font-sans">Most Popular</span>
               </div>
               <div className="mb-8">
-                <h3 className="text-2xl font-semibold text-white mb-2">Pro</h3>
-                <div className="text-4xl font-bold text-white mb-4">
-                  $15<span className="text-lg font-normal text-gray-400">/month</span>
+                <h3 className="text-2xl font-semibold text-white mb-2 font-premium">Pro</h3>
+                <div className="text-4xl font-bold text-white mb-4 font-premium">
+                  $15<span className="text-lg font-normal text-gray-400 font-sans">/month</span>
                 </div>
-                <p className="text-gray-400">For serious goal achievers</p>
+                <p className="text-gray-400 font-sans">For serious goal achievers</p>
               </div>
               <ul className="space-y-4 mb-8">
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Unlimited goals & projects
+                  <span className="font-sans">Unlimited goals & projects</span>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Advanced analytics
+                  <span className="font-sans">Advanced analytics</span>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Team collaboration
+                  <span className="font-sans">Team collaboration</span>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Priority support
+                  <span className="font-sans">Priority support</span>
                 </li>
               </ul>
-              <Button className="w-full bg-white text-gray-900 hover:bg-gray-100">
+              <Button className="w-full bg-white text-gray-900 hover:bg-gray-100 font-sans">
                 Start Pro Trial
               </Button>
             </div>
@@ -314,31 +306,31 @@ const Dashboard: React.FC = () => {
             {/* Enterprise Plan */}
             <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
               <div className="mb-8">
-                <h3 className="text-2xl font-semibold text-white mb-2">Enterprise</h3>
-                <div className="text-4xl font-bold text-white mb-4">
-                  $49<span className="text-lg font-normal text-gray-400">/month</span>
+                <h3 className="text-2xl font-semibold text-white mb-2 font-premium">Enterprise</h3>
+                <div className="text-4xl font-bold text-white mb-4 font-premium">
+                  $49<span className="text-lg font-normal text-gray-400 font-sans">/month</span>
                 </div>
-                <p className="text-gray-400">For teams and organizations</p>
+                <p className="text-gray-400 font-sans">For teams and organizations</p>
               </div>
               <ul className="space-y-4 mb-8">
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Everything in Pro
+                  <span className="font-sans">Everything in Pro</span>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Advanced security
+                  <span className="font-sans">Advanced security</span>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Custom integrations
+                  <span className="font-sans">Custom integrations</span>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <Check className="w-5 h-5 text-green-400 mr-3" />
-                  Dedicated support
+                  <span className="font-sans">Dedicated support</span>
                 </li>
               </ul>
-              <Button className="w-full bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:border-white/40">
+              <Button className="w-full bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:border-white/40 font-sans">
                 Contact Sales
               </Button>
             </div>
@@ -351,12 +343,12 @@ const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-5xl md:text-6xl font-extralight text-white mb-8 leading-tight">
+              <h2 className="text-5xl md:text-6xl font-light text-white mb-8 leading-tight font-premium">
                 <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
                   About Goal Quest
                 </span>
               </h2>
-              <div className="space-y-6 text-gray-300 text-lg leading-relaxed">
+              <div className="space-y-6 text-gray-300 text-lg leading-relaxed font-sans">
                 <p>
                   We believe that achieving ambitious goals shouldn't feel like a grind. That's why we created Goal Quest - a platform that transforms your biggest challenges into an engaging, game-like experience.
                 </p>
@@ -371,7 +363,7 @@ const Dashboard: React.FC = () => {
                 <Button 
                   size="lg"
                   onClick={() => navigate('/app')}
-                  className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105"
+                  className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-2xl transition-all duration-300 hover:scale-105 font-sans"
                 >
                   Start Your Journey
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -385,23 +377,23 @@ const Dashboard: React.FC = () => {
                   <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-white/10 flex items-center justify-center">
                     <Trophy className="w-12 h-12 text-white" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-white mb-4">10,000+</h3>
-                  <p className="text-gray-400">Goals achieved by our community</p>
+                  <h3 className="text-2xl font-semibold text-white mb-4 font-premium">10,000+</h3>
+                  <p className="text-gray-400 font-sans">Goals achieved by our community</p>
                 </div>
               </div>
               
               {/* Floating stats */}
               <div className="absolute -top-8 -left-8 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-white">98%</div>
-                  <div className="text-sm text-gray-400">User Satisfaction</div>
+                  <div className="text-2xl font-bold text-white font-premium">98%</div>
+                  <div className="text-sm text-gray-400 font-sans">User Satisfaction</div>
                 </div>
               </div>
               
               <div className="absolute -bottom-8 -right-8 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-white">5,000+</div>
-                  <div className="text-sm text-gray-400">Active Users</div>
+                  <div className="text-2xl font-bold text-white font-premium">5,000+</div>
+                  <div className="text-sm text-gray-400 font-sans">Active Users</div>
                 </div>
               </div>
             </div>
@@ -412,16 +404,16 @@ const Dashboard: React.FC = () => {
       {/* Footer */}
       <footer className="relative z-10 py-16 px-4 border-t border-white/10">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="text-white font-bold text-2xl mb-4">
+          <div className="text-white font-bold text-2xl mb-4 font-premium">
             <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
               Goal Quest
             </span>
           </div>
-          <p className="text-gray-400 mb-8">Transform your productivity. Achieve your dreams.</p>
+          <p className="text-gray-400 mb-8 font-sans">Transform your productivity. Achieve your dreams.</p>
           <div className="flex justify-center space-x-8 text-sm text-gray-400">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Contact</a>
+            <a href="#" className="hover:text-white transition-colors font-sans">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors font-sans">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors font-sans">Contact</a>
           </div>
         </div>
       </footer>

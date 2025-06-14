@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -76,7 +75,9 @@ export default {
 			},
 			fontFamily: {
 				'pixel': ['Monaco', 'Consolas', 'Courier New', 'monospace'],
-				'retro': ['Orbitron', 'monospace']
+				'retro': ['Orbitron', 'monospace'],
+				'premium': ['Playfair Display', 'serif'],
+				'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif']
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
