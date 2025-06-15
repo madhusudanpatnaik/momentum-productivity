@@ -1,40 +1,42 @@
 
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Index from './pages/Index';
-import AppPage from './pages/App';
-import Auth from './pages/Auth';
-import Goals from './pages/Goals';
-import Projects from './pages/Projects';
-import Investment from './pages/Investment';
-import Personal from './pages/Personal';
-import Analytics from './pages/Analytics';
-import Calendar from './pages/Calendar';
-import Settings from './pages/Settings';
-import NotFound from './pages/NotFound';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import AppPage from "./pages/App";
+import GoalsPage from "./pages/Goals";
+import ProjectsPage from "./pages/Projects";
+import InvestmentPage from "./pages/Investment";
+import PersonalPage from "./pages/Personal";
+import CalendarPage from "./pages/Calendar";
+import SettingsPage from "./pages/Settings";
+import NotFound from "./pages/NotFound";
 
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/app/*" element={
-          <Routes>
-            <Route index element={<AppPage />} />
-            <Route path="goals" element={<Goals />} />
-            <Route path="projects" element={<Projects />} />
-            <Route path="investment" element={<Investment />} />
-            <Route path="personal" element={<Personal />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="calendar" element={<Calendar />} />
-            <Route path="settings" element={<Settings />} />
-          </Routes>
-        } />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/app" element={<AppPage />} />
+          <Route path="/app/goals" element={<GoalsPage />} />
+          <Route path="/app/projects" element={<ProjectsPage />} />
+          <Route path="/app/investment" element={<InvestmentPage />} />
+          <Route path="/app/personal" element={<PersonalPage />} />
+          <Route path="/app/calendar" element={<CalendarPage />} />
+          <Route path="/app/settings" element={<SettingsPage />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;

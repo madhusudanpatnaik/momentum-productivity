@@ -1,234 +1,606 @@
 
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ModeToggle from "@/components/ModeToggle";
+import FloatingActionButton from "@/components/FloatingActionButton";
+import { useDashboardStore } from "@/stores/dashboardStore";
+import { useNotifications } from "@/hooks/useNotifications";
 import { 
-  Target, 
+  Users, 
+  Package, 
   TrendingUp, 
-  Calendar, 
-  CheckCircle, 
-  Plus,
-  Award,
-  BarChart3,
-  Users,
-  Clock,
+  DollarSign,
+  Download,
+  Filter,
+  MoreHorizontal,
+  Target,
+  Calendar,
   Star,
-  ArrowRight,
   Zap,
-  Trophy
+  Trophy,
+  Plus,
+  Search,
+  Edit,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Activity,
+  BarChart3,
+  PieChart,
+  Truck,
+  ShoppingCart,
+  Timer,
+  Workflow,
+  RefreshCw
 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 
 export function ModernDashboard() {
-  const quickStats = [
-    { title: "Active Goals", value: "12", change: "+2", trend: "up", icon: Target },
-    { title: "Completed This Week", value: "8", change: "+3", trend: "up", icon: CheckCircle },
-    { title: "Team Projects", value: "4", change: "0", trend: "neutral", icon: Users },
-    { title: "Streak Days", value: "23", change: "+1", trend: "up", icon: Award }
+  const [currentMode, setCurrentMode] = useState<'work' | 'personal'>('work');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showAddCustomer, setShowAddCustomer] = useState(false);
+  const [selectedMetric, setSelectedMetric] = useState<'revenue' | 'customers' | 'efficiency'>('revenue');
+  const [lastRefresh, setLastRefresh] = useState(new Date());
+  const [newCustomer, setNewCustomer] = useState({
+    name: '',
+    address: '',
+    price: '',
+    payment: 'Online',
+    priority: 'Medium' as 'Low' | 'Medium' | 'High'
+  });
+
+  const { 
+    stats, 
+    customers, 
+    goals, 
+    revenueData, 
+    taskData, 
+    goalProgress,
+    workflowMetrics,
+    activityLog,
+    performanceData,
+    addCustomer,
+    updateGoalProgress,
+    completeTask,
+    exportData,
+    getRecentActivity,
+    getGoalsByCategory,
+    updateDashboardMetrics,
+    refreshRealTimeData
+  } = useDashboardStore();
+
+  const { showSuccess, showError } = useNotifications();
+
+  // Enhanced real-time refresh system
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshRealTimeData();
+      setLastRefresh(new Date());
+      console.log('Dashboard refreshed with real-time data');
+    }, 10000); // Refresh every 10 seconds for better real-time feel
+
+    return () => clearInterval(interval);
+  }, [refreshRealTimeData]);
+
+  // Initial data load
+  useEffect(() => {
+    refreshRealTimeData();
+    setLastRefresh(new Date());
+  }, []);
+
+  const workflowStats = [
+    { 
+      title: "Workflow Efficiency", 
+      value: `${workflowMetrics.efficiency.toFixed(1)}%`, 
+      icon: Workflow, 
+      color: "text-blue-400",
+      trend: workflowMetrics.efficiency > 80 ? "up" : "down",
+      description: `${workflowMetrics.completedTasks}/${workflowMetrics.totalTasks} tasks completed`,
+      lastUpdated: workflowMetrics.lastCalculated
+    },
+    { 
+      title: "Total Orders", 
+      value: stats.orders.toString(), 
+      icon: ShoppingCart, 
+      color: "text-green-400",
+      trend: "up",
+      description: "All completed orders",
+      lastUpdated: stats.lastUpdated
+    },
+    { 
+      title: "Revenue", 
+      value: `$${stats.revenue.toFixed(2)}`, 
+      icon: DollarSign, 
+      color: "text-purple-400",
+      trend: "up",
+      description: "Total earnings",
+      lastUpdated: stats.lastUpdated
+    },
+    { 
+      title: "Completion Rate", 
+      value: `${stats.completionRate.toFixed(1)}%`, 
+      icon: CheckCircle, 
+      color: "text-green-400",
+      trend: "up",
+      description: "Overall success rate",
+      lastUpdated: stats.lastUpdated
+    }
   ];
 
-  const recentGoals = [
-    { title: "Launch Marketing Campaign", progress: 85, due: "2 days", priority: "high" },
-    { title: "Complete React Dashboard", progress: 60, due: "1 week", priority: "medium" },
-    { title: "Team Meeting Prep", progress: 40, due: "Tomorrow", priority: "high" },
-    { title: "Update Documentation", progress: 75, due: "3 days", priority: "low" }
+  const realtimeMetrics = [
+    { title: "Daily Target", current: stats.completedToday, target: stats.dailyTarget, color: "#10b981" },
+    { title: "Monthly Target", current: stats.orders, target: stats.monthlyTarget, color: "#3b82f6" },
+    { title: "Revenue Goal", current: stats.revenue, target: 30000, color: "#f59e0b" },
   ];
 
-  const achievements = [
-    { title: "Goal Crusher", description: "Completed 50 goals", icon: Trophy, earned: true },
-    { title: "Consistency King", description: "30-day streak", icon: Star, earned: true },
-    { title: "Team Player", description: "5 collaborative goals", icon: Users, earned: false }
-  ];
+  const filteredCustomers = customers.filter(customer => {
+    const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         customer.address.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
+  });
+
+  const handleAddCustomer = () => {
+    if (!newCustomer.name || !newCustomer.address || !newCustomer.price) {
+      showError('Please fill in all required fields');
+      return;
+    }
+
+    const customerData = {
+      ...newCustomer,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      date: new Date().toLocaleDateString('en-GB').replace(/\//g, '/'),
+      status: 'Delivered' as const
+    };
+
+    addCustomer(customerData);
+    setNewCustomer({ name: '', address: '', price: '', payment: 'Online', priority: 'Medium' });
+    setShowAddCustomer(false);
+    showSuccess('Customer added successfully! Dashboard metrics updated in real-time.');
+    setLastRefresh(new Date());
+  };
+
+  const handleGoalProgressUpdate = (goalId: string, increment: number) => {
+    const goal = goals.find(g => g.id === goalId);
+    if (goal) {
+      const newProgress = Math.min(goal.progress + increment, 100);
+      updateGoalProgress(goalId, newProgress);
+      
+      if (newProgress === 100 && goal.progress < 100) {
+        showSuccess('Goal completed! Dashboard updated with new achievements. 🎉');
+      } else {
+        showSuccess(`Progress updated to ${newProgress}%. Real-time metrics refreshed.`);
+      }
+      setLastRefresh(new Date());
+    }
+  };
+
+  const handleManualRefresh = () => {
+    refreshRealTimeData();
+    setLastRefresh(new Date());
+    showSuccess('Dashboard refreshed with latest data!');
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'High': return 'bg-red-500/20 text-red-300 border-red-500/40';
+      case 'Medium': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40';
+      case 'Low': return 'bg-green-500/20 text-green-300 border-green-500/40';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500/40';
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header Section */}
-        <div className="flex justify-between items-start">
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
-              Welcome back, Achiever! 👋
-            </h1>
-            <p className="text-lg text-slate-600 font-medium">
-              Ready to crush your goals today?
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-              <Plus className="w-5 h-5 mr-2" />
-              New Goal
-            </Button>
-          </div>
+    <div className="p-6 space-y-6 relative">
+      {/* Enhanced Header with Real-time Status */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2 flex items-center">
+            Dashboard
+            <div className="ml-3 flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-400">Live Data</span>
+            </div>
+          </h1>
+          <p className="text-gray-400">Real-time workflow management and analytics</p>
         </div>
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleManualRefresh}
+            className="border-gray-700 text-gray-300 hover:bg-gray-800"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+          <div className="text-right">
+            <p className="text-sm text-gray-400">Last Updated</p>
+            <p className="text-white font-medium">{lastRefresh.toLocaleTimeString()}</p>
+          </div>
+          <ModeToggle currentMode={currentMode} onModeChange={setCurrentMode} />
+        </div>
+      </div>
 
-        {/* Quick Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {quickStats.map((stat, index) => (
-            <Card key={index} className="relative overflow-hidden bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-slate-600">{stat.title}</p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl font-bold text-slate-900">{stat.value}</span>
-                      {stat.change !== "0" && (
-                        <Badge variant={stat.trend === "up" ? "default" : "secondary"} className="text-xs">
-                          {stat.change}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-300">
-                    <stat.icon className="w-6 h-6 text-blue-600" />
-                  </div>
+      {/* Enhanced Workflow Stats with Real-time Indicators */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {workflowStats.map((stat, index) => (
+          <Card key={index} className="bg-gray-900 border-gray-800 hover:bg-gray-800/50 transition-all duration-300 cursor-pointer relative">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-400 text-sm mb-1">{stat.title}</p>
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-xs text-gray-500 mt-1">{stat.description}</p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Updated: {new Date(stat.lastUpdated).toLocaleTimeString()}
+                  </p>
                 </div>
-              </CardContent>
-              <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-            </Card>
-          ))}
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Goals */}
-          <div className="lg:col-span-2">
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-xl font-bold text-slate-900">Active Goals</CardTitle>
-                    <CardDescription className="text-slate-600">Track your current objectives</CardDescription>
-                  </div>
-                  <Button variant="outline" size="sm" className="hover:bg-blue-50 border-blue-200 text-blue-600">
-                    View All
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
+                <div className="flex flex-col items-end">
+                  <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                  {stat.trend === 'up' && <TrendingUp className="w-4 h-4 text-green-400 mt-1" />}
+                  {stat.trend === 'down' && <TrendingUp className="w-4 h-4 text-red-400 mt-1 rotate-180" />}
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {recentGoals.map((goal, index) => (
-                  <div key={index} className="p-4 rounded-xl bg-gradient-to-r from-slate-50 to-blue-50 hover:from-slate-100 hover:to-blue-100 transition-all duration-300 group cursor-pointer border border-slate-200/50">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-slate-900 group-hover:text-blue-900 transition-colors">{goal.title}</h3>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={goal.priority === "high" ? "destructive" : goal.priority === "medium" ? "default" : "secondary"} className="text-xs">
-                          {goal.priority}
-                        </Badge>
-                        <span className="text-sm text-slate-600 flex items-center">
-                          <Clock className="w-3 h-3 mr-1" />
-                          {goal.due}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-slate-600">Progress</span>
-                        <span className="font-medium text-slate-900">{goal.progress}%</span>
-                      </div>
-                      <Progress value={goal.progress} className="h-2" />
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+              <div className="absolute top-2 right-2">
+                <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-slate-900">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:border-blue-200 text-blue-600">
-                  <Target className="w-4 h-4 mr-3" />
-                  Create Goal
-                </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-green-50 hover:border-green-200 text-green-600">
-                  <Calendar className="w-4 h-4 mr-3" />
-                  Schedule Task
-                </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-purple-50 hover:border-purple-200 text-purple-600">
-                  <BarChart3 className="w-4 h-4 mr-3" />
-                  View Analytics
-                </Button>
-              </CardContent>
-            </Card>
+      {/* Real-time Progress Indicators */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {realtimeMetrics.map((metric, index) => (
+          <Card key={index} className="bg-gray-900 border-gray-800">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-white text-sm flex items-center justify-between">
+                {metric.title}
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Current</span>
+                  <span className="text-white font-medium">{metric.current.toLocaleString()}</span>
+                </div>
+                <Progress 
+                  value={(metric.current / metric.target) * 100} 
+                  className="h-3"
+                />
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-500">Target: {metric.target.toLocaleString()}</span>
+                  <span className="text-gray-400">
+                    {((metric.current / metric.target) * 100).toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-            {/* Achievement Badges */}
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-slate-900">Recent Achievements</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {achievements.map((achievement, index) => (
-                  <div key={index} className={`p-4 rounded-xl border transition-all duration-300 ${
-                    achievement.earned 
-                      ? "bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 shadow-sm" 
-                      : "bg-slate-50 border-slate-200 opacity-60"
-                  }`}>
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${
-                        achievement.earned ? "bg-yellow-100" : "bg-slate-100"
-                      }`}>
-                        <achievement.icon className={`w-5 h-5 ${
-                          achievement.earned ? "text-yellow-600" : "text-slate-400"
-                        }`} />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-slate-900">{achievement.title}</h4>
-                        <p className="text-sm text-slate-600">{achievement.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Weekly Overview */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+      {/* Charts Section with Real-time Data */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Performance Analytics */}
+        <Card className="bg-gray-900 border-gray-800">
           <CardHeader>
-            <CardTitle className="text-xl font-bold text-slate-900">This Week's Overview</CardTitle>
-            <CardDescription className="text-slate-600">Your productivity at a glance</CardDescription>
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <BarChart3 className="w-5 h-5 mr-2" />
+                Performance Analytics
+              </div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center space-y-2">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-green-600" />
-                </div>
-                <div className="text-2xl font-bold text-slate-900">8</div>
-                <div className="text-sm text-slate-600">Completed</div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={performanceData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="date" stroke="#9ca3af" />
+                  <YAxis stroke="#9ca3af" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1f2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff'
+                    }}
+                  />
+                  <Area type="monotone" dataKey="efficiency" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
+                  <Area type="monotone" dataKey="completed" stackId="2" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Workflow Distribution */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <PieChart className="w-5 h-5 mr-2" />
+                Workflow Distribution
               </div>
-              <div className="text-center space-y-2">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
-                  <Target className="w-8 h-8 text-blue-600" />
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsPieChart>
+                  <Pie
+                    data={goalProgress}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {goalProgress.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1f2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff'
+                    }}
+                  />
+                </RechartsPieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-center space-x-4 mt-4">
+              {goalProgress.map((item, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                  <span className="text-xs text-gray-400">{item.name}</span>
                 </div>
-                <div className="text-2xl font-bold text-slate-900">12</div>
-                <div className="text-sm text-slate-600">In Progress</div>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-purple-100 to-violet-100 rounded-full flex items-center justify-center">
-                  <TrendingUp className="w-8 h-8 text-purple-600" />
-                </div>
-                <div className="text-2xl font-bold text-slate-900">85%</div>
-                <div className="text-sm text-slate-600">Success Rate</div>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center">
-                  <Zap className="w-8 h-8 text-orange-600" />
-                </div>
-                <div className="text-2xl font-bold text-slate-900">23</div>
-                <div className="text-sm text-slate-600">Day Streak</div>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Activity Feed and Goals */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Real-time Activity Feed */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <Activity className="w-5 h-5 mr-2" />
+                Live Activity Feed
+              </div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 max-h-80 overflow-y-auto">
+            {getRecentActivity().map((activity) => (
+              <div key={activity.id} className="flex items-start space-x-3 p-3 bg-gray-800 rounded-lg">
+                <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                <div className="flex-1">
+                  <p className="text-white text-sm">{activity.description}</p>
+                  <p className="text-gray-400 text-xs mt-1">
+                    {new Date(activity.timestamp).toLocaleTimeString()}
+                  </p>
+                </div>
+                <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/40 text-xs">
+                  {activity.type.replace('_', ' ')}
+                </Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Interactive Goals with Progress */}
+        <Card className="bg-gray-900 border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <Target className="w-5 h-5 mr-2" />
+                Active Goals
+              </div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {goals.filter(g => g.status === 'Active').map((goal) => (
+              <div key={goal.id} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="text-white font-medium">{goal.title}</span>
+                    <Badge className="ml-2 bg-purple-500/20 text-purple-300 border-purple-500/40 text-xs">
+                      {goal.category}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-white text-sm">{goal.progress}%</span>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleGoalProgressUpdate(goal.id, 10)}
+                      className="border-gray-700 text-gray-300 hover:bg-gray-800 h-6 px-2"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+                <Progress value={goal.progress} className="h-2" />
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Deadline: {goal.deadline}</span>
+                  <span className="text-gray-400">{goal.target - (goal.progress * goal.target / 100)} remaining</span>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Enhanced Customer Management Table */}
+      <Card className="bg-gray-900 border-gray-800">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-white text-xl flex items-center">
+              <Users className="w-5 h-5 mr-2" />
+              Customer Management
+              <div className="ml-3 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            </CardTitle>
+            <div className="flex items-center space-x-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={exportData}
+                className="border-gray-700 text-gray-300 hover:bg-gray-800"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setShowAddCustomer(true)}
+                className="border-gray-700 text-gray-300 hover:bg-gray-800"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Customer
+              </Button>
+            </div>
+          </div>
+          
+          {/* Enhanced Search */}
+          <div className="flex items-center space-x-4 mt-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Search customers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+            </div>
+          </div>
+        </CardHeader>
+        
+        {/* Enhanced Add Customer Form */}
+        {showAddCustomer && (
+          <CardContent className="border-b border-gray-800">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+              <Input
+                placeholder="Customer name"
+                value={newCustomer.name}
+                onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+              <Input
+                placeholder="Address"
+                value={newCustomer.address}
+                onChange={(e) => setNewCustomer({...newCustomer, address: e.target.value})}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+              <Input
+                placeholder="Price (e.g., $15.50)"
+                value={newCustomer.price}
+                onChange={(e) => setNewCustomer({...newCustomer, price: e.target.value})}
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              />
+              <Select value={newCustomer.payment} onValueChange={(value) => setNewCustomer({...newCustomer, payment: value})}>
+                <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectItem value="Online">Online</SelectItem>
+                  <SelectItem value="Cash">Cash</SelectItem>
+                  <SelectItem value="Card">Card</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={newCustomer.priority} onValueChange={(value: 'Low' | 'Medium' | 'High') => setNewCustomer({...newCustomer, priority: value})}>
+                <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectItem value="Low">Low Priority</SelectItem>
+                  <SelectItem value="Medium">Medium Priority</SelectItem>
+                  <SelectItem value="High">High Priority</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex space-x-2">
+              <Button onClick={handleAddCustomer} className="bg-white text-gray-900 hover:bg-gray-100">
+                Add Customer
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowAddCustomer(false)}
+                className="border-gray-700 text-gray-300 hover:bg-gray-800"
+              >
+                Cancel
+              </Button>
+            </div>
+          </CardContent>
+        )}
+
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-800">
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">ID</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">NAME</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">ADDRESS</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">PRIORITY</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">PRICE</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">PAYMENT</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">STATUS</th>
+                  <th className="text-left py-3 px-4 text-gray-400 font-medium">ASSIGNED</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCustomers.map((customer, index) => (
+                  <tr key={index} className="border-b border-gray-800 hover:bg-gray-800/50">
+                    <td className="py-4 px-4 text-gray-300">{customer.id}</td>
+                    <td className="py-4 px-4 text-white font-medium">{customer.name}</td>
+                    <td className="py-4 px-4 text-gray-300">{customer.address}</td>
+                    <td className="py-4 px-4">
+                      <Badge className={getPriorityColor(customer.priority)}>
+                        {customer.priority}
+                      </Badge>
+                    </td>
+                    <td className="py-4 px-4 text-white font-medium">{customer.price}</td>
+                    <td className="py-4 px-4 text-gray-300">{customer.payment}</td>
+                    <td className="py-4 px-4">
+                      <Badge className="bg-green-500/20 text-green-300 border-green-500/40">
+                        Delivered
+                      </Badge>
+                    </td>
+                    <td className="py-4 px-4 text-gray-300 text-sm">{customer.assignedTo || 'Unassigned'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
+            {filteredCustomers.length === 0 && (
+              <div className="text-center py-8 text-gray-400">
+                No customers found matching your criteria.
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton />
     </div>
   );
 }

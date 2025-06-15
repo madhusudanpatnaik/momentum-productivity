@@ -1,8 +1,8 @@
 
-import { LandingPage } from "@/components/LandingPage";
+import Dashboard from "@/components/Dashboard";
 
 const Index = () => {
-  return <LandingPage />;
+  return <Dashboard />;
 };
 
 export default Index;
