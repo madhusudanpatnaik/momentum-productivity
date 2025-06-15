@@ -1,10 +1,10 @@
 
-/* Import enhanced Google Fonts for premium aesthetic typography */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Import enhanced Google Fonts for premium aesthetic typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 /* Definition of the design system with enhanced night sky theme */
 
@@ -96,9 +96,9 @@
 
   /* Enhanced glass morphism with better blur */
   .glass-morphism {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: 
       0 8px 32px 0 rgba(31, 38, 135, 0.37),
       inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
