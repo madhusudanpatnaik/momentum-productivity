@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Target, Trophy, Check, Users, BarChart3, Shield, Linkedin, Twitter, ExternalLink } from 'lucide-react';
@@ -126,7 +125,7 @@ const Dashboard: React.FC = () => {
         }}
       />
 
-      {/* Perfect navigation alignment */}
+      {/* Perfect navigation alignment - FIXED: Remove duplicate auth buttons */}
       <nav className="relative z-10 flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
         {/* Left side - App name */}
         <div className="flex-shrink-0">
@@ -153,19 +152,13 @@ const Dashboard: React.FC = () => {
           </a>
         </div>
 
-        {/* Right side - Buttons with perfect alignment */}
+        {/* Right side - Single Auth button */}
         <div className="flex items-center space-x-4 flex-shrink-0">
           <Button 
-            variant="ghost" 
-            className="text-gray-200 hover:text-white hover:bg-white/10 font-medium transition-all duration-300 text-lg px-8 py-3 font-sans rounded-full backdrop-blur-sm border border-transparent hover:border-white/20"
+            onClick={() => navigate('/auth')}
+            className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white px-8 py-3 text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 shadow-xl backdrop-blur-sm font-sans border-2 border-white/20 hover:border-white/40"
           >
-            Login
-          </Button>
-          <Button 
-            variant="outline" 
-            className="border-2 border-gray-300/40 text-gray-200 hover:bg-white/10 hover:text-white hover:border-white/60 font-medium transition-all duration-300 backdrop-blur-sm text-lg px-8 py-3 font-sans rounded-full shadow-lg hover:shadow-xl"
-          >
-            Sign up
+            Get Started
           </Button>
         </div>
       </nav>
@@ -196,7 +189,7 @@ const Dashboard: React.FC = () => {
           <div className="flex justify-center mb-20">
             <Button 
               size="lg" 
-              onClick={() => navigate('/app')}
+              onClick={() => navigate('/auth')}
               className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white px-16 py-8 text-xl font-semibold rounded-full transition-all duration-500 hover:scale-110 shadow-2xl backdrop-blur-sm font-sans border-2 border-white/20 hover:border-white/40 hover:shadow-3xl"
               style={{
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)'
@@ -292,7 +285,7 @@ const Dashboard: React.FC = () => {
               <div className="mt-12">
                 <Button 
                   size="lg"
-                  onClick={() => navigate('/app')}
+                  onClick={() => navigate('/auth')}
                   className="bg-white text-gray-900 hover:bg-gray-100 px-10 py-6 text-xl font-semibold rounded-2xl transition-all duration-300 hover:scale-105 font-sans"
                 >
                   Start Your Journey

@@ -30,7 +30,17 @@ export function AppLayout({ children }: AppLayoutProps) {
           <header className="h-16 bg-gray-900 border-b border-gray-800 flex items-center justify-between px-6">
             <div className="flex items-center space-x-4">
               <SidebarTrigger className="text-gray-300 hover:text-white" />
-              <div className="relative">
+              
+              {/* Clickable Momentum logo/text */}
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/')}
+                className="text-white font-bold text-2xl hover:text-purple-300 transition-colors p-0 h-auto"
+              >
+                Momentum
+              </Button>
+              
+              <div className="relative ml-8">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input 
                   type="text" 
