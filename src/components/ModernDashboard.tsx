@@ -65,7 +65,7 @@ export function ModernDashboard() {
         {/* Quick Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {quickStats.map((stat, index) => (
-            <Card key={index} className="relative overflow-hidden bg-white/70 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105">
+            <Card key={index} className="relative overflow-hidden bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="space-y-2">
@@ -93,14 +93,14 @@ export function ModernDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Goals */}
           <div className="lg:col-span-2">
-            <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-xl font-bold text-slate-900">Active Goals</CardTitle>
                     <CardDescription className="text-slate-600">Track your current objectives</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm" className="hover:bg-blue-50">
+                  <Button variant="outline" size="sm" className="hover:bg-blue-50 border-blue-200 text-blue-600">
                     View All
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -137,20 +137,20 @@ export function ModernDashboard() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-slate-900">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:border-blue-200">
+                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:border-blue-200 text-blue-600">
                   <Target className="w-4 h-4 mr-3" />
                   Create Goal
                 </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-green-50 hover:border-green-200">
+                <Button variant="outline" className="w-full justify-start hover:bg-green-50 hover:border-green-200 text-green-600">
                   <Calendar className="w-4 h-4 mr-3" />
                   Schedule Task
                 </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-purple-50 hover:border-purple-200">
+                <Button variant="outline" className="w-full justify-start hover:bg-purple-50 hover:border-purple-200 text-purple-600">
                   <BarChart3 className="w-4 h-4 mr-3" />
                   View Analytics
                 </Button>
@@ -158,7 +158,7 @@ export function ModernDashboard() {
             </Card>
 
             {/* Achievement Badges */}
-            <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-slate-900">Recent Achievements</CardTitle>
               </CardHeader>
@@ -190,7 +190,7 @@ export function ModernDashboard() {
         </div>
 
         {/* Weekly Overview */}
-        <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
           <CardHeader>
             <CardTitle className="text-xl font-bold text-slate-900">This Week's Overview</CardTitle>
             <CardDescription className="text-slate-600">Your productivity at a glance</CardDescription>
