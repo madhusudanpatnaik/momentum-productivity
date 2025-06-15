@@ -8,11 +8,10 @@ A modern, gamified productivity platform built with React, TypeScript, and Tailw
 ### Core Functionality
 - **Goal Management**: Set, track, and achieve personal and professional goals
 - **Project Organization**: Organize tasks and projects with intuitive boards
-- **Analytics Dashboard**: Comprehensive insights into productivity patterns
 - **Personal Goals**: Dedicated space for personal development tracking
-- **Investment Tracking**: Monitor financial goals and investments
+- **Investment Tracking**: Monitor financial goals and investments with multi-currency support (USD, EUR, INR)
 - **Calendar Integration**: Schedule and track goal-related activities
-- **Settings Management**: Customize your productivity experience
+- **Settings Management**: Customize your productivity experience with currency preferences
 
 ### Gamification Elements
 - **Achievement System**: Unlock rewards and celebrate milestones
@@ -132,6 +131,7 @@ A modern, gamified productivity platform built with React, TypeScript, and Tailw
 - **React Hook Form**: Form handling with validation
 - **Zod**: Runtime type validation
 - **Date-fns**: Date manipulation utilities
+- **Zustand**: Lightweight state management
 
 ### Navigation & Routing
 - **React Router DOM**: Client-side routing
@@ -161,7 +161,11 @@ src/
 │   ├── App.tsx          # Main app page
 │   ├── Goals.tsx        # Goals management
 │   ├── Projects.tsx     # Project boards
-│   ├── Analytics.tsx    # Analytics dashboard
+│   ├── Investment.tsx   # Investment tracking
+│   └── ...
+├── stores/              # Zustand state stores
+│   ├── dashboardStore.ts # Global dashboard state
+│   ├── investmentStore.ts # Investment data management
 │   └── ...
 ├── hooks/               # Custom React hooks
 ├── lib/                 # Utility functions
@@ -215,9 +219,9 @@ npm run preview
 - **Dashboard**: Main productivity hub
 - **Goals**: Personal and professional goal tracking
 - **Projects**: Task and project management
-- **Analytics**: Progress insights and reports
+- **Investment**: Financial goal and investment tracking with multi-currency support
 - **Calendar**: Schedule and timeline view
-- **Settings**: Customize your experience
+- **Settings**: Customize your experience including currency preferences
 
 ### Key Features Usage
 
@@ -233,11 +237,16 @@ npm run preview
 3. Add tasks and organize workflows
 4. Monitor project completion
 
-#### Viewing Analytics
-1. Access Analytics dashboard
-2. Review productivity metrics
-3. Analyze progress trends
-4. Export reports
+#### Investment Tracking
+1. Access Investment dashboard
+2. Add investments and set financial goals
+3. Monitor portfolio performance
+4. Switch between currencies (USD, EUR, INR) in Settings
+
+#### Currency Management
+1. Go to Settings page
+2. Select preferred currency (USD, EUR, INR)
+3. Save preferences to apply across all financial displays
 
 ## 🎨 Customization
 
@@ -318,12 +327,18 @@ The easiest way to deploy is using the Lovable platform:
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 🆘 Support
+## 🆘 Support & Contact
 
-For support and questions:
+For support, questions, or collaboration:
+
+### Development Resources
 - Check the [Lovable Documentation](https://docs.lovable.dev/)
 - Join the [Lovable Discord Community](https://discord.com/channels/1119885301872070706/1280461670979993613)
 - Watch the [Lovable YouTube Tutorials](https://www.youtube.com/watch?v=9KHLTZaJcR8&list=PLbVHz4urQBZkJiAWdG8HWoJTdgEysigIO)
+
+### Connect with the Developer
+- **LinkedIn**: [Madhusudan Patnaik](https://www.linkedin.com/in/madhusudanpatnaik/)
+- **X (Twitter)**: [@madhusudan91263](https://x.com/madhusudan91263)
 
 ## 🔮 Future Enhancements
 
@@ -337,6 +352,8 @@ For support and questions:
 - [ ] Offline functionality
 - [ ] Advanced security features
 - [ ] API for third-party integrations
+- [ ] Real-time currency exchange rates
+- [ ] Advanced investment analytics
 
 ---
 
