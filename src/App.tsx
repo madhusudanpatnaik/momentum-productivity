@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Index from './pages/Index';
-import App from './pages/App';
+import AppPage from './pages/App';
 import Auth from './pages/Auth';
 import Goals from './pages/Goals';
 import Projects from './pages/Projects';
@@ -20,7 +21,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/app/*" element={
           <Routes>
-            <Route index element={<App />} />
+            <Route index element={<AppPage />} />
             <Route path="goals" element={<Goals />} />
             <Route path="projects" element={<Projects />} />
             <Route path="investment" element={<Investment />} />
