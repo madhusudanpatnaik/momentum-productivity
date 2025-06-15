@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export interface Task {
   id: string;
+  project_id: string;
   title: string;
   description: string;
   status: 'todo' | 'in-progress' | 'done';
@@ -147,7 +148,7 @@ export const useProjects = () => {
     }
   };
 
-  const addTask = async (projectId: string, taskData: Omit<Task, 'id' | 'created_at' | 'updated_at'>) => {
+  const addTask = async (projectId: string, taskData: Omit<Task, 'id' | 'project_id' | 'created_at' | 'updated_at'>) => {
     if (!user) return;
 
     try {
