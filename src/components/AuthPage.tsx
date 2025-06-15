@@ -75,19 +75,19 @@ const AuthPage = () => {
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
-            className="text-white hover:text-gray-300 mb-4"
+            className="text-white/80 hover:text-white hover:bg-white/10 mb-4 transition-all duration-300"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Button>
         </div>
 
-        <Card className="glass-morphism border-white/20">
+        <Card className="auth-card">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-white">
+            <CardTitle className="text-3xl font-bold text-white mb-2">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardDescription className="text-white/70 text-base">
               {isLogin 
                 ? 'Sign in to your Momentum account' 
                 : 'Join Momentum and gamify your goals'
@@ -96,16 +96,16 @@ const AuthPage = () => {
           </CardHeader>
           
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {!isLogin && (
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-white">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-white font-medium">Full Name</Label>
                   <Input
                     id="fullName"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                    className="auth-input"
                     placeholder="Enter your full name"
                     required={!isLogin}
                   />
@@ -113,27 +113,27 @@ const AuthPage = () => {
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-white">Email</Label>
+                <Label htmlFor="email" className="text-white font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="auth-input"
                   placeholder="Enter your email"
                   required
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-white">Password</Label>
+                <Label htmlFor="password" className="text-white font-medium">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 pr-10"
+                    className="auth-input pr-12"
                     placeholder="Enter your password"
                     required
                   />
@@ -141,13 +141,13 @@ const AuthPage = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-white/10 text-white/60 hover:text-white"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
+                      <EyeOff className="h-4 w-4" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
+                      <Eye className="h-4 w-4" />
                     )}
                   </Button>
                 </div>
@@ -155,18 +155,18 @@ const AuthPage = () => {
               
               <Button
                 type="submit"
-                className="w-full btn-gradient text-black font-semibold"
+                className="w-full btn-gradient text-black font-semibold h-12 text-base mt-6"
                 disabled={loading}
               >
                 {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Sign Up')}
               </Button>
             </form>
             
-            <div className="mt-6 text-center">
+            <div className="mt-8 text-center">
               <Button
                 variant="link"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-white hover:text-gray-300"
+                className="text-white/80 hover:text-white text-base p-0 h-auto"
               >
                 {isLogin 
                   ? "Don't have an account? Sign up" 
