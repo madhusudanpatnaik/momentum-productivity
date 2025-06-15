@@ -1,6 +1,7 @@
+
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, Target, Trophy, Check, Users, BarChart3, Shield } from 'lucide-react';
+import { ArrowRight, Zap, Target, Trophy, Check, Users, BarChart3, Shield, Linkedin, Twitter, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
@@ -146,6 +147,10 @@ const Dashboard: React.FC = () => {
             About
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 group-hover:w-full"></span>
           </a>
+          <a href="#connect" className="text-gray-200 hover:text-white transition-all duration-300 font-medium text-lg font-sans relative group">
+            Developer
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-300 group-hover:w-full"></span>
+          </a>
         </div>
 
         {/* Right side - Buttons with perfect alignment */}
@@ -174,31 +179,31 @@ const Dashboard: React.FC = () => {
             <span className="text-lg text-gray-100 font-medium font-sans tracking-wide">Gamified Productivity Platform</span>
           </div>
 
-          {/* Enhanced typography with aesthetic fonts */}
-          <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-light text-white mb-16 leading-[0.85] tracking-tight font-premium max-w-5xl mx-auto">
-            <span className="bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text text-transparent block drop-shadow-2xl">
-              Work deeper,
+          {/* Enhanced typography with aesthetic fonts - improved readability and elegance */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white mb-12 leading-[0.9] tracking-tight font-premium max-w-5xl mx-auto">
+            <span className="bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text text-transparent block drop-shadow-2xl font-extrabold">
+              Transform Your
             </span>
-            <span className="bg-gradient-to-r from-blue-100 via-white to-purple-100 bg-clip-text text-transparent block drop-shadow-2xl">
-              sleep better
+            <span className="bg-gradient-to-r from-blue-100 via-white to-purple-100 bg-clip-text text-transparent block drop-shadow-2xl font-light italic">
+              Productivity Journey
             </span>
           </h1>
 
-          <p className="text-2xl md:text-3xl lg:text-4xl text-gray-200 mb-20 max-w-4xl mx-auto leading-relaxed font-light font-sans opacity-90">
-            Built for action, built for success. For founders, entrepreneurs, and anyone ready to achieve their most ambitious goals.
+          <p className="text-xl md:text-2xl lg:text-3xl text-gray-200 mb-16 max-w-4xl mx-auto leading-relaxed font-light font-sans opacity-90">
+            Built for <span className="font-semibold text-white">action</span>, built for <span className="font-semibold text-white">success</span>. For founders, entrepreneurs, and anyone ready to achieve their most ambitious goals.
           </p>
 
-          <div className="flex justify-center mb-24">
+          <div className="flex justify-center mb-20">
             <Button 
               size="lg" 
               onClick={() => navigate('/app')}
-              className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white px-20 py-10 text-2xl font-semibold rounded-full transition-all duration-500 hover:scale-110 shadow-2xl backdrop-blur-sm font-sans border-2 border-white/20 hover:border-white/40 hover:shadow-3xl"
+              className="bg-gradient-to-r from-white to-gray-100 text-gray-900 hover:from-gray-100 hover:to-white px-16 py-8 text-xl font-semibold rounded-full transition-all duration-500 hover:scale-110 shadow-2xl backdrop-blur-sm font-sans border-2 border-white/20 hover:border-white/40 hover:shadow-3xl"
               style={{
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)'
               }}
             >
               Start Your Quest
-              <ArrowRight className="ml-5 h-8 w-8" />
+              <ArrowRight className="ml-4 h-6 w-6" />
             </Button>
           </div>
 
@@ -225,12 +230,12 @@ const Dashboard: React.FC = () => {
       <section id="features" className="relative z-10 py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-24">
-            <h2 className="text-6xl md:text-7xl font-light text-white mb-8 leading-tight font-premium max-w-4xl mx-auto">
-              <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+            <h2 className="text-5xl md:text-6xl font-light text-white mb-8 leading-tight font-premium max-w-4xl mx-auto">
+              <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent font-bold">
                 Powerful Features
               </span>
             </h2>
-            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-sans">
+            <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-sans">
               Everything you need to transform your productivity and achieve your biggest goals
             </p>
           </div>
@@ -240,8 +245,8 @@ const Dashboard: React.FC = () => {
               <div className="p-4 rounded-full bg-white/10 mb-8 w-fit group-hover:bg-white/20 transition-all duration-300">
                 <BarChart3 className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-2xl font-semibold text-white mb-6 font-premium">Analytics Dashboard</h3>
-              <p className="text-gray-400 leading-relaxed text-lg font-sans">Get deep insights into your productivity patterns and progress with beautiful visualizations and detailed reports.</p>
+              <h3 className="text-2xl font-semibold text-white mb-6 font-premium">Investment Dashboard</h3>
+              <p className="text-gray-400 leading-relaxed text-lg font-sans">Track your financial goals with multi-currency support and beautiful visualizations across USD, EUR, and INR.</p>
             </div>
             
             <div className="p-10 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
@@ -268,19 +273,19 @@ const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
-              <h2 className="text-6xl md:text-7xl font-light text-white mb-10 leading-tight font-premium">
-                <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+              <h2 className="text-5xl md:text-6xl font-light text-white mb-10 leading-tight font-premium">
+                <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent font-bold">
                   About Momentum
                 </span>
               </h2>
               <div className="space-y-8 text-gray-300 text-xl leading-relaxed font-sans">
-                <p>
-                  We believe that achieving ambitious goals shouldn't feel like a grind. That's why we created Momentum - a platform that transforms your biggest challenges into an engaging, game-like experience.
+                <p className="font-light">
+                  We believe that achieving ambitious goals shouldn't feel like a grind. That's why we created <span className="font-semibold text-white">Momentum</span> - a platform that transforms your biggest challenges into an engaging, game-like experience.
                 </p>
-                <p>
+                <p className="font-light">
                   Founded by entrepreneurs who understand the struggle of staying motivated, Momentum combines proven productivity principles with gamification mechanics that actually work.
                 </p>
-                <p>
+                <p className="font-light">
                   Whether you're building a startup, learning a new skill, or pursuing personal growth, our platform helps you stay focused, track progress, and celebrate wins along the way.
                 </p>
               </div>
@@ -302,7 +307,7 @@ const Dashboard: React.FC = () => {
                   <div className="w-32 h-32 mx-auto mb-10 rounded-full bg-white/10 flex items-center justify-center">
                     <Trophy className="w-16 h-16 text-white" />
                   </div>
-                  <h3 className="text-4xl font-semibold text-white mb-6 font-premium">10,000+</h3>
+                  <h3 className="text-4xl font-bold text-white mb-6 font-premium">10,000+</h3>
                   <p className="text-gray-400 text-xl font-sans">Goals achieved by our community</p>
                 </div>
               </div>
@@ -326,6 +331,66 @@ const Dashboard: React.FC = () => {
         </div>
       </section>
 
+      {/* Connect with Developer Section */}
+      <section id="connect" className="relative z-10 py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-light text-white mb-8 leading-tight font-premium">
+              <span className="bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text text-transparent font-bold">
+                Connect with Developer
+              </span>
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-sans font-light">
+              Let's build something amazing together. Connect with me for collaborations, feedback, or just to say hello!
+            </p>
+          </div>
+
+          <div className="flex justify-center items-center space-x-8 mb-16">
+            {/* LinkedIn */}
+            <a 
+              href="https://www.linkedin.com/in/madhusudanpatnaik/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group flex items-center space-x-4 p-8 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-blue-400/50 transition-all duration-300 hover:scale-105"
+            >
+              <div className="p-4 rounded-full bg-blue-600/20 group-hover:bg-blue-600/40 transition-all duration-300">
+                <Linkedin className="w-8 h-8 text-blue-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-white font-premium">LinkedIn</h3>
+                <p className="text-gray-400 font-sans">Professional Network</p>
+              </div>
+              <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+            </a>
+
+            {/* X (Twitter) */}
+            <a 
+              href="https://x.com/madhusudan91263" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group flex items-center space-x-4 p-8 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 hover:border-gray-400/50 transition-all duration-300 hover:scale-105"
+            >
+              <div className="p-4 rounded-full bg-gray-600/20 group-hover:bg-gray-600/40 transition-all duration-300">
+                <Twitter className="w-8 h-8 text-gray-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-white font-premium">X (Twitter)</h3>
+                <p className="text-gray-400 font-sans">Latest Updates</p>
+              </div>
+              <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+            </a>
+          </div>
+
+          <div className="text-center">
+            <div className="inline-flex items-center px-8 py-4 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
+              <span className="text-lg text-gray-300 font-sans font-light">
+                Made with ❤️ by <span className="font-semibold text-white">Madhusudan Patnaik</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="relative z-10 py-20 px-6 border-t border-white/10">
         <div className="max-w-7xl mx-auto text-center">
@@ -334,7 +399,7 @@ const Dashboard: React.FC = () => {
               Momentum
             </span>
           </div>
-          <p className="text-gray-400 mb-10 text-xl font-sans">Transform your productivity. Achieve your dreams.</p>
+          <p className="text-gray-400 mb-10 text-xl font-sans font-light">Transform your productivity. Achieve your dreams.</p>
           <div className="flex justify-center space-x-12 text-lg text-gray-400">
             <a href="#" className="hover:text-white transition-colors font-sans">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors font-sans">Terms of Service</a>
