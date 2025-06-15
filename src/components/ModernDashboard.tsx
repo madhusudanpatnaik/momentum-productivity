@@ -16,7 +16,8 @@ import {
   Clock,
   Star,
   ArrowRight,
-  Zap
+  Zap,
+  Trophy
 } from 'lucide-react';
 
 export function ModernDashboard() {
