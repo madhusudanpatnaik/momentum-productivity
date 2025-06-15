@@ -82,12 +82,12 @@ const AuthPage = () => {
           </Button>
         </div>
 
-        <Card className="auth-card">
+        <Card className="bg-gradient-to-br from-purple-900/20 via-blue-900/30 to-indigo-900/20 backdrop-blur-xl border border-white/20 shadow-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-white mb-2">
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mb-2">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </CardTitle>
-            <CardDescription className="text-white/70 text-base">
+            <CardDescription className="text-white/80 text-base">
               {isLogin 
                 ? 'Sign in to your Momentum account' 
                 : 'Join Momentum and gamify your goals'
@@ -99,13 +99,13 @@ const AuthPage = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               {!isLogin && (
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-white font-medium">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-white/90 font-medium">Full Name</Label>
                   <Input
                     id="fullName"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="auth-input"
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/15 focus:border-purple-300/50 transition-all duration-300"
                     placeholder="Enter your full name"
                     required={!isLogin}
                   />
@@ -113,27 +113,27 @@ const AuthPage = () => {
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-white font-medium">Email</Label>
+                <Label htmlFor="email" className="text-white/90 font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="auth-input"
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/15 focus:border-blue-300/50 transition-all duration-300"
                   placeholder="Enter your email"
                   required
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-white font-medium">Password</Label>
+                <Label htmlFor="password" className="text-white/90 font-medium">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="auth-input pr-12"
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:bg-white/15 focus:border-indigo-300/50 transition-all duration-300 pr-12"
                     placeholder="Enter your password"
                     required
                   />
@@ -141,7 +141,7 @@ const AuthPage = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-white/10 text-white/60 hover:text-white"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-white/10 text-white/60 hover:text-white transition-all duration-300"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -155,7 +155,7 @@ const AuthPage = () => {
               
               <Button
                 type="submit"
-                className="w-full btn-gradient text-black font-semibold h-12 text-base mt-6"
+                className="w-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 text-white font-semibold h-12 text-base mt-6 transition-all duration-300 transform hover:scale-105"
                 disabled={loading}
               >
                 {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Sign Up')}
@@ -166,7 +166,7 @@ const AuthPage = () => {
               <Button
                 variant="link"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-white/80 hover:text-white text-base p-0 h-auto"
+                className="text-white/80 hover:text-white text-base p-0 h-auto transition-all duration-300"
               >
                 {isLogin 
                   ? "Don't have an account? Sign up" 
